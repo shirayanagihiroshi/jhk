@@ -1,0 +1,68 @@
+/*
+ * jhk.shell.css
+ * シェルスタイル
+ */
+.jhk-shell-head, .jhk-shell-head-title, .jhk-shell-head-acct,
+.jhk-shell-main, .jhk-shell-main-menu, .jhk-shell-main-content, .jhk-shell-dialog
+{
+  position: absolute;
+}
+
+.jhk-toggle-base, .jhk-toggle-circle {
+  position: relative;
+}
+
+.jhk-shell-head {
+  top    : 0;
+  left   : 0;
+  right  : 0;
+  height : 40px;
+  background: #B5F5B3;
+
+}
+
+.jhk-shell-head-title {
+  top    : 5px;
+  left   : 20px;
+  color  : #777777;
+  font-size: 20px;
+}
+
+.jhk-shell-head-acct {
+  top    : 4px;
+  right  : 30px;
+  width  : 120px;
+  height : 32px;
+  cursor: pointer;
+  background : green;
+  /*
+  border-radius: 8px 8px 8px 8px;
+  text-align: center;
+  */
+  }
+.jhk-shell-head-acct:hover {
+  background-color: #E63C41;
+}
+
+.jhk-shell-main {
+  top    : 40px;
+  left   : 0;
+  bottom : 0;
+  right  : 0;
+}
+
+.jhk-shell-main-menu {
+  top    : 0;
+  left   : 0;
+  width  : 170px;
+  bottom : 0;
+  background : #f0f8ff;
+}
+
+.jhk-shell-main-content {
+  top    : 0;
+  left   : 170px;
+  bottom : 0;
+  right  : 0;
+  background : #BEEBD9;
+}

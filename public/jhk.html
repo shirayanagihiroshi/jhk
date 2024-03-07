@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+  <head>
+    <title> nittai Jyugyou HenKou </title>
+    <meta name="viewport"content=" width=device-width,initial-scale=1">
+
+    <!--スタイルシート-->
+    <link rel="stylesheet" href="css/jhk.css">
+    <link rel="stylesheet" href="css/jhk.shell.css">
+    <link rel="stylesheet" href="css/jhk.dialog.css">
+    <link rel="stylesheet" href="css/jhk.dialogOkCancel.css">
+    <link rel="stylesheet" href="css/jhk.calendar.css">
+
+    <!--サードパーティーjavascript-->
+    <script type="text/javascript" src="js/jq/jquery.3.6.0.min.js"></script>
+    <script type="text/javascript" src="js/jq/jquery.uriAnchor-1.3.3.js"></script>
+    <script type="text/javascript" src="js/jq/jquery.event.gevent-1.1.2.js"></script>
+    <script type="text/javascript" src="js/jq/jquery.event.ue-1.3.js"></script>
+    <script type="text/javascript" src="js/jq/jquery.color-2.1.2.js"></script>
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+
+    <!--開発対象javascript-->
+    <script type="text/javascript" src="js/jhk.js"></script>
+    <script type="text/javascript" src="js/jhk.util.js"></script><!--基本SPAに若干追加-->
+    <script type="text/javascript" src="js/jhk.data.js"></script>
+    <script type="text/javascript" src="js/jhk.model.js"></script>
+    <script type="text/javascript" src="js/jhk.util_b.js"></script><!--基本SPAの本のまま-->
+    <script type="text/javascript" src="js/jhk.shell.js"></script>
+    <script type="text/javascript" src="js/jhk.dialog.js"></script>
+    <script type="text/javascript" src="js/jhk.dialogOkCancel.js"></script>
+    <script type="text/javascript" src="js/jhk.acct.js"></script>
+    <script type="text/javascript" src="js/jhk.calendar.js"></script>
+
+    <!--jhkと名前はついているが、jhkモジュールとは別にロジックやデータを読み込む-->
+    <script type="text/javascript" src="js/jhkteacher.json.js"></script>
+    <script type="text/javascript" src="js/jhkSimpleCommon.js"></script>
+
+    <script>
+      $(function () { jhk.initModule( $('#jhk') ); });
+    </script>
+  </head>
+
+  <body>
+    <div id='jhk'></div>
+
+  <!--js,css更新用のロジック-->
+  <script>
+    const socket = io();
+     socket.on('script', function ( path ) {
+      $('[src^="' + path.slice(1) + '"]').remove();
+      $( 'head' ).append(
+        '<script type="text/javascript" src="'
+        + path.slice(1) +
+        '"></scr' + 'ipt>'
+      );
+    });
+    socket.on('stylesheet', function ( path ) {
+     $('[href^="' + path.slice(1) + '"]').remove();
+     $( 'head' ).append(
+       '<link rel="stylesheet" href="'
+       + path.slice(1) +
+       '">'
+     );
+   });
+  </script>
+  </body>
+</html>

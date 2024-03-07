@@ -1,0 +1,27 @@
+﻿<!doctype html>
+<html>
+  <head>
+
+    <script>
+      function onclickButton() {
+        let mypass = document.getElementById("mypass");
+        let mystr = mypass.value;
+        
+        // 半角英数かどうかチェック
+        if( mystr.match(/^[A-Za-z0-9]*$/) ) {
+          location.href = "https://127.0.0.1:4001/" + mypass.value;
+        }
+        mypass.value = "";
+      }
+    </script>
+
+    <title> nittai Jyugyou HenKou </title>
+  </head>
+
+  <body>
+    <p>パスワード：
+      <input type="password" id="mypass">
+      <button onclick="onclickButton()">入力</button>
+    </p>
+  </body>
+</html>

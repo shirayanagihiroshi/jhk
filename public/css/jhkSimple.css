@@ -1,0 +1,19 @@
+/*
+ * jhkSimple.css
+ * 授業変更閲覧モジュール
+ */
+#jhkTable th, #jhkTable tr, #jhkTable td {
+  font-size: 16px;
+  border : 1px solid black;
+}
+
+.listselected {
+  background-color: yellow;
+}
+
+.jhkSunday {
+  color : red;
+}
+.jhkSaturday {
+  color : blue;
+}

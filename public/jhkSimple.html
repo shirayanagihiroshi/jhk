@@ -1,0 +1,26 @@
+﻿<!doctype html>
+<html>
+  <head>
+    <link rel="stylesheet" href="css/jhkSimple.css">
+    <script type="text/javascript" src="js/jhkSimpleData.js"></script>
+    <script type="text/javascript" src="js/jhkteacher.json.js"></script>
+    <script type="text/javascript" src="js/jhkSimpleCommon.js"></script>
+    <script type="text/javascript" src="js/jhkSimple.js"></script>
+    <title> nittai Jyugyou HenKou </title>
+  </head>
+
+  <body>
+    <button onclick="previousWeek()">↑↑前の週へ</button>
+    <button onclick="previousDay()">↑前の日へ</button>
+    <button onclick="toToday()">今週へ</button>
+    <button onclick="nextDay()">↓次の日へ</button>
+    <button onclick="nextWeek()">↓↓次の週へ</button>
+    <select id="selectCls" onchange="changeCls()">
+    </select>
+    <select id="jhkSelectTeacher"onchange="changeTeacher()">
+    </select>
+    <table id="jhkTable">
+    </table>
+  </body>
+</html>
+

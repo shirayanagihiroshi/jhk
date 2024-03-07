@@ -1,0 +1,29 @@
+{
+  "name": "test1",
+  "version": "1.0.0",
+  "description": "this is test",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "express": "^4.17.3",
+    "mongodb": "^4.4.0",
+    "socket.io": "^4.4.1",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.1/xlsx-0.20.1.tgz"
+  },
+  "directories": {
+    "lib": "lib"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shirayanagihiroshi/yoyaku.git"
+  },
+  "bugs": {
+    "url": "https://github.com/shirayanagihiroshi/yoyaku/issues"
+  },
+  "homepage": "https://github.com/shirayanagihiroshi/yoyaku#readme"
+}
