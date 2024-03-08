@@ -5,11 +5,18 @@
  */
 
 // 関数
-let jhkSimpleCommonAddTableHeaher, jhkSimpleCommonAddTableContents,
+let jhkSimpleCommonCelPosToKoma,
+  jhkSimpleCommonAddTableHeaher, jhkSimpleCommonAddTableContents,
   jhkSimpleCommonGetHenkou, jhkSimpleCommonDeleteRowTable,
   jhkSimpleCommonGetTargetDays, jhkSimpleCommonIsJyugyou,
   jhkSimpleCommonMakeDateStr, jhkSimpleCommonSetTeachersLst,
   jhkTeacherFilterF;
+
+jhkSimpleCommonCelPosToKoma = function (CelPos) {
+  let headers = ['日付', '朝HR', '1限', '2限', '3限', '4限', '5限', '6限', '帰HR', '7限'];
+
+  return headers[CelPos];
+}
 
 // テーブルにヘッダーを追加する
 jhkSimpleCommonAddTableHeaher = function (targetId) {
@@ -36,7 +43,8 @@ jhkSimpleCommonAddTableHeaher = function (targetId) {
 // jikanwari    : 時間割(授業変更の登録のときのみ設定)
 // clsname      : グレーアウト用クラスの名前(授業変更の登録のときのみ設定)
 // edicls       : 編集用クラスの名前(授業変更の登録のときのみ設定)
-jhkSimpleCommonAddTableContents = function(targetId, targetHenkou, targetDays, targetteacher=null, jikanwari=null, clsname=null, edicls=null) {
+// delcls       : 削除クラスの名前(授業変更の登録のときのみ設定)
+jhkSimpleCommonAddTableContents = function(targetId, targetHenkou, targetDays, targetteacher=null, jikanwari=null, clsname=null, edicls=null, delcls=null) {
   let i, j, flg, aDayData,
     dayFilterF = function (y, m, d) {
       return function (target) {
@@ -61,7 +69,7 @@ jhkSimpleCommonAddTableContents = function(targetId, targetHenkou, targetDays, t
                                                   targetDays[i].day,
                                                   targetDays[i].youbi);
       } else {
-        td.innerHTML = jhkSimpleCommonGetHenkou(aDayData, j);
+        td.innerHTML = jhkSimpleCommonGetHenkou(aDayData, j, delcls);
       }
 
       // 選んだ先生の授業の箇所を目立つように
@@ -93,7 +101,7 @@ jhkSimpleCommonAddTableContents = function(targetId, targetHenkou, targetDays, t
 //      : 7 6限
 //      : 8 帰SHR
 //      : 9 7限
-jhkSimpleCommonGetHenkou = function (aDayData, koma) {
+jhkSimpleCommonGetHenkou = function (aDayData, koma, delcls) {
   let i, aKomaData,
     retStr = '',
     komaFilterF = function (koma) {
@@ -109,7 +117,11 @@ jhkSimpleCommonGetHenkou = function (aDayData, koma) {
   aKomaData = aDayData.filter(komaFilterF(koma));
 
   for (i = 0; i <= aKomaData.length-1; i++) {
-    retStr += aKomaData[i].jyugyou + aKomaData[i].teacher;
+    if (delcls != null) {
+      retStr += aKomaData[i].jyugyou + '<span class="' + delcls + '">' + aKomaData[i].teacher + '</span>';
+    } else {
+      retStr += aKomaData[i].jyugyou + aKomaData[i].teacher;
+    }
     console.log('Property:' + aKomaData[i].hasOwnProperty('teacher'));
   }
 

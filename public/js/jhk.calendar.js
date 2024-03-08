@@ -23,18 +23,20 @@ jhk.calendar = (function () {
           + '</table>',
         jyugyouClaName    : 'jhk-calendar-jyugyou',
         ediClaName          : 'jhk-calendar-edi',
+        delClaName          : 'jhk-calendar-del',
         settable_map        : {tableContentsHeight:true},
         tableContentsHeight : 0
       },
       stateMap = {
         $container : null,
         targetDays : [],
-        henkous    : []
+        henkous    : [],
+        delTarget  : {}
       },
       jqueryMap = {},
       setJqueryMap, configModule, initModule, removeCalendar,
       onPreviousWeek, onPreviousDay, onToToday, onNextDay, onNextWeek,
-      onTalbeClick, onChangeTeacherS;
+      onTalbeClick, onChangeTeacherS, setDelTarget;
       
 
   //---DOMメソッド---
@@ -59,6 +61,18 @@ jhk.calendar = (function () {
     console.log('onTalbeClick tate:' + String(tate) + ',yoko:' + String(yoko));
   }
 
+  setDelTarget = function (tate, yoko, teacher) {
+    let d = stateMap.targetDays[tate],
+      str = String(d.month) + '月' + String(d.day) + '日' + jhkSimpleCommonCelPosToKoma(yoko) + teacher + '先生';
+
+    stateMap.delTarget.year = d.year;
+    stateMap.delTarget.month = d.month;
+    stateMap.delTarget.day = d.day;
+    stateMap.delTarget.koma = yoko;
+
+    console.log(str);
+  }
+
   onPreviousWeek = function () {
     console.log('onPreviousWeek');
     return false;
@@ -80,7 +94,8 @@ jhk.calendar = (function () {
                                     jqueryMap.$selectTeacherS.val(),
                                     jhkJikanwari,
                                     configMap.jyugyouClaName,
-                                    configMap.ediClaName);
+                                    configMap.ediClaName,
+                                    configMap.delClaName);
     return false;
   }
 
@@ -105,7 +120,8 @@ jhk.calendar = (function () {
                                     jqueryMap.$selectTeacherS.val(),
                                     jhkJikanwari,
                                     configMap.jyugyouClaName,
-                                    configMap.ediClaName);
+                                    configMap.ediClaName,
+                                    configMap.delClaName);
     return false;
   }
 
@@ -124,7 +140,8 @@ jhk.calendar = (function () {
                                     jqueryMap.$selectTeacherS.val(),
                                     jhkJikanwari,
                                     configMap.jyugyouClaName,
-                                    configMap.ediClaName);
+                                    configMap.ediClaName,
+                                    configMap.delClaName);
     return false;
   }
 
@@ -180,18 +197,30 @@ jhk.calendar = (function () {
                                     null,
                                     null,
                                     null,
-                                    configMap.ediClaName);
+                                    configMap.ediClaName,
+                                    configMap.delClaName);
 
     // 重複して登録すると、何度もイベントが発行される。それを避けるため、一旦削除
     $(document).off('click');
 
     $(document).on('click', '.' + configMap.ediClaName, function (event) { // .はクラスを指定するの意味
-      let yokoIndex = this.cellIndex, // いちばん左は「○時間め」で、0始まりだから1から
-        tateIndex = $(this).closest('tr').index(); // ヘッダが２行で、0始まりだから2から
+      let yokoIndex = this.cellIndex,
+        tateIndex = $(this).closest('tr').index();
 
         if (yokoIndex != 0) { //日付のクリックは不要
           onTalbeClick(tateIndex-1, yokoIndex); // tateを日付のindexとして使えるように補正
         }
+      return false;
+    });
+
+    $(document).on('click', '.' + configMap.delClaName, function (event) { // .はクラスを指定するの意味
+      let yokoIndex = $(this).closest('td').index(),
+        tateIndex = $(this).closest('tr').index();
+
+        if (yokoIndex != 0) { //日付のクリックは不要
+          setDelTarget(tateIndex-1, yokoIndex, this.innerHTML)
+        }
+      return false; // ここでreturn falseしないとediClaNameの方も発火する
     });
 
     return true;
