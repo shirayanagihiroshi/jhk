@@ -19,9 +19,11 @@ jhk.calendar = (function () {
           + '</select>'
           + 'select:<select id="jhk-calendar-selectTeacher-select">'
           + '</select>'
-          +  '<table id="jhk-calendar-table">'
-          +  '</table>',
-        settable_map : {tableContentsHeight:true},
+          + '<table id="jhk-calendar-table">'
+          + '</table>',
+        jyugyouClaName    : 'jhk-calendar-jyugyou',
+        ediClaName          : 'jhk-calendar-edi',
+        settable_map        : {tableContentsHeight:true},
         tableContentsHeight : 0
       },
       stateMap = {
@@ -32,7 +34,7 @@ jhk.calendar = (function () {
       jqueryMap = {},
       setJqueryMap, configModule, initModule, removeCalendar,
       onPreviousWeek, onPreviousDay, onToToday, onNextDay, onNextWeek,
-      onChangeTeacherS;
+      onTalbeClick, onChangeTeacherS;
       
 
   //---DOMメソッド---
@@ -53,13 +55,32 @@ jhk.calendar = (function () {
   }
 
   //---イベントハンドラ---
-  onPreviousWeek= function () {
+  onTalbeClick = function (tate, yoko) {
+    console.log('onTalbeClick tate:' + String(tate) + ',yoko:' + String(yoko));
+  }
+
+  onPreviousWeek = function () {
     console.log('onPreviousWeek');
     return false;
   }
 
   onPreviousDay = function () {
     console.log('onPreviousDay');
+    stateMap.targetDays = jhkSimpleCommonGetTargetDays(configMap.tableContentsHeight,
+                                                       stateMap.targetDays[0].year,
+                                                       stateMap.targetDays[0].month,
+                                                       stateMap.targetDays[0].day,
+                                                       -1);
+    jhk.model.addNikka(stateMap.targetDays, jhk.model.getCalendar());
+
+    jhkSimpleCommonDeleteRowTable('jhk-calendar-table', configMap.tableContentsHeight);
+    jhkSimpleCommonAddTableContents('jhk-calendar-table',
+                                    stateMap.henkous,
+                                    stateMap.targetDays,
+                                    jqueryMap.$selectTeacherS.val(),
+                                    jhkJikanwari,
+                                    configMap.jyugyouClaName,
+                                    configMap.ediClaName);
     return false;
   }
 
@@ -70,6 +91,21 @@ jhk.calendar = (function () {
 
   onNextDay = function () {
     console.log('onNextDay');
+    stateMap.targetDays = jhkSimpleCommonGetTargetDays(configMap.tableContentsHeight,
+                                                       stateMap.targetDays[0].year,
+                                                       stateMap.targetDays[0].month,
+                                                       stateMap.targetDays[0].day,
+                                                       1);
+    jhk.model.addNikka(stateMap.targetDays, jhk.model.getCalendar());
+
+    jhkSimpleCommonDeleteRowTable('jhk-calendar-table', configMap.tableContentsHeight);
+    jhkSimpleCommonAddTableContents('jhk-calendar-table',
+                                    stateMap.henkous,
+                                    stateMap.targetDays,
+                                    jqueryMap.$selectTeacherS.val(),
+                                    jhkJikanwari,
+                                    configMap.jyugyouClaName,
+                                    configMap.ediClaName);
     return false;
   }
 
@@ -81,14 +117,14 @@ jhk.calendar = (function () {
   onChangeTeacherS = function () {
     console.log('onChangeTeacherS');
 
-jqueryMap.$selectTeacherS
     jhkSimpleCommonDeleteRowTable('jhk-calendar-table', configMap.tableContentsHeight);
     jhkSimpleCommonAddTableContents('jhk-calendar-table',
                                     stateMap.henkous,
                                     stateMap.targetDays,
                                     jqueryMap.$selectTeacherS.val(),
                                     jhkJikanwari,
-                                    'jhk-calendar-noJyugyou');
+                                    configMap.jyugyouClaName,
+                                    configMap.ediClaName);
     return false;
   }
 
@@ -140,7 +176,23 @@ jqueryMap.$selectTeacherS
     jhkSimpleCommonAddTableHeaher('jhk-calendar-table');
     jhkSimpleCommonAddTableContents('jhk-calendar-table',
                                     stateMap.henkous,
-                                    stateMap.targetDays);
+                                    stateMap.targetDays,
+                                    null,
+                                    null,
+                                    null,
+                                    configMap.ediClaName);
+
+    // 重複して登録すると、何度もイベントが発行される。それを避けるため、一旦削除
+    $(document).off('click');
+
+    $(document).on('click', '.' + configMap.ediClaName, function (event) { // .はクラスを指定するの意味
+      let yokoIndex = this.cellIndex, // いちばん左は「○時間め」で、0始まりだから1から
+        tateIndex = $(this).closest('tr').index(); // ヘッダが２行で、0始まりだから2から
+
+        if (yokoIndex != 0) { //日付のクリックは不要
+          onTalbeClick(tateIndex-1, yokoIndex); // tateを日付のindexとして使えるように補正
+        }
+    });
 
     return true;
   }

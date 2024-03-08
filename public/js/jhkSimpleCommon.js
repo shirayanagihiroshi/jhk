@@ -34,7 +34,9 @@ jhkSimpleCommonAddTableHeaher = function (targetId) {
 // targetDays   : 対象の日のリスト
 // targetteacher: 教員名(授業変更の登録のときのみ設定)
 // jikanwari    : 時間割(授業変更の登録のときのみ設定)
-jhkSimpleCommonAddTableContents = function(targetId, targetHenkou, targetDays, targetteacher=null, jikanwari=null, clsname=null) {
+// clsname      : グレーアウト用クラスの名前(授業変更の登録のときのみ設定)
+// edicls       : 編集用クラスの名前(授業変更の登録のときのみ設定)
+jhkSimpleCommonAddTableContents = function(targetId, targetHenkou, targetDays, targetteacher=null, jikanwari=null, clsname=null, edicls=null) {
   let i, j, flg, aDayData,
     dayFilterF = function (y, m, d) {
       return function (target) {
@@ -62,7 +64,7 @@ jhkSimpleCommonAddTableContents = function(targetId, targetHenkou, targetDays, t
         td.innerHTML = jhkSimpleCommonGetHenkou(aDayData, j);
       }
 
-      // 選んだ先生の授業の箇所をグレーアウト
+      // 選んだ先生の授業の箇所を目立つように
       if (targetteacher != null && jikanwari != null && clsname != null) {
         flg = jhkSimpleCommonIsJyugyou(targetteacher, jikanwari, targetDays[i].nikka, targetDays[i].youbi, j);
       } else {
@@ -70,6 +72,10 @@ jhkSimpleCommonAddTableContents = function(targetId, targetHenkou, targetDays, t
       }
       if (flg) {
         td.classList.add(clsname);
+      }
+      // クリックできるようにクラスを設定
+      if (edicls != null) {
+        td.classList.add(edicls);
       }
       tr.appendChild(td);
     }

@@ -3,13 +3,20 @@
  * 日課設定モジュール
  */
 
+.jhkSunday {
+  color : red;
+}
+.jhkSaturday {
+  color : blue;
+}
+
 #jhk-calendar-table th, #jhk-calendar-table tr, #jhk-calendar-table td {
   font-size: 16px;
   border : 1px solid black;
 }
 
-.jhk-calendar-noJyugyou {
-  background-color : #c0c0c0;
+.jhk-calendar-jyugyou {
+  background-color : #ffa500;
 }
 /*
  .skt-calendar-previousWeek, .skt-calendar-back,

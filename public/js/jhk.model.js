@@ -109,7 +109,7 @@ jhk.model = (function () {
         }
       };
 
-    for (i = 0; i < targetDays.length - 1; i++) {
+    for (i = 0; i <= targetDays.length - 1; i++) {
       idx = calendar.findIndex( f(targetDays[i].year, targetDays[i].month, targetDays[i].day) );
       if (idx != -1) {
         // 日課を設定する。これは破壊的。
