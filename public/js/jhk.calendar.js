@@ -19,10 +19,12 @@ jhk.calendar = (function () {
           + '</select>'
           +  '<table id="jhk-calendar-table">'
           +  '</table>',
-        settable_map : {}
+        settable_map : {tableContentsHeight:true},
+        tableContentsHeight : 0
       },
       stateMap = {
         $container : null,
+        targetDays : []
       },
       jqueryMap = {},
       setJqueryMap, configModule, initModule, removeCalendar,
@@ -88,6 +90,8 @@ jhk.calendar = (function () {
     stateMap.$container = $container;
     setJqueryMap();
 
+    stateMap.targetDays = jhkSimpleCommonGetTargetDays(configMap.tableContentsHeight);
+
     jqueryMap.$previousWeek
       .click( onPreviousWeek );
 
@@ -104,6 +108,9 @@ jhk.calendar = (function () {
       .click( onNextWeek );
 
     jhkSimpleCommonSetTeachersLst('jhk-calendar-selectTeacher');
+
+    jhkSimpleCommonAddTableHeaher('jhk-calendar-table');
+    jhkSimpleCommonAddTableContents('jhk-calendar-table', [], stateMap.targetDays);
 
     return true;
   }

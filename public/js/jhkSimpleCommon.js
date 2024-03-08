@@ -45,7 +45,6 @@ jhkSimpleCommonAddTableContents = function(targetId, targetJikanwari, targetDays
     let tr = document.createElement('tr');
 
     aDayData = targetJikanwari.filter(dayFilterF(targetDays[i].year, targetDays[i].month, targetDays[i].day));
-
     for(j = 0; j < 10; j++){ // ['日付', '朝HR', '1限', '2限', '3限', '4限', '5限', '6限', '帰HR', '7限']の繰返
       let td = document.createElement('td');
       if (j == 0) {
@@ -56,6 +55,7 @@ jhkSimpleCommonAddTableContents = function(targetId, targetJikanwari, targetDays
       } else {
         td.innerHTML = jhkSimpleCommonSetJikanwari(aDayData, j);
       }
+console.log('************* i:'+String(i)+' j:'+String(j) + JSON.stringify(aDayData));
       tr.appendChild(td);
     }
     tbl.appendChild(tr);
@@ -151,14 +151,14 @@ jhkSimpleCommonGetTargetDays = function (n, y, m, d, offset=0) {
 
 // 教員のリストを設定する
 jhkSimpleCommonSetTeachersLst = function(targetId) {
-  // teachers の中身はteacher.json.jsにある
+  // jhkTeachers の中身はjhkteacher.json.jsにある
   let i, teacher,
     teacherList = document.getElementById(targetId);
 
-  for (i = 0; i <= teachers.length -1; i++) {
+  for (i = 0; i <= jhkTeachers.length -1; i++) {
     teacher = document.createElement('option');
-    teacher.value = teachers[i];
-    teacher.text = teachers[i];
+    teacher.value = jhkTeachers[i];
+    teacher.text = jhkTeachers[i];
     teacherList.appendChild(teacher);
   }
 }

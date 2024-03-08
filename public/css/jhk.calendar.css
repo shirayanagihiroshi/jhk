@@ -2,6 +2,12 @@
  * jhk.calendar.css
  * 日課設定モジュール
  */
+
+#jhk-calendar-table th, #jhk-calendar-table tr, #jhk-calendar-table td {
+  font-size: 16px;
+  border : 1px solid black;
+}
+
 /*
  .skt-calendar-previousWeek, .skt-calendar-back,
  .skt-calendar-nextWeek,     .skt-calendar-notice,

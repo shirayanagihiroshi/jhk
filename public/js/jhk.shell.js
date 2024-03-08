@@ -127,7 +127,7 @@ jhk.shell = (function () {
       jhk.dialogOkCancel.removeDialog();
 
       // 設定の準備をすること
-      jhk.calendar.configModule({});
+      jhk.calendar.configModule({tableContentsHeight:14});
       jhk.calendar.initModule( jqueryMap.$main );
     }
   }

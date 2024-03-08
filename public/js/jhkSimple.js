@@ -7,7 +7,7 @@
 let toToday, nextDay, previousDay, nextWeek, previousWeek,
   changeCls, setSelectCls, changeTeacher;
 // global変数
-let targetDays, targetJikanwari;
+let targetDays, targetHenkou;
 // 定数
 const tableContentsHeight = 14; // 7日分表示
 
@@ -17,20 +17,20 @@ addEventListener('load', function(e){
   // 教員リストを準備
   jhkSimpleCommonSetTeachersLst('jhkSelectTeacher');
 
-  // 初めはすべてのデータを表示する
-  targetJikanwari = jikanwariData;
+  // 初めはすべてのデータを表示する。henkouDataはjhkSimpleData.json.jsにある。
+  targetHenkou = henkouData;
 
   // 本日から1週間分の授業変更を表示する
   targetDays = jhkSimpleCommonGetTargetDays(tableContentsHeight);
 
   jhkSimpleCommonAddTableHeaher('jhkTable');
-  jhkSimpleCommonAddTableContents('jhkTable', targetJikanwari, targetDays);
+  jhkSimpleCommonAddTableContents('jhkTable', targetHenkou, targetDays);
 });
 
 toToday = function() {
   targetDays = jhkSimpleCommonGetTargetDays(tableContentsHeight);
   jhkSimpleCommonDeleteRowTable('jhkTable', tableContentsHeight);
-  jhkSimpleCommonAddTableContents('jhkTable', targetJikanwari, targetDays);
+  jhkSimpleCommonAddTableContents('jhkTable', targetHenkou, targetDays);
 }
 
 nextDay = function() {
@@ -40,7 +40,7 @@ nextDay = function() {
                                             targetDays[0].day,
                                             1);
   jhkSimpleCommonDeleteRowTable('jhkTable', tableContentsHeight);
-  jhkSimpleCommonAddTableContents('jhkTable', targetJikanwari, targetDays);
+  jhkSimpleCommonAddTableContents('jhkTable', targetHenkou, targetDays);
 }
 
 previousDay = function() {
@@ -50,7 +50,7 @@ previousDay = function() {
                                             targetDays[0].day,
                                             -1);
   jhkSimpleCommonDeleteRowTable('jhkTable', tableContentsHeight);
-  jhkSimpleCommonAddTableContents('jhkTable', targetJikanwari, targetDays);
+  jhkSimpleCommonAddTableContents('jhkTable', targetHenkou, targetDays);
 }
 
 nextWeek = function() {
@@ -60,7 +60,7 @@ nextWeek = function() {
                                             targetDays[0].day,
                                             7);
   jhkSimpleCommonDeleteRowTable('jhkTable', tableContentsHeight);
-  jhkSimpleCommonAddTableContents('jhkTable', targetJikanwari, targetDays);
+  jhkSimpleCommonAddTableContents('jhkTable', targetHenkou, targetDays);
 }
 
 previousWeek = function() {
@@ -70,7 +70,7 @@ previousWeek = function() {
                                             targetDays[0].day,
                                             -7);
   jhkSimpleCommonDeleteRowTable('jhkTable', tableContentsHeight);
-  jhkSimpleCommonAddTableContents('jhkTable', targetJikanwari, targetDays);
+  jhkSimpleCommonAddTableContents('jhkTable', targetHenkou, targetDays);
 }
 
 changeCls = function () {
@@ -108,8 +108,8 @@ changeTeacher = function () {
   teacherList = document.getElementById('jhkSelectTeacher');
   teacherList.classList.add('listselected');
 
-  targetJikanwari = jikanwariData.filter(jhkTeacherFilterF(teacherList.value));
+  targetHenkou = jikanwariData.filter(jhkTeacherFilterF(teacherList.value));
   jhkSimpleCommonDeleteRowTable('jhkTable', tableContentsHeight);
-  jhkSimpleCommonAddTableContents('jhkTable', targetJikanwari, targetDays);
+  jhkSimpleCommonAddTableContents('jhkTable', targetHenkou, targetDays);
 }
 

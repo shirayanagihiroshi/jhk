@@ -5,8 +5,8 @@ const fs   = require('fs');
 const targetFileName = 'R05時間割_local.xlsx';  // 読み取るファイルに応じて変更が必要
 const sheetNameA     = 'R05A';                  // 読み取るファイルに応じて変更が必要
 const sheetNameB     = 'R05B';                  // 読み取るファイルに応じて変更が必要
-const jikanwariFile  = 'jhkjikanwari.json';
-const jyugyouFile    = 'jyugyou.json';
+const jikanwariFile  = 'jhkjikanwari.json.js';
+const jyugyouFile    = 'jyugyous.json.js';
 const teacherFile    = 'jhkteacher.json.js';
 
 // xlsxの読み取り
@@ -97,27 +97,10 @@ for (i = 0; i <= jyugyouListTemp2.length -1 ; i++) {
 
 
 json = JSON.stringify(jikanwariList);
-fs.writeFileSync(jikanwariFile, json);
+fs.writeFileSync('public/js/' + jikanwariFile, 'let jhkJikanwari = ' + json);
 
 json = JSON.stringify(teacherList);
-fs.writeFileSync('public/js/' + teacherFile, 'let teachers = ' + json);
+fs.writeFileSync('public/js/' + teacherFile, 'let jhkTeachers = ' + json);
 
 json = JSON.stringify(jyugyouList);
-fs.writeFileSync(jyugyouFile, json);
-
-/*
-filterf = function (user) {
-  return function (target) {
-    if ( target.teacher == user ) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-}
-
-bbb = output.filter(filterf('白栁'));
-        console.log('bbb');
-        console.log(bbb);
-
-*/
+fs.writeFileSync('public/js/' + jyugyouFile, 'let jhkJyugyous = ' + json);
