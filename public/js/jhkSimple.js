@@ -108,7 +108,12 @@ changeTeacher = function () {
   teacherList = document.getElementById('jhkSelectTeacher');
   teacherList.classList.add('listselected');
 
-  targetHenkou = henkouData.filter(jhkTeacherFilterF(teacherList.value));
+  // 先頭の'-'ならフィルターなし
+  if (teacherList.value == '-') {
+    targetHenkou = henkouData;
+  } else {
+    targetHenkou = henkouData.filter(jhkTeacherFilterF(teacherList.value));
+  }
   jhkSimpleCommonDeleteRowTable('jhkTable', tableContentsHeight);
   jhkSimpleCommonAddTableContents('jhkTable', targetHenkou, targetDays);
 }

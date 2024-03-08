@@ -219,6 +219,12 @@ jhkSimpleCommonSetTeachersLst = function(targetId) {
   let i, teacher,
     teacherList = document.getElementById(targetId);
 
+  // 先頭に'-'を追加
+  teacher = document.createElement('option');
+  teacher.value = '-';
+  teacher.text = '-';
+  teacherList.appendChild(teacher);
+
   for (i = 0; i <= jhkTeachers.length -1; i++) {
     teacher = document.createElement('option');
     teacher.value = jhkTeachers[i];
