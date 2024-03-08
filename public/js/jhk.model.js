@@ -6,7 +6,8 @@
 jhk.model = (function () {
   'use strict';
 
-  var initModule, login, logout, islogind, //モジュールスコープ変数
+  var initModule, login, logout, islogind, getCalendar,
+    addNikka, //モジュールスコープ変数
     accessKey, name, calendar;
 
   initModule = function () {
@@ -43,7 +44,6 @@ jhk.model = (function () {
     jhk.data.registerReceive('readyCalendarResult', function (msg) {
       calendar = msg.calendar;
 
-      // ログイン時にみんな行うカレンダー取得
       if (msg.clientState == 'init') {
         $.gevent.publish('loginSuccess', [{ name: name }]);
       }
@@ -93,9 +93,36 @@ jhk.model = (function () {
     return false;
   };
 
+  getCalendar = function () {
+    return calendar;
+  }
+
+  addNikka = function (targetDays, calendar) {
+    let i, idx,
+      f = function (y, m, d) {
+        return function (target) {
+          if ( target.year == y && target.month == m && target.day == d ) {
+            return true;
+          } else {
+            return false;
+          }
+        }
+      };
+
+    for (i = 0; i < targetDays.length - 1; i++) {
+      idx = calendar.findIndex( f(targetDays[i].year, targetDays[i].month, targetDays[i].day) );
+      if (idx != -1) {
+        // 日課を設定する。これは破壊的。
+        targetDays[i].nikka = calendar[idx].nikka;
+      }
+    }
+  }
+
   return { initModule      : initModule,
           login            : login,
           logout           : logout,
-          islogind         : islogind
+          islogind         : islogind,
+          getCalendar      : getCalendar,
+          addNikka         : addNikka
          };
 }());

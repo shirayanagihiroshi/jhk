@@ -6,9 +6,10 @@
 
 // 関数
 let jhkSimpleCommonAddTableHeaher, jhkSimpleCommonAddTableContents,
-  jhkSimpleCommonSetJikanwari, jhkSimpleCommonDeleteRowTable,
-  jhkSimpleCommonGetTargetDays, jhkSimpleCommonMakeDateStr,
-  jhkSimpleCommonSetTeachersLst, jhkTeacherFilterF;
+  jhkSimpleCommonGetHenkou, jhkSimpleCommonDeleteRowTable,
+  jhkSimpleCommonGetTargetDays, jhkSimpleCommonIsJyugyou,
+  jhkSimpleCommonMakeDateStr, jhkSimpleCommonSetTeachersLst,
+  jhkTeacherFilterF;
 
 // テーブルにヘッダーを追加する
 jhkSimpleCommonAddTableHeaher = function (targetId) {
@@ -28,8 +29,13 @@ jhkSimpleCommonAddTableHeaher = function (targetId) {
 }
 
 // テーブルに中身を追加する
-jhkSimpleCommonAddTableContents = function(targetId, targetJikanwari, targetDays) {
-  let i, j, aDayData,
+// targetId     : htmlにおけるテーブルのID
+// targetHenkou : 授業変更データ
+// targetDays   : 対象の日のリスト
+// targetteacher: 教員名(授業変更の登録のときのみ設定)
+// jikanwari    : 時間割(授業変更の登録のときのみ設定)
+jhkSimpleCommonAddTableContents = function(targetId, targetHenkou, targetDays, targetteacher=null, jikanwari=null, clsname=null) {
+  let i, j, flg, aDayData,
     dayFilterF = function (y, m, d) {
       return function (target) {
         if ( target.year == y && target.month == m && target.day == d) {
@@ -44,7 +50,7 @@ jhkSimpleCommonAddTableContents = function(targetId, targetJikanwari, targetDays
   for(i = 0; i <= targetDays.length - 1; i++){
     let tr = document.createElement('tr');
 
-    aDayData = targetJikanwari.filter(dayFilterF(targetDays[i].year, targetDays[i].month, targetDays[i].day));
+    aDayData = targetHenkou.filter(dayFilterF(targetDays[i].year, targetDays[i].month, targetDays[i].day));
     for(j = 0; j < 10; j++){ // ['日付', '朝HR', '1限', '2限', '3限', '4限', '5限', '6限', '帰HR', '7限']の繰返
       let td = document.createElement('td');
       if (j == 0) {
@@ -53,16 +59,25 @@ jhkSimpleCommonAddTableContents = function(targetId, targetJikanwari, targetDays
                                                   targetDays[i].day,
                                                   targetDays[i].youbi);
       } else {
-        td.innerHTML = jhkSimpleCommonSetJikanwari(aDayData, j);
+        td.innerHTML = jhkSimpleCommonGetHenkou(aDayData, j);
       }
-console.log('************* i:'+String(i)+' j:'+String(j) + JSON.stringify(aDayData));
+
+      // 選んだ先生の授業の箇所をグレーアウト
+      if (targetteacher != null && jikanwari != null && clsname != null) {
+        flg = jhkSimpleCommonIsJyugyou(targetteacher, jikanwari, targetDays[i].nikka, targetDays[i].youbi, j);
+      } else {
+        flg = false;
+      }
+      if (flg) {
+        td.classList.add(clsname);
+      }
       tr.appendChild(td);
     }
     tbl.appendChild(tr);
   }
 }
 
-// 時間割を設定する
+// 時間割変更の表示文字列を取得する
 // koma : 1 朝SHR
 //      : 2 1限
 //      : 3 2限
@@ -72,7 +87,7 @@ console.log('************* i:'+String(i)+' j:'+String(j) + JSON.stringify(aDayDa
 //      : 7 6限
 //      : 8 帰SHR
 //      : 9 7限
-jhkSimpleCommonSetJikanwari = function (aDayData, koma) {
+jhkSimpleCommonGetHenkou = function (aDayData, koma) {
   let i, aKomaData,
     retStr = '',
     komaFilterF = function (koma) {
@@ -93,6 +108,49 @@ jhkSimpleCommonSetJikanwari = function (aDayData, koma) {
   }
 
   return retStr;
+}
+
+// 授業があるかどうかの判定
+// nikka: A週or B週
+// youbi: '日'～'土'
+// k    : 1 朝SHR
+//      : 2 1限
+//      : 3 2限
+//      : 4 3限
+//      : 5 4限
+//      : 6 5限
+//      : 7 6限
+//      : 8 帰SHR
+//      : 9 7限
+jhkSimpleCommonIsJyugyou = function (targetteacher, jikanwari, nikka, youbi, k) {
+  let idx, koma, retval = false,
+    f = function (targetteacher, nikka, youbi, koma) {
+      return function (target) {
+        if ( target.teacher == targetteacher &&
+             target.nikka   == nikka         &&
+             target.youbi   == youbi         &&
+             target.koma    == koma          ) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    };
+
+  if (k >= 2 && k <= 7) {
+    koma = k - 1;
+  } else if (k == 9) {
+    koma = k - 2;
+  } else {
+    return retval;
+  }
+
+  idx = jikanwari.findIndex(f(targetteacher, nikka, youbi, koma));
+
+  if ( idx != -1 ) {
+    retval = true;
+  }
+  return retval;
 }
 
 // 日付を文字列で生成

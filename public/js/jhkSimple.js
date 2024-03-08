@@ -108,7 +108,7 @@ changeTeacher = function () {
   teacherList = document.getElementById('jhkSelectTeacher');
   teacherList.classList.add('listselected');
 
-  targetHenkou = jikanwariData.filter(jhkTeacherFilterF(teacherList.value));
+  targetHenkou = henkouData.filter(jhkTeacherFilterF(teacherList.value));
   jhkSimpleCommonDeleteRowTable('jhkTable', tableContentsHeight);
   jhkSimpleCommonAddTableContents('jhkTable', targetHenkou, targetDays);
 }

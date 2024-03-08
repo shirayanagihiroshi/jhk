@@ -13,9 +13,11 @@ jhk.calendar = (function () {
           + '<button id="jhk-calendar-toToday">今週へ</button>'
           + '<button id="jhk-calendar-nextDay">↓次の日へ</button>'
           + '<button id="jhk-calendar-nextWeek">↓↓次の週へ</button>'
-          + '<select id="jhk-calendar-selectCls"">'
+          + 'filter:<select id="jhk-calendar-selectCls"">'
           + '</select>'
-          + '<select id="jhk-calendar-selectTeacher">'
+          + 'filter:<select id="jhk-calendar-selectTeacher">'
+          + '</select>'
+          + 'select:<select id="jhk-calendar-selectTeacher-select">'
           + '</select>'
           +  '<table id="jhk-calendar-table">'
           +  '</table>',
@@ -24,11 +26,13 @@ jhk.calendar = (function () {
       },
       stateMap = {
         $container : null,
-        targetDays : []
+        targetDays : [],
+        henkous    : []
       },
       jqueryMap = {},
       setJqueryMap, configModule, initModule, removeCalendar,
-      onPreviousWeek, onPreviousDay, onToToday, onNextDay, onNextWeek;
+      onPreviousWeek, onPreviousDay, onToToday, onNextDay, onNextWeek,
+      onChangeTeacherS;
       
 
   //---DOMメソッド---
@@ -43,6 +47,7 @@ jhk.calendar = (function () {
       $nextWeek      : $container.find( '#jhk-calendar-nextWeek' ),
       $selectCls     : $container.find( '#jhk-calendar-selectCls' ),
       $selectTeacher : $container.find( '#jhk-calendar-selectTeacher' ),
+      $selectTeacherS: $container.find( '#jhk-calendar-selectTeacher-select' ),
       $table         : $container.find( '#jhk-calendar-table' )
     };
   }
@@ -73,6 +78,20 @@ jhk.calendar = (function () {
     return false;
   }
 
+  onChangeTeacherS = function () {
+    console.log('onChangeTeacherS');
+
+jqueryMap.$selectTeacherS
+    jhkSimpleCommonDeleteRowTable('jhk-calendar-table', configMap.tableContentsHeight);
+    jhkSimpleCommonAddTableContents('jhk-calendar-table',
+                                    stateMap.henkous,
+                                    stateMap.targetDays,
+                                    jqueryMap.$selectTeacherS.val(),
+                                    jhkJikanwari,
+                                    'jhk-calendar-noJyugyou');
+    return false;
+  }
+
   //---ユーティリティメソッド---
 
   //---パブリックメソッド---
@@ -91,6 +110,10 @@ jhk.calendar = (function () {
     setJqueryMap();
 
     stateMap.targetDays = jhkSimpleCommonGetTargetDays(configMap.tableContentsHeight);
+    jhk.model.addNikka(stateMap.targetDays, jhk.model.getCalendar())
+
+    // あとでDBから取るようにする
+    stateMap.henkous = henkouData;
 
     jqueryMap.$previousWeek
       .click( onPreviousWeek );
@@ -107,10 +130,17 @@ jhk.calendar = (function () {
     jqueryMap.$nextWeek
       .click( onNextWeek );
 
+    jqueryMap.$selectTeacherS
+      .change( onChangeTeacherS );
+
     jhkSimpleCommonSetTeachersLst('jhk-calendar-selectTeacher');
 
+    jhkSimpleCommonSetTeachersLst('jhk-calendar-selectTeacher-select');
+
     jhkSimpleCommonAddTableHeaher('jhk-calendar-table');
-    jhkSimpleCommonAddTableContents('jhk-calendar-table', [], stateMap.targetDays);
+    jhkSimpleCommonAddTableContents('jhk-calendar-table',
+                                    stateMap.henkous,
+                                    stateMap.targetDays);
 
     return true;
   }
@@ -126,6 +156,7 @@ jhk.calendar = (function () {
         jqueryMap.$nextWeek.remove();
         jqueryMap.$selectCls.remove();
         jqueryMap.$selectTeacher.remove();
+        jqueryMap.$selectTeacherS.remove();
         jqueryMap.$table.remove();
       }
     }
