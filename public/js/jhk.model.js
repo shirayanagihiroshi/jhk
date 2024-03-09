@@ -7,7 +7,7 @@ jhk.model = (function () {
   'use strict';
 
   var initModule, login, logout, islogind, getCalendar,
-    addNikka, //モジュールスコープ変数
+    addNikka, removeHenkou, //モジュールスコープ変数
     accessKey, name, calendar;
 
   initModule = function () {
@@ -118,11 +118,16 @@ jhk.model = (function () {
     }
   }
 
+  removeHenkou = function (year, month, day, koma, teacher) {
+    $.gevent.publish('deleteSuccess', [{ }]);
+  }
+
   return { initModule      : initModule,
           login            : login,
           logout           : logout,
           islogind         : islogind,
           getCalendar      : getCalendar,
-          addNikka         : addNikka
+          addNikka         : addNikka,
+          removeHenkou     : removeHenkou
          };
 }());

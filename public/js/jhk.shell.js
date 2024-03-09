@@ -306,6 +306,16 @@ jhk.shell = (function () {
       });
     });
 
+    // 削除成功
+    $.gevent.subscribe( $container, 'deleteSuccess', function (event, msg_map) {
+      // 削除処理をする
+
+      //仮のコード
+      changeAnchorPart({
+        status : 'matiuke'
+      });
+    });
+
     
     jhk.acct.configModule({showStr : 'ログインする'});
     jhk.acct.initModule( jqueryMap.$acct );
