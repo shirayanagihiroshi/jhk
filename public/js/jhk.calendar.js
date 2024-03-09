@@ -21,11 +21,17 @@ jhk.calendar = (function () {
           + '</select>'
           + '<table id="jhk-calendar-table">'
           + '</table>',
-        jyugyouClaName    : 'jhk-calendar-jyugyou',
+        jyugyouClaName      : 'jhk-calendar-jyugyou',
         ediClaName          : 'jhk-calendar-edi',
         delClaName          : 'jhk-calendar-del',
-        settable_map        : {tableContentsHeight:true},
-        tableContentsHeight : 0
+        settable_map        : {tableContentsHeight:true,
+                               year               :true,
+                               month              :true,
+                               day                :true},
+        tableContentsHeight : 0,
+        year                : 0,
+        month               : 0,
+        day                 : 0
       },
       stateMap = {
         $container : null,
@@ -34,7 +40,8 @@ jhk.calendar = (function () {
         delTarget  : {}
       },
       jqueryMap = {},
-      setJqueryMap, configModule, initModule, removeCalendar,
+      setJqueryMap, configModule, initModule, removeCalendar, removeHenkou,
+      getDispTarget,
       onPreviousWeek, onPreviousDay, onToToday, onNextDay, onNextWeek,
       onTalbeClick, onChangeTeacherS, setDelTarget;
       
@@ -62,15 +69,20 @@ jhk.calendar = (function () {
   }
 
   setDelTarget = function (tate, yoko, teacher) {
+    const dayOfWeek = ['日','月','火','水','木','金','土'];
     let d = stateMap.targetDays[tate],
-      str = String(d.month) + '月' + String(d.day) + '日' + jhkSimpleCommonCelPosToKoma(yoko) + teacher + '先生';
+      str = String(d.month) + '月' + String(d.day) + '日(' + dayOfWeek[d.youbi] + ')'
+            + jhkSimpleCommonCelPosToKoma(yoko) + teacher + '先生';
 
-    stateMap.delTarget.year = d.year;
-    stateMap.delTarget.month = d.month;
-    stateMap.delTarget.day = d.day;
-    stateMap.delTarget.koma = yoko;
+    stateMap.delTarget.year    = d.year;
+    stateMap.delTarget.month   = d.month;
+    stateMap.delTarget.day     = d.day;
+    stateMap.delTarget.koma    = yoko;
+    stateMap.delTarget.teacher = teacher;
 
     console.log(str);
+    $.gevent.publish('verifyDelete', [{dialogStr:str + 'の変更を削除しますか？'}]);
+
   }
 
   onPreviousWeek = function () {
@@ -162,7 +174,14 @@ jhk.calendar = (function () {
     stateMap.$container = $container;
     setJqueryMap();
 
-    stateMap.targetDays = jhkSimpleCommonGetTargetDays(configMap.tableContentsHeight);
+    if (configMap.year != 0) {
+      stateMap.targetDays = jhkSimpleCommonGetTargetDays(configMap.tableContentsHeight,
+                                                         configMap.year,
+                                                         configMap.month,
+                                                         configMap.day);
+    } else {
+      stateMap.targetDays = jhkSimpleCommonGetTargetDays(configMap.tableContentsHeight);
+    }
     jhk.model.addNikka(stateMap.targetDays, jhk.model.getCalendar())
 
     // あとでDBから取るようにする
@@ -244,9 +263,27 @@ jhk.calendar = (function () {
     return true;
   }
 
+  // ダイアログから戻るときに、元の範囲を表示するためにshellが参照する。
+  getDispTarget = function () {
+    let obj = {year  : stateMap.targetDays[0].year,
+               month : stateMap.targetDays[0].month,
+               day   : stateMap.targetDays[0].day};
+    return obj;
+  }
+
+  removeHenkou = function () {
+    jhk.model.removeHenkou(stateMap.delTarget.year,
+                           stateMap.delTarget.month,
+                           stateMap.delTarget.day,
+                           stateMap.delTarget.koma,
+                           stateMap.delTarget.teacher);
+  }
+
   return {
     configModule  : configModule,
     initModule    : initModule,
-    removeCalendar: removeCalendar
+    removeCalendar: removeCalendar,
+    getDispTarget : getDispTarget,
+    removeHenkou  : removeHenkou
   };
 }());

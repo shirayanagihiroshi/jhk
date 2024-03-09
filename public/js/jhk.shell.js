@@ -14,6 +14,8 @@ jhk.shell = (function () {
       _status : {
         dialogKind : { login          : true,  // status : dialog のとき使用
                        logout         : true,  // status : dialog のとき使用
+                       verifyDelete   : true,  // status : dialog のとき使用
+
                        invalid        : true,  // status : dialog のとき使用
                        verify         : true,  // status : dialog のとき使用
                        verifydel      : true,  // status : dialog のとき使用
@@ -39,8 +41,11 @@ jhk.shell = (function () {
     stateMap = {
       $container : null,
       anchor_map : {},
-      errStr     : ""    // エラーダイアログで表示する文言を一時的に保持。
-                         // ここになきゃいけない情報でないので良い場所を見つけたら移す
+      dialogStr     : "",   // ダイアログで表示する文言を一時的に保持。
+                            // ここになきゃいけない情報でないので良い場所を見つけたら移す
+      calendarYear  : 0,    // ダイアログ表示のあと同じ範囲の日を表示するために保持
+      calendarMonth : 0,
+      calendarDay   : 0
     },
     jqueryMap = {},
     copyAnchorMap, changeAnchorPart, onHashchange, setModal,
@@ -111,10 +116,18 @@ jhk.shell = (function () {
         setModal(true);
         jhk.dialog.configModule({});
         jhk.dialog.initModule( jqueryMap.$container );
+
       } else if ( anchor_map._status.dialogKind == 'logout' ) {
         setModal(true);
         jhk.dialogOkCancel.configModule({showStr : 'ログアウトしますか？',
                                          okFunc  : jhk.model.logout,
+                                         okStr   : 'ok'});
+        jhk.dialogOkCancel.initModule( jqueryMap.$container );
+
+      } else if ( anchor_map._status.dialogKind == 'verifyDelete' ) {
+        setModal(true);
+        jhk.dialogOkCancel.configModule({showStr : stateMap.dialogStr,
+                                         okFunc  : jhk.calendar.removeHenkou,
                                          okStr   : 'ok'});
         jhk.dialogOkCancel.initModule( jqueryMap.$container );
       }
@@ -127,7 +140,10 @@ jhk.shell = (function () {
       jhk.dialogOkCancel.removeDialog();
 
       // 設定の準備をすること
-      jhk.calendar.configModule({tableContentsHeight:14});
+      jhk.calendar.configModule({tableContentsHeight : 14,
+                                 year                : stateMap.calendarYear,
+                                 month               : stateMap.calendarMonth,
+                                 day                 : stateMap.calendarDay});
       jhk.calendar.initModule( jqueryMap.$main );
     }
   }
@@ -273,6 +289,21 @@ jhk.shell = (function () {
     // ログアウト失敗
     $.gevent.subscribe( $container, 'logoutFailure', function (event, msg_map) {
       //どうする？
+    });
+
+    // 授業変更削除確認画面
+    $.gevent.subscribe( $container, 'verifyDelete', function (event, msg_map) {
+      let obj = jhk.calendar.getDispTarget();
+      stateMap.calendarYear  = obj.year;
+      stateMap.calendarMonth = obj.month;
+      stateMap.calendarDay   = obj.day;
+      stateMap.dialogStr = msg_map.dialogStr;
+      changeAnchorPart({
+        status : 'dialog',
+        _status : {
+          dialogKind  : 'verifyDelete'
+        }
+      });
     });
 
     
