@@ -33,10 +33,19 @@ jhk.shell = (function () {
     main_html : String()
       + '<div class="jhk-shell-head">'
         + '<div class="jhk-shell-head-title"></div>'
+        + '<label for="jhk-input-mode" class="jhk-input-mode-toggle">'
+          + '<input type="checkbox" id="jhk-input-mode" >'
+          + '<div class="jhk-toggle-base"></div>'
+          + '<div class="jhk-toggle-circle"></div>'
+          + '<div class="jhk-input-mode-title"></div>'
+        + '</label>'
         + '<button class="jhk-shell-head-acct"></button>'
       + '</div>'
       + '<div class="jhk-shell-main">'
-      + '</div>'
+      + '</div>',
+    toggleColorOn  : 'blue', // cssを変えることで色を変えているので値を持っておかないとだめ
+    toggleColorOff : 'gray',
+    toggleMoveTime : 200     // トグルスイッチの移動に要する時間。ミリ秒
     },
     stateMap = {
       $container : null,
@@ -45,20 +54,25 @@ jhk.shell = (function () {
                             // ここになきゃいけない情報でないので良い場所を見つけたら移す
       calendarYear  : 0,    // ダイアログ表示のあと同じ範囲の日を表示するために保持
       calendarMonth : 0,
-      calendarDay   : 0
+      calendarDay   : 0,
+      mode          : ""    // 'irekae' or 'freeformat'
     },
     jqueryMap = {},
-    copyAnchorMap, changeAnchorPart, onHashchange, setModal,
+    copyAnchorMap, changeAnchorPart, onHashchange, setModal, onToggle,
     setJqueryMap, initModule, stateCtl;
 
   //---DOMメソッド---
   setJqueryMap = function () {
     var $container = stateMap.$container;
     jqueryMap = {
-      $container : $container,
-      $title     : $container.find( '.jhk-shell-head-title' ),
-      $acct      : $container.find( '.jhk-shell-head-acct' ),
-      $main      : $container.find( '.jhk-shell-main' )
+      $container    : $container,
+      $title        : $container.find( '.jhk-shell-head-title' ),
+      $toggleLabel  : $container.find( '.jhk-input-mode-toggle' ),
+      $toggleTitle  : $container.find( '.jhk-input-mode-title' ),
+      $toggleCircle : $container.find( '.jhk-toggle-circle' ),
+      $toggle       : $container.find( '#jhk-input-mode' ),
+      $acct         : $container.find( '.jhk-shell-head-acct' ),
+      $main         : $container.find( '.jhk-shell-main' )
     };
   }
 
@@ -211,8 +225,31 @@ jhk.shell = (function () {
     jqueryMap.$main.css('pointer-events', setModalconfig);
   }
 
+  onToggle = function () {
+    let mode = jqueryMap.$toggle.prop('checked');
+/*      obj = { year  : configMap.targetYear,
+              month : configMap.targetMonth,
+              day   : configMap.targetDay,
+              koma  : configMap.koma,
+              jyugyouId : configMap.jyugyouId,
+              mode  : "" };
+*/
+    // 自由入力モードなら
+    if ( mode == true ) {
+      stateMap.mode = 'freeformat';
+
+    // 入れ替えなら
+    } else {
+      stateMap.mode = 'irekae';
+    }
+
+    console.log('onToggle' + String(mode));
+    //$.gevent.publish('kekkaInput', [obj]);
+  }
+
   //---パブリックメソッド---
   initModule = function ( $container ) {
+    let tLetf, tWidth, onPos; // トグル関連
 
     stateMap.$container = $container; //ここで渡されるのはjhk全体
     $container.html( configMap.main_html );
@@ -315,6 +352,56 @@ jhk.shell = (function () {
         status : 'matiuke'
       });
     });
+
+    // トグルボタン、登録ボタンの設定
+    stateMap.mode = 'irekae';
+    tLetf = jhk.util.getStyleSheetValue('.jhk-toggle-circle', 'left');
+    tWidth = jhk.util.getStyleSheetValue('.jhk-toggle-circle', 'width');
+    // pxを除いて足して、またpxをつける
+    onPos  = String (Number(tLetf.slice(0, -2)) + Number(tWidth.slice(0, -2))) + 'px';
+    if ( configMap.mode == 'irekae' ) {
+      jqueryMap.$leak.show();
+      jqueryMap.$toggle.prop('checked', false); // チェックボックスの設定
+      jqueryMap.$toggleTitle.html('通常モード');
+      jqueryMap.$toggleCircle.css({'left': tLetf});
+      jqueryMap.$toggleCircle.css({'backgroundColor': configMap.toggleColorOff});
+
+      jqueryMap.$update.show();
+    } else if ( configMap.mode == 'studentmemo' ) {
+      jqueryMap.$leak.hide();
+      jqueryMap.$toggle.prop('checked', true);  // チェックボックスの設定
+      jqueryMap.$toggleTitle.html('生徒の様子メモ表示');
+      jqueryMap.$toggleCircle.css({'left': onPos});
+      jqueryMap.$toggleCircle.css({'backgroundColor': configMap.toggleColorOn});
+
+      jqueryMap.$update.hide();
+    }
+
+    jqueryMap.$toggle
+      .click( function () {
+        let moveWidth, backGroundColor,
+          // configMapに持たせようとしたけど、全体の初期化のタイミングでは
+          // まだcssが取れないみたいだったのであきらめてここで取得。
+          toggleMoveWidth = jhk.util.getStyleSheetValue('.jhk-toggle-circle', 'width');
+
+        if ( configMap.mode == 'irekae' ) {
+          moveWidth       = '+=' + toggleMoveWidth;
+          backGroundColor = configMap.toggleColorOn;
+        } else {
+          moveWidth       = '-=' + toggleMoveWidth;
+          backGroundColor = configMap.toggleColorOff;
+        }
+
+        // アニメーションが終わったら、onToggle()が呼ばれる。
+        jqueryMap.$toggleCircle.stop().animate({
+          'left': moveWidth,
+          'backgroundColor': backGroundColor
+        }, configMap.toggleMoveTime, function () {
+          onToggle();
+        });
+
+      });
+
 
     
     jhk.acct.configModule({showStr : 'ログインする'});

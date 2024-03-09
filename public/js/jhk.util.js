@@ -13,13 +13,14 @@ jhk.util = (function () {
   'use strict';
 
   var makeError, setConfigMap,
+    getStyleSheetValue,
   
       isEmpty, makeDateStr, getWeek,
       getDayOfCalendar, getPreviousBusinessDay, getNextBusinessDay,
       daySelectf, komaSelectf, komaSelectFromDayf, jyugyouSelectf,
       studentSelectf, sortCalendarf, sortKekkaf,
       kekkaStudentSelectf, clsSelectf, dayAndStudentSelectf,
-      nengappiAndJyugyouIdSelect, getStyleSheetValue;
+      nengappiAndJyugyouIdSelect;
 
   // パブリックコンストラクタ/makeError/
   makeError = function ( name_text, msg_text, data ) {
@@ -54,6 +55,24 @@ jhk.util = (function () {
       }
     }
   };
+
+  // クラス名とプロパティ名を指定して、外部CSSで設定してある値を参照する。
+  getStyleSheetValue = function (clsName, propertyName) {
+    let retValue = null;
+
+    if (clsName != "" && propertyName != "") {
+      let container, style;
+
+      container = document.querySelector(clsName);
+
+      if (container != null) {
+        style = window.getComputedStyle(container);
+        retValue = style.getPropertyValue(propertyName);
+      }
+    }
+
+    return retValue;
+  }
 
 /*
   // オブジェクトが空かどうか判定
@@ -343,27 +362,11 @@ jhk.util = (function () {
     return obj;
   }
 
-  // クラス名とプロパティ名を指定して、外部CSSで設定してある値を参照する。
-  getStyleSheetValue = function (clsName, propertyName) {
-    let retValue = null;
-
-    if (clsName != "" && propertyName != "") {
-      let container, style;
-
-      container = document.querySelector(clsName);
-
-      if (container != null) {
-        style = window.getComputedStyle(container);
-        retValue = style.getPropertyValue(propertyName);
-      }
-    }
-
-    return retValue;
-  }
 */
   return {
-    makeError      : makeError,
-    setConfigMap   : setConfigMap,
+    makeError          : makeError,
+    setConfigMap       : setConfigMap,
+    getStyleSheetValue : getStyleSheetValue
       /*
     isEmpty      : isEmpty
     makeDateStr  : makeDateStr,
@@ -382,7 +385,6 @@ jhk.util = (function () {
     dayAndStudentSelectf   : dayAndStudentSelectf,
     sortKekkaf             : sortKekkaf,
     nengappiAndJyugyouIdSelect : nengappiAndJyugyouIdSelect,
-    getStyleSheetValue     : getStyleSheetValue
     */
   };
 }());
