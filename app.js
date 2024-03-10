@@ -100,51 +100,29 @@ io.on("connection", function (socket) {
     });
   });
 
-  socket.on('updateReserve', function (msg) {
-    /*
-    let i;
-    console.log("* * updateReserve * *");
-    console.log("gakunen:" + msg.syukketsuData.gakunen);
-    console.log("cls:"     + msg.syukketsuData.cls);
-    console.log("month:"   + msg.syukketsuData.month);
-    console.log("day:"     + msg.syukketsuData.day);
-    console.log("member:");
-    for (i = 0; i < msg.syukketsuData.member.length; i++) {
-      console.log(msg.syukketsuData.member[i]);
-    }*/
-
-    db.findManyDocuments('yoyaku_user', {userId:msg.AKey.userId}, {projection:{_id:0}}, function (result) {
+  socket.on('readyHenkou', function (msg) {
+    db.findManyDocuments('user', {userId:msg.AKey.userId}, {projection:{_id:0}}, function (result) {
       // ログイン中のユーザにのみ回答
       if (result.length != 0 && msg.AKey.token == result[0].token ) {
-        // 同じ枠に対する登録は許さない。
-        db.findManyDocuments('yoyaku_reserve', {cls:msg.cls, reserveTarget:msg.reserveTarget}, {projection:{_id:0}}, function (resultCyoufukuchk) {
-          if (resultCyoufukuchk.length != 0) {
-            console.log("reserve already exist");
-            io.to(socket.id).emit('updateReserveFailure', {}); // 送信者のみに送信
-          } else {
-
-            db.findManyDocuments('yoyaku_waku', {cls:msg.cls}, {projection:{_id:0}}, function (resKigenCheck) {
-              // 機能が有効なら登録する
-              if (resKigenCheck[0].nowusable == true) {
-                db.updateDocument('yoyaku_reserve',
-                                  {cls           : msg.cls,
-                                   reserveTarget : msg.reserveTarget,
-                                   userId        : msg.userId},
-                                  {$set : {cls           : msg.cls,
-                                           reserveTarget : msg.reserveTarget,
-                                           userId        : msg.userId,
-                                           name          : msg.name}}, function (res) {
-                  io.to(socket.id).emit('updateReserveSuccess', res); // 送信者のみに送信
-                });
-              // 機能が無効なら失敗とする
-              } else {
-                io.to(socket.id).emit('updateReserveFailure', {}); // 送信者のみに送信
-              }
-            });
-          }
+        db.findManyDocuments('jhkdatas', {}, {projection:{_id:0}}, function (res) {
+            let obj = {datas:res, clientState:msg.clientState};
+            io.to(socket.id).emit('readyHenkouSuccess', obj); // 送信者のみに送信
         });
       } else {
-        io.to(socket.id).emit('anotherLogin', {}); // 送信者のみに送信
+        io.to(socket.id).emit('getHenkouFailure', {}); // 送信者のみに送信
+      }
+    });
+  });
+
+  socket.on('addHenkou', function (msg) {
+    db.findManyDocuments('user', {userId:msg.AKey.userId}, {projection:{_id:0}}, function (result) {
+      // ログイン中のユーザにのみ回答
+      if (result.length != 0 && msg.AKey.token == result[0].token ) {
+        db.insertManyDocuments('jhkdatas', msg.datas, function (result) {
+          io.to(socket.id).emit('addHenkouSuccess', result); // 送信者のみに送信
+        });
+      } else {
+        io.to(socket.id).emit('addHenkouFailure', res); // 送信者のみに送信
       }
     });
   });

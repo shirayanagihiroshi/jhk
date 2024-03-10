@@ -42,8 +42,8 @@ jhk.calendar = (function () {
         temphenkouTarget  : null    // 入れ替えモードで使用。ここと次に選ぶところを入れ替える。
       },
       jqueryMap = {},
-      setJqueryMap, configModule, initModule, removeCalendar, removeHenkou,
-      getDispTarget, kouhoCancel,
+      setJqueryMap, configModule, initModule, removeCalendar, addChange, 
+      removeHenkou, getDispTarget, kouhoCancel, tableRedraw,
       onPreviousWeek, onPreviousDay, onToToday, onNextDay, onNextWeek,
       onTalbeClick, onChangeTeacherS, setDelTarget, getClsOfJyugyou ;
       
@@ -268,8 +268,7 @@ jhk.calendar = (function () {
     }
     jhk.model.addNikka(stateMap.targetDays, jhk.model.getCalendar())
 
-    // あとでDBから取るようにする
-    stateMap.henkous = henkouData;
+    stateMap.henkous = jhk.model.getHenkou();
 
     jqueryMap.$previousWeek
       .click( onPreviousWeek );
@@ -302,7 +301,7 @@ jhk.calendar = (function () {
                                     null,
                                     configMap.ediClaName,
                                     configMap.delClaName,
-                                    null);
+                                    stateMap.temphenkouTarget);
 
     // 重複して登録すると、何度もイベントが発行される。それを避けるため、一旦削除
     $(document).off('click');
@@ -330,7 +329,8 @@ jhk.calendar = (function () {
     $(document).on('click', '.jhkKouho', function (event) {
       //候補はクリックしたらキャンセル
       kouhoCancel();
-      return false; // ここでreturn falseしないとediClaNameの方も発火する
+      tableRedraw();
+      return false;
     });
 
     return true;
@@ -363,6 +363,10 @@ jhk.calendar = (function () {
     return obj;
   }
 
+  addChange = function () {
+    jhk.model.addHenkou(stateMap.addTarget);
+  }
+
   removeHenkou = function () {
     jhk.model.removeHenkou(stateMap.delTarget.year,
                            stateMap.delTarget.month,
@@ -374,6 +378,11 @@ jhk.calendar = (function () {
   // 入れ替え候補を設定中にモードを変えたら、候補はキャンセルする。
   kouhoCancel = function () {
     stateMap.temphenkouTarget = null;
+    stateMap.addTarget.length = 0; // これで配列を[]にできる。
+    stateMap.addTarget.delTarget = {}
+  }
+
+  tableRedraw = function () {
     jhkSimpleCommonDeleteRowTable('jhk-calendar-table', configMap.tableContentsHeight);
     jhkSimpleCommonAddTableContents('jhk-calendar-table',
                                     stateMap.henkous,
@@ -391,7 +400,9 @@ jhk.calendar = (function () {
     initModule    : initModule,
     removeCalendar: removeCalendar,
     getDispTarget : getDispTarget,
+    addChange     : addChange,
     removeHenkou  : removeHenkou,
-    kouhoCancel   : kouhoCancel
+    kouhoCancel   : kouhoCancel,
+    tableRedraw   : tableRedraw
   };
 }());

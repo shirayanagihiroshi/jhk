@@ -7,13 +7,14 @@ jhk.model = (function () {
   'use strict';
 
   var initModule, login, logout, islogind, getCalendar,
-    addNikka, removeHenkou, //モジュールスコープ変数
-    accessKey, name, calendar;
+    addNikka, getHenkou, addHenkou, removeHenkou, //モジュールスコープ変数
+    accessKey, name, henkou, calendar;
 
   initModule = function () {
 
     accessKey   = {};
     name        = "";
+    henkou      = [];
     calendar    = {};
 
     jhk.data.initModule();
@@ -45,8 +46,28 @@ jhk.model = (function () {
       calendar = msg.calendar;
 
       if (msg.clientState == 'init') {
-        $.gevent.publish('loginSuccess', [{ name: name }]);
+        jhk.data.sendToServer('readyHenkou',{AKey : accessKey,
+                                             clientState : 'init'});
       }
+    });
+
+    // 授業変更データ取得完了
+    jhk.data.registerReceive('readyHenkouSuccess', function (msg) {
+      henkou = msg.datas;
+
+      if (msg.clientState == 'init') {
+        $.gevent.publish('loginSuccess', [{ name: name }]);
+      } else if (msg.clientState == 'afterAdd')  {
+        // 登録用データは削除
+        jhk.calendar.kouhoCancel();
+        $.gevent.publish('addHenkouSuccess', [{ name: name }]);
+      }
+    });
+
+    // 登録完了
+    jhk.data.registerReceive('addHenkouSuccess', function (msg) {
+      jhk.data.sendToServer('readyHenkou',{AKey : accessKey,
+                                           clientState : 'afterAdd'});
     });
 
     jhk.data.registerReceive('logoutResult', function (msg) {
@@ -58,6 +79,7 @@ jhk.model = (function () {
         // 初期化
         accessKey   = {};
         name        = "";
+        henkou      = [];
         calendar    = {};
       // ログアウト失敗
       } else {
@@ -118,6 +140,16 @@ jhk.model = (function () {
     }
   }
 
+  getHenkou = function () {
+    return henkou;
+  }
+
+  addHenkou = function (arr) {
+    jhk.data.sendToServer('addHenkou',{AKey : accessKey,
+                                       clientState : 'nouse',
+                                       datas : arr});
+  }
+
   removeHenkou = function (year, month, day, koma, teacher) {
     $.gevent.publish('deleteSuccess', [{ }]);
   }
@@ -128,6 +160,8 @@ jhk.model = (function () {
           islogind         : islogind,
           getCalendar      : getCalendar,
           addNikka         : addNikka,
+          getHenkou        : getHenkou,
+          addHenkou        : addHenkou,
           removeHenkou     : removeHenkou
          };
 }());

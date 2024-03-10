@@ -144,7 +144,7 @@ jhk.shell = (function () {
       } else if ( anchor_map._status.dialogKind == 'verifyChange' ) {
         setModal(true);
         jhk.dialogOkCancel.configModule({showStr : stateMap.dialogStr,
-                                         okFunc  : jhk.calendar.removeHenkou,//あとで変更
+                                         okFunc  : jhk.calendar.addChange,
                                          okStr   : 'ok'});
         jhk.dialogOkCancel.initModule( jqueryMap.$container );
 
@@ -259,6 +259,7 @@ jhk.shell = (function () {
 
     // 入れ替え候補はキャンセルする
     jhk.calendar.kouhoCancel();
+    jhk.calendar.tableRedraw();
   }
 
   //---パブリックメソッド---
@@ -349,6 +350,13 @@ jhk.shell = (function () {
     // ログアウト失敗
     $.gevent.subscribe( $container, 'logoutFailure', function (event, msg_map) {
       //どうする？
+    });
+
+    // データ追加後のデータ取得完了
+    $.gevent.subscribe( $container, 'addHenkouSuccess', function (event, msg_map) {
+      changeAnchorPart({
+        status : 'matiuke'
+      });
     });
 
     // 授業変更（入れ替え）確認画面
