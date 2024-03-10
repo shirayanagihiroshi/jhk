@@ -8,7 +8,8 @@ jhk.shell = (function () {
   //---モジュールスコープ変数---
   var configMap = {
     anchor_schema_map : {
-      status : {matiuke         : true,
+      status : {nologined       : true,
+                matiuke         : true,
                 dialog          : true
               },
       _status : {
@@ -146,6 +147,15 @@ jhk.shell = (function () {
         jhk.dialogOkCancel.initModule( jqueryMap.$container );
       }
 
+    // 未ログイン画面の場合
+    } else if ( anchor_map.status == 'nologined' ) {
+
+      setModal(false);
+      jhk.dialog.removeDialog();
+      jhk.dialogOkCancel.removeDialog();
+
+      jhk.calendar.removeCalendar();
+
     // 待ち受け画面の場合
     } else if ( anchor_map.status == 'matiuke' ) {
 
@@ -237,10 +247,11 @@ jhk.shell = (function () {
     // 自由入力モードなら
     if ( mode == true ) {
       stateMap.mode = 'freeformat';
-
+      jqueryMap.$toggleTitle.html('自由入力モード');
     // 入れ替えなら
     } else {
       stateMap.mode = 'irekae';
+      jqueryMap.$toggleTitle.html('入れ替えモード');
     }
 
     console.log('onToggle' + String(mode));
@@ -261,6 +272,8 @@ jhk.shell = (function () {
     });
 
     jqueryMap.$title.html( '授業変更を設定する' );
+    stateMap.mode = 'irekae';
+    jqueryMap.$toggleTitle.html( '入れ替えモード' );
 
     // 以降、各種イベント処理の登録
     // ダイアログ消去
@@ -353,30 +366,6 @@ jhk.shell = (function () {
       });
     });
 
-    // トグルボタン、登録ボタンの設定
-    stateMap.mode = 'irekae';
-    tLetf = jhk.util.getStyleSheetValue('.jhk-toggle-circle', 'left');
-    tWidth = jhk.util.getStyleSheetValue('.jhk-toggle-circle', 'width');
-    // pxを除いて足して、またpxをつける
-    onPos  = String (Number(tLetf.slice(0, -2)) + Number(tWidth.slice(0, -2))) + 'px';
-    if ( configMap.mode == 'irekae' ) {
-      jqueryMap.$leak.show();
-      jqueryMap.$toggle.prop('checked', false); // チェックボックスの設定
-      jqueryMap.$toggleTitle.html('通常モード');
-      jqueryMap.$toggleCircle.css({'left': tLetf});
-      jqueryMap.$toggleCircle.css({'backgroundColor': configMap.toggleColorOff});
-
-      jqueryMap.$update.show();
-    } else if ( configMap.mode == 'studentmemo' ) {
-      jqueryMap.$leak.hide();
-      jqueryMap.$toggle.prop('checked', true);  // チェックボックスの設定
-      jqueryMap.$toggleTitle.html('生徒の様子メモ表示');
-      jqueryMap.$toggleCircle.css({'left': onPos});
-      jqueryMap.$toggleCircle.css({'backgroundColor': configMap.toggleColorOn});
-
-      jqueryMap.$update.hide();
-    }
-
     jqueryMap.$toggle
       .click( function () {
         let moveWidth, backGroundColor,
@@ -384,7 +373,7 @@ jhk.shell = (function () {
           // まだcssが取れないみたいだったのであきらめてここで取得。
           toggleMoveWidth = jhk.util.getStyleSheetValue('.jhk-toggle-circle', 'width');
 
-        if ( configMap.mode == 'irekae' ) {
+        if ( stateMap.mode == 'irekae' ) {
           moveWidth       = '+=' + toggleMoveWidth;
           backGroundColor = configMap.toggleColorOn;
         } else {
@@ -401,7 +390,6 @@ jhk.shell = (function () {
         });
 
       });
-
 
     
     jhk.acct.configModule({showStr : 'ログインする'});

@@ -88,6 +88,7 @@ input[type='checkbox'] {
   top   :  2px;
   left  : 55px;
   width : 150px;
+  height: 30px;
 }
 
 .jhk-toggle-base {
