@@ -37,13 +37,15 @@ jhk.calendar = (function () {
         $container : null,
         targetDays : [],
         henkous    : [],
-        delTarget  : {}
+        addTarget  : [],
+        delTarget  : {},
+        temphenkouTarget  : null    // 入れ替えモードで使用。ここと次に選ぶところを入れ替える。
       },
       jqueryMap = {},
       setJqueryMap, configModule, initModule, removeCalendar, removeHenkou,
-      getDispTarget,
+      getDispTarget, kouhoCancel,
       onPreviousWeek, onPreviousDay, onToToday, onNextDay, onNextWeek,
-      onTalbeClick, onChangeTeacherS, setDelTarget;
+      onTalbeClick, onChangeTeacherS, setDelTarget ;
       
 
   //---DOMメソッド---
@@ -66,6 +68,44 @@ jhk.calendar = (function () {
 
   //---イベントハンドラ---
   onTalbeClick = function (tate, yoko) {
+    let mode = jhk.shell.getMode();
+
+    // 入れ替えモードのとき
+    if (mode == 'irekae') {
+      // select:で'-'を選んでいたら無視
+      if (jqueryMap.$selectTeacherS.val() != '-') {
+        // まだ入れ替え候補を1人も選んでいなければ、
+        // temphenkouTargetに保持して、表に名前を表示する
+        if (stateMap.temphenkouTarget == null) {
+          let d = stateMap.targetDays[tate],
+            obj = {year    : d.year,
+                   month   : d.month,
+                   day     : d.day,
+                   koma    : yoko,
+                   teacher : jqueryMap.$selectTeacherS.val()};
+
+          stateMap.temphenkouTarget = obj;
+
+          jhkSimpleCommonDeleteRowTable('jhk-calendar-table', configMap.tableContentsHeight);
+          jhkSimpleCommonAddTableContents('jhk-calendar-table',
+                                          stateMap.henkous,
+                                          stateMap.targetDays,
+                                          jqueryMap.$selectTeacherS.val(),
+                                          jhkJikanwari,
+                                          configMap.jyugyouClaName,
+                                          configMap.ediClaName,
+                                          configMap.delClaName,
+                                          stateMap.temphenkouTarget);
+        // 既に入れ替え候補を1人選んでいれば
+        // 確認ダイアログへ
+        } else {
+
+        }
+      }
+
+    } else {
+
+    }
     console.log('onTalbeClick tate:' + String(tate) + ',yoko:' + String(yoko));
   }
 
@@ -108,7 +148,8 @@ jhk.calendar = (function () {
                                     jhkJikanwari,
                                     configMap.jyugyouClaName,
                                     configMap.ediClaName,
-                                    configMap.delClaName);
+                                    configMap.delClaName,
+                                    stateMap.temphenkouTarget);
     return false;
   }
 
@@ -134,7 +175,8 @@ jhk.calendar = (function () {
                                     jhkJikanwari,
                                     configMap.jyugyouClaName,
                                     configMap.ediClaName,
-                                    configMap.delClaName);
+                                    configMap.delClaName,
+                                    stateMap.temphenkouTarget);
     return false;
   }
 
@@ -154,7 +196,8 @@ jhk.calendar = (function () {
                                     jhkJikanwari,
                                     configMap.jyugyouClaName,
                                     configMap.ediClaName,
-                                    configMap.delClaName);
+                                    configMap.delClaName,
+                                    stateMap.temphenkouTarget);
     return false;
   }
 
@@ -218,7 +261,8 @@ jhk.calendar = (function () {
                                     null,
                                     null,
                                     configMap.ediClaName,
-                                    configMap.delClaName);
+                                    configMap.delClaName,
+                                    null);
 
     // 重複して登録すると、何度もイベントが発行される。それを避けるため、一旦削除
     $(document).off('click');
@@ -240,6 +284,12 @@ jhk.calendar = (function () {
         if (yokoIndex != 0) { //日付のクリックは不要
           setDelTarget(tateIndex-1, yokoIndex, this.innerHTML)
         }
+      return false; // ここでreturn falseしないとediClaNameの方も発火する
+    });
+
+    $(document).on('click', '.jhkKouho', function (event) {
+      //候補はクリックしたらキャンセル
+      kouhoCancel();
       return false; // ここでreturn falseしないとediClaNameの方も発火する
     });
 
@@ -281,11 +331,27 @@ jhk.calendar = (function () {
                            stateMap.delTarget.teacher);
   }
 
+  // 入れ替え候補を設定中にモードを変えたら、候補はキャンセルする。
+  kouhoCancel = function () {
+    stateMap.temphenkouTarget = null;
+    jhkSimpleCommonDeleteRowTable('jhk-calendar-table', configMap.tableContentsHeight);
+    jhkSimpleCommonAddTableContents('jhk-calendar-table',
+                                    stateMap.henkous,
+                                    stateMap.targetDays,
+                                    jqueryMap.$selectTeacherS.val(),
+                                    jhkJikanwari,
+                                    configMap.jyugyouClaName,
+                                    configMap.ediClaName,
+                                    configMap.delClaName,
+                                    stateMap.temphenkouTarget);
+  }
+
   return {
     configModule  : configModule,
     initModule    : initModule,
     removeCalendar: removeCalendar,
     getDispTarget : getDispTarget,
-    removeHenkou  : removeHenkou
+    removeHenkou  : removeHenkou,
+    kouhoCancel   : kouhoCancel
   };
 }());

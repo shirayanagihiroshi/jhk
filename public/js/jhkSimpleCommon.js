@@ -44,7 +44,9 @@ jhkSimpleCommonAddTableHeaher = function (targetId) {
 // clsname      : グレーアウト用クラスの名前(授業変更の登録のときのみ設定)
 // edicls       : 編集用クラスの名前(授業変更の登録のときのみ設定)
 // delcls       : 削除クラスの名前(授業変更の登録のときのみ設定)
-jhkSimpleCommonAddTableContents = function(targetId, targetHenkou, targetDays, targetteacher=null, jikanwari=null, clsname=null, edicls=null, delcls=null) {
+// tempTarget   :入れ替えのうち、1人目のデータ(授業変更の登録の、入れ替えモードのときのみ設定)
+jhkSimpleCommonAddTableContents = function(targetId, targetHenkou, targetDays, targetteacher=null, jikanwari=null, clsname=null, edicls=null, delcls=null,
+                                           tempTarget=null) {
   let i, j, flg, aDayData,
     dayFilterF = function (y, m, d) {
       return function (target) {
@@ -69,7 +71,15 @@ jhkSimpleCommonAddTableContents = function(targetId, targetHenkou, targetDays, t
                                                   targetDays[i].day,
                                                   targetDays[i].youbi);
       } else {
-        td.innerHTML = jhkSimpleCommonGetHenkou(aDayData, j, delcls);
+        if (tempTarget          != null             &&
+            targetDays[i].year  == tempTarget.year  && 
+            targetDays[i].month == tempTarget.month &&
+            targetDays[i].day   == tempTarget.day   && 
+            j                   == tempTarget.koma) {
+          td.innerHTML = jhkSimpleCommonGetHenkou(aDayData, j, delcls, tempTarget.teacher);
+        } else {
+          td.innerHTML = jhkSimpleCommonGetHenkou(aDayData, j, delcls, null);
+        }
       }
 
       // 選んだ先生の授業の箇所を目立つように
@@ -101,7 +111,7 @@ jhkSimpleCommonAddTableContents = function(targetId, targetHenkou, targetDays, t
 //      : 7 6限
 //      : 8 帰SHR
 //      : 9 7限
-jhkSimpleCommonGetHenkou = function (aDayData, koma, delcls) {
+jhkSimpleCommonGetHenkou = function (aDayData, koma, delcls, tempTarget) {
   let i, aKomaData,
     retStr = '',
     komaFilterF = function (koma) {
@@ -123,6 +133,10 @@ jhkSimpleCommonGetHenkou = function (aDayData, koma, delcls) {
       retStr += aKomaData[i].jyugyou + aKomaData[i].teacher;
     }
     console.log('Property:' + aKomaData[i].hasOwnProperty('teacher'));
+  }
+
+  if (tempTarget != null) {
+    retStr += '<span class="jhkKouho">' + tempTarget + '</span>';
   }
 
   return retStr;

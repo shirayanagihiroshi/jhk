@@ -14,6 +14,13 @@
 .jhkSunday {
   color : red;
 }
+
 .jhkSaturday {
   color : blue;
 }
+
+.jhkKouho {
+  font-weight : bold;
+  color       : green;
+}
+

@@ -60,7 +60,7 @@ jhk.shell = (function () {
     },
     jqueryMap = {},
     copyAnchorMap, changeAnchorPart, onHashchange, setModal, onToggle,
-    setJqueryMap, initModule, stateCtl;
+    setJqueryMap, initModule, stateCtl, getMode;
 
   //---DOMメソッド---
   setJqueryMap = function () {
@@ -254,6 +254,9 @@ jhk.shell = (function () {
       jqueryMap.$toggleTitle.html('入れ替えモード');
     }
 
+    // 入れ替え候補はキャンセルする
+    jhk.calendar.kouhoCancel();
+
     console.log('onToggle' + String(mode));
     //$.gevent.publish('kekkaInput', [obj]);
   }
@@ -408,5 +411,10 @@ jhk.shell = (function () {
 
   }
 
-  return { initModule : initModule };
+  getMode = function () {
+    return stateMap.mode;
+  }
+
+  return { initModule : initModule,
+           getMode    : getMode     };
 }());
