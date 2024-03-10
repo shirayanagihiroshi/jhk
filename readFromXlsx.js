@@ -6,7 +6,7 @@ const targetFileName = 'R05時間割_local.xlsx';  // 読み取るファイル�
 const sheetNameA     = 'R05A';                  // 読み取るファイルに応じて変更が必要
 const sheetNameB     = 'R05B';                  // 読み取るファイルに応じて変更が必要
 const jikanwariFile  = 'jhkjikanwari.json.js';
-const jyugyouFile    = 'jyugyous.json.js';
+const jyugyouFile    = 'jhkjyugyous.json.js';
 const teacherFile    = 'jhkteacher.json.js';
 
 // xlsxの読み取り

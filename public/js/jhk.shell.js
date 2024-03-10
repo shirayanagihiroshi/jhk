@@ -15,6 +15,7 @@ jhk.shell = (function () {
       _status : {
         dialogKind : { login          : true,  // status : dialog のとき使用
                        logout         : true,  // status : dialog のとき使用
+                       verifyChange   : true,  // status : dialog のとき使用
                        verifyDelete   : true,  // status : dialog のとき使用
 
                        invalid        : true,  // status : dialog のとき使用
@@ -67,6 +68,7 @@ jhk.shell = (function () {
     var $container = stateMap.$container;
     jqueryMap = {
       $container    : $container,
+      $head         : $container.find( '.jhk-shell-head' ),
       $title        : $container.find( '.jhk-shell-head-title' ),
       $toggleLabel  : $container.find( '.jhk-input-mode-toggle' ),
       $toggleTitle  : $container.find( '.jhk-input-mode-title' ),
@@ -136,6 +138,13 @@ jhk.shell = (function () {
         setModal(true);
         jhk.dialogOkCancel.configModule({showStr : 'ログアウトしますか？',
                                          okFunc  : jhk.model.logout,
+                                         okStr   : 'ok'});
+        jhk.dialogOkCancel.initModule( jqueryMap.$container );
+
+      } else if ( anchor_map._status.dialogKind == 'verifyChange' ) {
+        setModal(true);
+        jhk.dialogOkCancel.configModule({showStr : stateMap.dialogStr,
+                                         okFunc  : jhk.calendar.removeHenkou,//あとで変更
                                          okStr   : 'ok'});
         jhk.dialogOkCancel.initModule( jqueryMap.$container );
 
@@ -231,19 +240,13 @@ jhk.shell = (function () {
       setModalconfig = 'auto';
     }
     //クリックイベント等を有効化or無効化
-    jqueryMap.$acct.css('pointer-events', setModalconfig);
+    jqueryMap.$head.css('pointer-events', setModalconfig);
     jqueryMap.$main.css('pointer-events', setModalconfig);
   }
 
   onToggle = function () {
     let mode = jqueryMap.$toggle.prop('checked');
-/*      obj = { year  : configMap.targetYear,
-              month : configMap.targetMonth,
-              day   : configMap.targetDay,
-              koma  : configMap.koma,
-              jyugyouId : configMap.jyugyouId,
-              mode  : "" };
-*/
+
     // 自由入力モードなら
     if ( mode == true ) {
       stateMap.mode = 'freeformat';
@@ -256,9 +259,6 @@ jhk.shell = (function () {
 
     // 入れ替え候補はキャンセルする
     jhk.calendar.kouhoCancel();
-
-    console.log('onToggle' + String(mode));
-    //$.gevent.publish('kekkaInput', [obj]);
   }
 
   //---パブリックメソッド---
@@ -349,6 +349,21 @@ jhk.shell = (function () {
     // ログアウト失敗
     $.gevent.subscribe( $container, 'logoutFailure', function (event, msg_map) {
       //どうする？
+    });
+
+    // 授業変更（入れ替え）確認画面
+    $.gevent.subscribe( $container, 'verifyChange', function (event, msg_map) {
+      let obj = jhk.calendar.getDispTarget();
+      stateMap.calendarYear  = obj.year;
+      stateMap.calendarMonth = obj.month;
+      stateMap.calendarDay   = obj.day;
+      stateMap.dialogStr = msg_map.dialogStr;
+      changeAnchorPart({
+        status : 'dialog',
+        _status : {
+          dialogKind  : 'verifyChange'
+        }
+      });
     });
 
     // 授業変更削除確認画面

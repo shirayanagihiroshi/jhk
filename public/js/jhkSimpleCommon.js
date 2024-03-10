@@ -8,9 +8,9 @@
 let jhkSimpleCommonCelPosToKoma,
   jhkSimpleCommonAddTableHeaher, jhkSimpleCommonAddTableContents,
   jhkSimpleCommonGetHenkou, jhkSimpleCommonDeleteRowTable,
-  jhkSimpleCommonGetTargetDays, jhkSimpleCommonIsJyugyou,
-  jhkSimpleCommonMakeDateStr, jhkSimpleCommonSetTeachersLst,
-  jhkTeacherFilterF;
+  jhkSimpleCommonGetTargetDays, jhkSimpleCommonGetJyugyou,
+  jhkSimpleCommonGetKomaStr, jhkSimpleCommonMakeDateStr, 
+  jhkSimpleCommonSetTeachersLst, jhkTeacherFilterF;
 
 jhkSimpleCommonCelPosToKoma = function (CelPos) {
   let headers = ['日付', '朝HR', '1限', '2限', '3限', '4限', '5限', '6限', '帰HR', '7限'];
@@ -84,11 +84,11 @@ jhkSimpleCommonAddTableContents = function(targetId, targetHenkou, targetDays, t
 
       // 選んだ先生の授業の箇所を目立つように
       if (targetteacher != null && jikanwari != null && clsname != null) {
-        flg = jhkSimpleCommonIsJyugyou(targetteacher, jikanwari, targetDays[i].nikka, targetDays[i].youbi, j);
+        flg = jhkSimpleCommonGetJyugyou(targetteacher, jikanwari, targetDays[i].nikka, targetDays[i].youbi, j);
       } else {
-        flg = false;
+        flg = '';
       }
-      if (flg) {
+      if (flg != '') {
         td.classList.add(clsname);
       }
       // クリックできるようにクラスを設定
@@ -142,7 +142,8 @@ jhkSimpleCommonGetHenkou = function (aDayData, koma, delcls, tempTarget) {
   return retStr;
 }
 
-// 授業があるかどうかの判定
+// 日課や曜日などから授業名を返す。
+// 授業がなければ''を返す。
 // nikka: A週or B週
 // youbi: '日'～'土'
 // k    : 1 朝SHR
@@ -154,7 +155,7 @@ jhkSimpleCommonGetHenkou = function (aDayData, koma, delcls, tempTarget) {
 //      : 7 6限
 //      : 8 帰SHR
 //      : 9 7限
-jhkSimpleCommonIsJyugyou = function (targetteacher, jikanwari, nikka, youbi, k) {
+jhkSimpleCommonGetJyugyou = function (targetteacher, jikanwari, nikka, youbi, k) {
   let idx, koma, retval = false,
     f = function (targetteacher, nikka, youbi, koma) {
       return function (target) {
@@ -174,15 +175,30 @@ jhkSimpleCommonIsJyugyou = function (targetteacher, jikanwari, nikka, youbi, k) 
   } else if (k == 9) {
     koma = k - 2;
   } else {
-    return retval;
+    return '';
   }
 
   idx = jikanwari.findIndex(f(targetteacher, nikka, youbi, koma));
 
   if ( idx != -1 ) {
-    retval = true;
+    return jikanwari[idx].jyugyou;
+  } else {
+    return '';
   }
-  return retval;
+}
+
+jhkSimpleCommonGetKomaStr = function (k) {
+  let koma;
+  if (k == 1) {
+    koma = '朝HR';
+  } else if (k >= 2 && k <= 7) {
+    koma = String(k - 1) + '限';
+  } else if (k == 8) {
+    koma = '帰HR';
+  } else {
+    koma = '7限';
+  }
+  return koma;
 }
 
 // 日付を文字列で生成

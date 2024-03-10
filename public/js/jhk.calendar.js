@@ -45,7 +45,7 @@ jhk.calendar = (function () {
       setJqueryMap, configModule, initModule, removeCalendar, removeHenkou,
       getDispTarget, kouhoCancel,
       onPreviousWeek, onPreviousDay, onToToday, onNextDay, onNextWeek,
-      onTalbeClick, onChangeTeacherS, setDelTarget ;
+      onTalbeClick, onChangeTeacherS, setDelTarget, getClsOfJyugyou ;
       
 
   //---DOMメソッド---
@@ -74,32 +74,57 @@ jhk.calendar = (function () {
     if (mode == 'irekae') {
       // select:で'-'を選んでいたら無視
       if (jqueryMap.$selectTeacherS.val() != '-') {
-        // まだ入れ替え候補を1人も選んでいなければ、
-        // temphenkouTargetに保持して、表に名前を表示する
-        if (stateMap.temphenkouTarget == null) {
-          let d = stateMap.targetDays[tate],
-            obj = {year    : d.year,
-                   month   : d.month,
-                   day     : d.day,
-                   koma    : yoko,
-                   teacher : jqueryMap.$selectTeacherS.val()};
+        let d = stateMap.targetDays[tate],
+          jyugyou = jhkSimpleCommonGetJyugyou(jqueryMap.$selectTeacherS.val(), jhkJikanwari, d.nikka, d.youbi, yoko);
+        // 授業がないところは無視
+        if (jyugyou != '') {
+          // まだ入れ替え候補を1人も選んでいなければ、
+          // temphenkouTargetに保持して、表に名前を表示する
+          if (stateMap.temphenkouTarget == null) {
+            let obj = {year    : d.year,
+                       month   : d.month,
+                       day     : d.day,
+                       koma    : yoko,
+                       teacher : jqueryMap.$selectTeacherS.val(),
+                       jyugyou : jyugyou};
 
-          stateMap.temphenkouTarget = obj;
+            stateMap.temphenkouTarget = obj;
+            jhkSimpleCommonDeleteRowTable('jhk-calendar-table', configMap.tableContentsHeight);
+            jhkSimpleCommonAddTableContents('jhk-calendar-table',
+                                            stateMap.henkous,
+                                            stateMap.targetDays,
+                                            jqueryMap.$selectTeacherS.val(),
+                                            jhkJikanwari,
+                                            configMap.jyugyouClaName,
+                                            configMap.ediClaName,
+                                            configMap.delClaName,
+                                            stateMap.temphenkouTarget);
 
-          jhkSimpleCommonDeleteRowTable('jhk-calendar-table', configMap.tableContentsHeight);
-          jhkSimpleCommonAddTableContents('jhk-calendar-table',
-                                          stateMap.henkous,
-                                          stateMap.targetDays,
-                                          jqueryMap.$selectTeacherS.val(),
-                                          jhkJikanwari,
-                                          configMap.jyugyouClaName,
-                                          configMap.ediClaName,
-                                          configMap.delClaName,
-                                          stateMap.temphenkouTarget);
-        // 既に入れ替え候補を1人選んでいれば
-        // 確認ダイアログへ
-        } else {
-
+          // 既に入れ替え候補を1人選んでいて、
+          // select:で他の先生を選んでクリックしたら登録確認ダイアログへ
+          } else if (jqueryMap.$selectTeacherS.val() != stateMap.temphenkouTarget.teacher)  {
+             let str,
+               j1 = {year    : stateMap.temphenkouTarget.year,
+                     month   : stateMap.temphenkouTarget.month,
+                     day     : stateMap.temphenkouTarget.day,
+                     koma    : stateMap.temphenkouTarget.koma,
+                     teacher : stateMap.temphenkouTarget.teacher,
+                     jyugyou : stateMap.temphenkouTarget.jyugyou,
+                     to      : jqueryMap.$selectTeacherS.val()},
+               j2 = {year    : d.year,
+                     month   : d.month,
+                     day     : d.day,
+                     koma    : yoko,
+                     teacher : jqueryMap.$selectTeacherS.val(),
+                     jyugyou : jyugyou,
+                     to      : stateMap.temphenkouTarget.teacher};
+             stateMap.addTarget.push(j1);
+             stateMap.addTarget.push(j2);
+             str = '入れ替えますか<br>'
+             str += String(j1.month) + '月' + String(j1.day) + '日' + jhkSimpleCommonGetKomaStr(j1.koma) + j1.jyugyou + j1.teacher + '<br>';
+             str += String(j2.month) + '月' + String(j2.day) + '日' + jhkSimpleCommonGetKomaStr(j2.koma) + j2.jyugyou + j2.teacher;
+             $.gevent.publish('verifyChange', [{dialogStr:str}]);
+          }
         }
       }
 
@@ -202,6 +227,21 @@ jhk.calendar = (function () {
   }
 
   //---ユーティリティメソッド---
+  getClsOfJyugyou = function (jyugyou) {
+    let idx,
+      f = function (t) {
+        return function (target) {
+          if ( target.jyugyou == t) {
+            return true;
+          } else {
+            return false;
+          }
+        }
+      };
+
+    idx = jhkJyugyous.findIndex(f(jyugyou));
+    return jhkJyugyous[idx].cls; //これは失敗しないはず
+  }
 
   //---パブリックメソッド---
   configModule = function ( input_map ) {
