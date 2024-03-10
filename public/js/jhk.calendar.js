@@ -13,11 +13,11 @@ jhk.calendar = (function () {
           + '<button id="jhk-calendar-toToday">今週へ</button>'
           + '<button id="jhk-calendar-nextDay">↓次の日へ</button>'
           + '<button id="jhk-calendar-nextWeek">↓↓次の週へ</button>'
-          + 'filter:<select id="jhk-calendar-selectCls"">'
+          + '<span class="jhk-calendar-text">filter:</span><select id="jhk-calendar-selectCls"">'
           + '</select>'
-          + 'filter:<select id="jhk-calendar-selectTeacher">'
+          + '<span class="jhk-calendar-text">filter:</span><select id="jhk-calendar-selectTeacher">'
           + '</select>'
-          + 'select:<select id="jhk-calendar-selectTeacher-select">'
+          + '<span class="jhk-calendar-text">select:</span><select id="jhk-calendar-selectTeacher-select">'
           + '</select>'
           + '<table id="jhk-calendar-table">'
           + '</table>',
@@ -59,6 +59,7 @@ jhk.calendar = (function () {
       $selectCls     : $container.find( '#jhk-calendar-selectCls' ),
       $selectTeacher : $container.find( '#jhk-calendar-selectTeacher' ),
       $selectTeacherS: $container.find( '#jhk-calendar-selectTeacher-select' ),
+      $text          : $container.find( '.jhk-calendar-text' ),
       $table         : $container.find( '#jhk-calendar-table' )
     };
   }
@@ -257,6 +258,7 @@ jhk.calendar = (function () {
         jqueryMap.$selectCls.remove();
         jqueryMap.$selectTeacher.remove();
         jqueryMap.$selectTeacherS.remove();
+        jqueryMap.$text.remove();
         jqueryMap.$table.remove();
       }
     }

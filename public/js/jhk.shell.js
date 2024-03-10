@@ -314,6 +314,13 @@ jhk.shell = (function () {
       jhk.dialog.initModule( jqueryMap.$container );
     });
 
+    // ログインキャンセル
+    $.gevent.subscribe( $container, 'cancelLogin', function (event, msg_map) {
+      changeAnchorPart({
+        status : 'nologined'
+      });
+    });
+
     // ログアウトダイアログ表示
     $.gevent.subscribe( $container, 'tryLogout', function (event, msg_map) {
       changeAnchorPart({
@@ -332,7 +339,7 @@ jhk.shell = (function () {
       jhk.acct.initModule( jqueryMap.$acct );
 
       changeAnchorPart({
-        status : 'matiuke'
+        status : 'nologined'
       }, null, true); //ログイン前には戻したくないので、履歴を消去
     });
 

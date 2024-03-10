@@ -58,7 +58,7 @@ jhk.dialog = (function () {
 
   //---イベントハンドラ---
   onClose = function () {
-    $.gevent.publish('cancelDialog', [{}]);
+    $.gevent.publish('cancelLogin', [{}]);
     return false;
   }
 
