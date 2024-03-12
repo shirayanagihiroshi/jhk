@@ -24,3 +24,21 @@
   color       : green;
 }
 
+.jhkIrekae {
+  color       : blue;
+}
+
+.jhkJyokin {
+  color       : black;
+}
+
+.jhkTonariJyokin {
+  color       : black;
+}
+
+li {
+  list-style  : none;
+}
+ul {
+  padding-left: 0;
+}

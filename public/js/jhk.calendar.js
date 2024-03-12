@@ -321,13 +321,17 @@ jhk.calendar = (function () {
         tateIndex = $(this).closest('tr').index();
 
         if (yokoIndex != 0) { //日付のクリックは不要
-          setDelTarget(tateIndex-1, yokoIndex, this.innerHTML)
+          // 追加の意味でクリックしたときに削除されるとイラつくので、
+          // select:で誰か先生を選んでいるときは無視する
+          if (jqueryMap.$selectTeacherS.val() == '-') {
+            setDelTarget(tateIndex-1, yokoIndex, this.innerHTML)
+          }
         }
       return false; // ここでreturn falseしないとediClaNameの方も発火する
     });
 
     $(document).on('click', '.jhkKouho', function (event) {
-      //候補はクリックしたらキャンセル
+      //候補はいつでもクリックしたらキャンセル
       kouhoCancel();
       tableRedraw();
       return false;

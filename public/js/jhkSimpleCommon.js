@@ -113,7 +113,7 @@ jhkSimpleCommonAddTableContents = function(targetId, targetHenkou, targetDays, t
 //      : 9 7限
 jhkSimpleCommonGetHenkou = function (aDayData, koma, delcls, tempTarget) {
   let i, aKomaData,
-    retStr = '',
+    retStr = '<ul>',
     komaFilterF = function (koma) {
       return function (target) {
         if ( target.koma == koma) {
@@ -122,22 +122,39 @@ jhkSimpleCommonGetHenkou = function (aDayData, koma, delcls, tempTarget) {
           return false;
         }
       }
+    },
+    addContents = function (delcls, cls, jyugyou, fromTeacher, ToTeacher) {
+      let retStr = '<span class="' + cls + '">' + jyugyou;
+      if (delcls != null) {
+        retStr += '<span class="' + delcls + '">' + fromTeacher + '</span>';
+      } else {
+        retStr += fromTeacher;
+      }
+      retStr += '-' + ToTeacher + '</span>';
+      return retStr;
     };
 
   aKomaData = aDayData.filter(komaFilterF(koma));
 
   for (i = 0; i <= aKomaData.length-1; i++) {
-    if (delcls != null) {
-      retStr += aKomaData[i].jyugyou + '<span class="' + delcls + '">' + aKomaData[i].teacher + '</span>';
-    } else {
-      retStr += aKomaData[i].jyugyou + aKomaData[i].teacher;
+    retStr += '<li>'
+    // 授業入れ替えなら
+    if (aKomaData[i].hasOwnProperty('to')) {
+      retStr += addContents(delcls, 'jhkIrekae', aKomaData[i].jyugyou, aKomaData[i].teacher, aKomaData[i].to);
+    // 助勤なら
+    } else if (aKomaData[i].hasOwnProperty('jyokin')) {
+      retStr += addContents(delcls, 'jhkJyokin', aKomaData[i].jyugyou, aKomaData[i].teacher, aKomaData[i].jyokin);
+    // 隣助勤なら
+    } else if (aKomaData[i].hasOwnProperty('tonariJyokin')) {
+      retStr += addContents(delcls, 'jhkTonariJyokin', aKomaData[i].jyugyou, aKomaData[i].teacher, '(' + aKomaData[i].tonariJyokin + ')');
     }
-    console.log('Property:' + aKomaData[i].hasOwnProperty('teacher'));
+    retStr += '</li>'
   }
 
   if (tempTarget != null) {
-    retStr += '<span class="jhkKouho">' + tempTarget + '</span>';
+    retStr += '<li class="jhkKouho">' + tempTarget + '</li>';
   }
+  retStr += '</ul>';
 
   return retStr;
 }
