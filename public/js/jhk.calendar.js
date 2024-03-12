@@ -128,8 +128,26 @@ jhk.calendar = (function () {
         }
       }
 
+    // 自由入力モードのとき
     } else {
+      // select:で'-'を選んでいたら無視
+      if (jqueryMap.$selectTeacherS.val() != '-') {
+        let str,
+          d = stateMap.targetDays[tate],
+          jyugyou = jhkSimpleCommonGetJyugyou(jqueryMap.$selectTeacherS.val(), jhkJikanwari, d.nikka, d.youbi, yoko),
+          j = {year    : d.year,
+                 month   : d.month,
+                 day     : d.day,
+                 koma    : yoko,
+                 teacher : jqueryMap.$selectTeacherS.val(),
+                 jyugyou : jyugyou};
 
+        str = String(j.month) + '月' + String(j.day) + '日' + jhkSimpleCommonGetKomaStr(j.koma) + j.jyugyou + j.teacher;
+        //stateMap.addTarget.length = 0;
+        stateMap.addTarget.push(j);
+        $.gevent.publish('freestyleAdd', [{dialogStr:str,
+                                           jyugyou  :jyugyou}]);
+      }
     }
     console.log('onTalbeClick tate:' + String(tate) + ',yoko:' + String(yoko));
   }

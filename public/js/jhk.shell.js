@@ -17,6 +17,7 @@ jhk.shell = (function () {
                        logout         : true,  // status : dialog のとき使用
                        verifyChange   : true,  // status : dialog のとき使用
                        verifyDelete   : true,  // status : dialog のとき使用
+                       freestyleAdd   : true,  // status : dialog のとき使用
 
                        invalid        : true,  // status : dialog のとき使用
                        verify         : true,  // status : dialog のとき使用
@@ -154,6 +155,13 @@ jhk.shell = (function () {
                                          okFunc  : jhk.calendar.removeHenkou,
                                          okStr   : 'ok'});
         jhk.dialogOkCancel.initModule( jqueryMap.$container );
+
+      } else if ( anchor_map._status.dialogKind == 'freestyleAdd' ) {
+        setModal(true);
+        jhk.dialogMulti.configModule({showStr : stateMap.dialogStr,
+                                      okFunc  : jhk.calendar.removeHenkou, // 後で変える
+                                      okStr   : 'ok'});
+        jhk.dialogMulti.initModule( jqueryMap.$container );
       }
 
     // 未ログイン画面の場合
@@ -162,6 +170,7 @@ jhk.shell = (function () {
       setModal(false);
       jhk.dialog.removeDialog();
       jhk.dialogOkCancel.removeDialog();
+      jhk.dialogMulti.removeDialog();
 
       jhk.calendar.removeCalendar();
 
@@ -171,6 +180,7 @@ jhk.shell = (function () {
       setModal(false);
       jhk.dialog.removeDialog();
       jhk.dialogOkCancel.removeDialog();
+      jhk.dialogMulti.removeDialog();
 
       // 設定の準備をすること
       jhk.calendar.configModule({tableContentsHeight : 14,
@@ -385,6 +395,21 @@ jhk.shell = (function () {
         status : 'dialog',
         _status : {
           dialogKind  : 'verifyDelete'
+        }
+      });
+    });
+
+    // 自由入力画面
+    $.gevent.subscribe( $container, 'freestyleAdd', function (event, msg_map) {
+      let obj = jhk.calendar.getDispTarget();
+      stateMap.calendarYear  = obj.year;
+      stateMap.calendarMonth = obj.month;
+      stateMap.calendarDay   = obj.day;
+      stateMap.dialogStr = msg_map.dialogStr;
+      changeAnchorPart({
+        status : 'dialog',
+        _status : {
+          dialogKind  : 'freestyleAdd'
         }
       });
     });
