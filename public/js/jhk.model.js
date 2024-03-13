@@ -61,6 +61,10 @@ jhk.model = (function () {
         // 登録用データは削除
         jhk.calendar.kouhoCancel();
         $.gevent.publish('addHenkouSuccess', [{ name: name }]);
+      } else if (msg.clientState == 'afterDel')  {
+        // 登録用データは削除
+        jhk.calendar.kouhoCancel();
+        $.gevent.publish('deleteSuccess', [{}]);
       }
     });
 
@@ -68,6 +72,12 @@ jhk.model = (function () {
     jhk.data.registerReceive('addHenkouSuccess', function (msg) {
       jhk.data.sendToServer('readyHenkou',{AKey : accessKey,
                                            clientState : 'afterAdd'});
+    });
+
+    // 削除完了
+    jhk.data.registerReceive('deleteHenkouSuccess', function (msg) {
+      jhk.data.sendToServer('readyHenkou',{AKey : accessKey,
+                                           clientState : 'afterDel'});
     });
 
     jhk.data.registerReceive('logoutResult', function (msg) {
@@ -151,7 +161,13 @@ jhk.model = (function () {
   }
 
   removeHenkou = function (year, month, day, koma, teacher) {
-    $.gevent.publish('deleteSuccess', [{ }]);
+    jhk.data.sendToServer('deleteHenkou',{AKey    : accessKey,
+                                          clientState : 'nouse',
+                                          year    : year,
+                                          month   : month,
+                                          day     : day,
+                                          koma    : koma,
+                                          teacher : teacher});
   }
 
   return { initModule      : initModule,

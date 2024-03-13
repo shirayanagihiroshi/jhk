@@ -127,53 +127,22 @@ io.on("connection", function (socket) {
     });
   });
 
-  socket.on('deleteReserve', function (msg) {
-    /*
-    console.log("* * deleteRenraku * *");
-    console.log("gakunen:" + msg.SKey.gakunen);
-    console.log("cls:"     + msg.SKey.cls);
-    console.log("bangou:"  + msg.SKey.bangou);
-    console.log("month:"   + msg.SKey.month);
-    console.log("day:"     + msg.SKey.day);
-    */
-    db.findManyDocuments('yoyaku_user', {userId:msg.AKey.userId}, {projection:{_id:0}}, function (result) {
+  socket.on('deleteHenkou', function (msg) {
+    db.findManyDocuments('user', {userId:msg.AKey.userId}, {projection:{_id:0}}, function (result) {
       // ログイン中のユーザにのみ回答
       if (result.length != 0 && msg.AKey.token == result[0].token ) {
-
-        db.findManyDocuments('yoyaku_waku', {cls:msg.cls}, {projection:{_id:0}}, function (resKigenCheck) {
-          // 機能が有効なら登録する
-          if (resKigenCheck[0].nowusable == true) {
-            db.deleteManyDocuments('yoyaku_reserve',
-                                   {reserveTarget : msg.reserveTarget,
-                                   cls            : msg.cls},
-                                   function (res) {
-              io.to(socket.id).emit('deleteReserveResult', res); // 送信者のみに送信
-            });
-          // 機能が無効なら失敗とする
-          } else {
-            io.to(socket.id).emit('deleteReserveResultFailure', {}); // 送信者のみに送信
-          }
-        });
-
-      } else {
-        io.to(socket.id).emit('anotherLogin', {}); // 送信者のみに送信
-      }
-    });
-  });
-
-  socket.on('updateNowUsable', function (msg) {
-
-    db.findManyDocuments('yoyaku_user', {userId:msg.AKey.userId}, {projection:{_id:0}}, function (result) {
-      // ログイン中のユーザにのみ回答
-      if (result.length != 0 && msg.AKey.token == result[0].token ) {
-        db.updateDocument('yoyaku_waku',
-                          {cls           : msg.cls},
-                          {$set : {nowusable : msg.nowusable}}, function (res) {
-          console.log('updateNowUsable done');
-          io.to(socket.id).emit('updateNowUsableSuccess', res); // 送信者のみに送信
+        db.deleteManyDocuments('jhkdatas',
+                               {year    : msg.year,
+                                month   : msg.month,
+                                day     : msg.day,
+                                koma    : msg.koma,
+                                teacher : msg.teacher},
+                               function (res) {
+          let obj = { res : res, clientState : msg.clientState};
+          io.to(socket.id).emit('deleteHenkouSuccess', obj); // 送信者のみに送信
         });
       } else {
-        io.to(socket.id).emit('anotherLogin', {}); // 送信者のみに送信
+        io.to(socket.id).emit('deleteHenkouFailure', {}); // 送信者のみに送信
       }
     });
   });
