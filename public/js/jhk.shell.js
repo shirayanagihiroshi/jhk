@@ -160,9 +160,11 @@ jhk.shell = (function () {
 
       } else if ( anchor_map._status.dialogKind == 'freestyleAdd' ) {
         setModal(true);
-        jhk.dialogMulti.configModule({showStr     : stateMap.dialogStr,
-                                      okFunc      : jhk.calendar.removeHenkou, // 後で変える
-                                      jyugyouName : stateMap.jyugyouName});
+        jhk.dialogMulti.configModule({showStr          : stateMap.dialogStr,
+                                      toFunc           : jhk.calendar.addTo,
+                                      jyokinFunc       : jhk.calendar.addJyokin,
+                                      tonarijyokinFunc : jhk.calendar.addTonarijyokin,
+                                      jyugyouName      : stateMap.jyugyouName});
         jhk.dialogMulti.initModule( jqueryMap.$container );
       }
 

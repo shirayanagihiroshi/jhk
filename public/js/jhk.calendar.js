@@ -44,11 +44,11 @@ jhk.calendar = (function () {
         temphenkouTarget  : null    // 入れ替えモードで使用。ここと次に選ぶところを入れ替える。
       },
       jqueryMap = {},
-      setJqueryMap, configModule, initModule, removeCalendar, addChange, 
-      removeHenkou, getDispTarget, kouhoCancel, tableRedraw,
+      setJqueryMap, configModule, initModule, removeCalendar,
+      addChange, addTo, addJyokin, addTonarijyokin, removeHenkou,
+      getDispTarget, kouhoCancel, tableRedraw,
       onPreviousWeek, onPreviousDay, onToToday, onNextDay, onNextWeek,
       onTalbeClick, onChangeTeacherS, setDelTarget, getClsOfJyugyou ;
-      
 
   //---DOMメソッド---
   setJqueryMap = function () {
@@ -138,14 +138,17 @@ jhk.calendar = (function () {
           d = stateMap.targetDays[tate],
           jyugyou = jhkSimpleCommonGetJyugyou(jqueryMap.$selectTeacherS.val(), jhkJikanwari, d.nikka, d.youbi, yoko),
           j = {year    : d.year,
-                 month   : d.month,
-                 day     : d.day,
-                 koma    : yoko,
-                 teacher : jqueryMap.$selectTeacherS.val(),
-                 jyugyou : jyugyou};
+               month   : d.month,
+               day     : d.day,
+               koma    : yoko,
+               teacher : jqueryMap.$selectTeacherS.val(),
+               jyugyou : jyugyou};
 
         str = String(j.month) + '月' + String(j.day) + '日' + jhkSimpleCommonGetKomaStr(j.koma) + ' ' + j.teacher + '先生の';
-        //stateMap.addTarget.length = 0;
+        stateMap.addTarget.length = 0;
+        // あと、to か jyokin か tonariJyokin はダイアログ中で選択する。
+        // jyugyou はダイアログで変更されるかもしれない
+        // （jyugyouの変更が必要なシーンは具体的に想定していないが、なるべく柔軟に登録できるようにしておく）
         stateMap.addTarget.push(j);
         $.gevent.publish('freestyleAdd', [{dialogStr:str,
                                            jyugyou  :jyugyou}]);
@@ -392,6 +395,27 @@ jhk.calendar = (function () {
     jhk.model.addHenkou(stateMap.addTarget);
   }
 
+  addTo = function (jyugyou, teacher) {
+    stateMap.addTarget[0].jyugyou = jyugyou;
+    stateMap.addTarget[0].to = teacher;
+    stateMap.addTarget[0].cls = getClsOfJyugyou(jyugyou);
+    jhk.model.addHenkou(stateMap.addTarget);
+  }
+
+  addJyokin = function (jyugyou, teacher) {
+    stateMap.addTarget[0].jyugyou = jyugyou;
+    stateMap.addTarget[0].jyokin = teacher;
+    stateMap.addTarget[0].cls = getClsOfJyugyou(jyugyou);
+    jhk.model.addHenkou(stateMap.addTarget);
+  }
+
+  addTonarijyokin = function (jyugyou, teacher) {
+    stateMap.addTarget[0].jyugyou = jyugyou;
+    stateMap.addTarget[0].tonariJyokin = teacher;
+    stateMap.addTarget[0].cls = getClsOfJyugyou(jyugyou);
+    jhk.model.addHenkou(stateMap.addTarget);
+  }
+
   removeHenkou = function () {
     jhk.model.removeHenkou(stateMap.delTarget.year,
                            stateMap.delTarget.month,
@@ -426,6 +450,9 @@ jhk.calendar = (function () {
     removeCalendar: removeCalendar,
     getDispTarget : getDispTarget,
     addChange     : addChange,
+    addTo         : addTo,
+    addJyokin     : addJyokin,
+    addTonarijyokin : addTonarijyokin,
     removeHenkou  : removeHenkou,
     kouhoCancel   : kouhoCancel,
     tableRedraw   : tableRedraw

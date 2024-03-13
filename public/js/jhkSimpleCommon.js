@@ -319,7 +319,7 @@ jhkSimpleCommonSetTeachersLst = function(targetId, teacherForcus=null) {
     }
     teacherList.appendChild(teacher);
   }
-}
+};
 
 // 教員絞り込み関数
 jhkTeacherFilterF = function (t) {
@@ -332,6 +332,7 @@ jhkTeacherFilterF = function (t) {
   }
 };
 
+// 授業のリストを設定する
 jhkSimpleCommonSetJyugyouLst = function(targetId, jyugyouForcus=null) {
   // jhkJyugyous の中身はjhkjyugyous.json.jsにある
   let i, jyugyou,

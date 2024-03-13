@@ -30,12 +30,16 @@ jhk.dialogMulti = (function () {
             + '</button>'
           + '</div>'
         + '<div>',
-        settable_map : {showStr     : true,
-                        okFunc      : true,
-                        jyugyouName : true},
-        showStr     : "",
-        okFunc      : function () {},
-        jyugyouName : ""
+        settable_map : {showStr          : true,
+                        toFunc           : true,
+                        jyokinFunc       : true,
+                        tonarijyokinFunc : true,
+                        jyugyouName      : true},
+        showStr          : "",
+        toFunc           : function () {},
+        jyokinFunc       : function () {},
+        tonarijyokinFunc : function () {},
+        jyugyouName      : ""
       },
       stateMap = {
         $append_target : null
@@ -51,6 +55,8 @@ jhk.dialogMulti = (function () {
     jqueryMap = {
       $dialog          : $dialog,
       $title           : $dialog.find( '.jhk-dialogMulti-main-title' ),
+      $selectJyugyou   : $dialog.find( '#jhk-dialogMulti-main-selectJyugyou' ),
+      $selectTeacher   : $dialog.find( '#jhk-dialogMulti-main-selectTeacher' ),
       $buttonTo        : $dialog.find( '.jhk-dialogMulti-main-button-to' ),
       $buttonJyokin    : $dialog.find( '.jhk-dialogMulti-main-button-jyokin' ),
       $buttonTonariJyokin : $dialog.find( '.jhk-dialogMulti-main-button-tonarijyokin' ),
@@ -65,14 +71,23 @@ jhk.dialogMulti = (function () {
   }
 
   onTo = function () {
+    if (jqueryMap.$selectJyugyou.val() != '-' && jqueryMap.$selectTeacher.val() != '-') {
+      configMap.toFunc(jqueryMap.$selectJyugyou.val(), jqueryMap.$selectTeacher.val());
+    }
     return false;
   }
 
   onJyokin = function () {
+    if (jqueryMap.$selectJyugyou.val() != '-' && jqueryMap.$selectTeacher.val() != '-') {
+      configMap.jyokinFunc(jqueryMap.$selectJyugyou.val(), jqueryMap.$selectTeacher.val());
+    }
     return false;
   }
 
   onTonariJyokin = function () {
+    if (jqueryMap.$selectJyugyou.val() != '-' && jqueryMap.$selectTeacher.val() != '-') {
+      configMap.tonarijyokinFunc(jqueryMap.$selectJyugyou.val(), jqueryMap.$selectTeacher.val());
+    }
     return false;
   }
 
