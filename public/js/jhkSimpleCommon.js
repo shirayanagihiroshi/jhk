@@ -9,8 +9,10 @@ let jhkSimpleCommonCelPosToKoma,
   jhkSimpleCommonAddTableHeaher, jhkSimpleCommonAddTableContents,
   jhkSimpleCommonGetHenkou, jhkSimpleCommonDeleteRowTable,
   jhkSimpleCommonGetTargetDays, jhkSimpleCommonGetJyugyou,
-  jhkSimpleCommonGetKomaStr, jhkSimpleCommonMakeDateStr, 
-  jhkSimpleCommonSetTeachersLst, jhkTeacherFilterF;
+  jhkSimpleCommonGetKomaStr, jhkSimpleCommonMakeDateStr,
+  jhkSimpleCommonSetClsLst, jhkClsFilterF,
+  jhkSimpleCommonSetTeachersLst, jhkTeacherFilterF,
+  jhkSimpleCommonSetJyugyouLst;
 
 jhkSimpleCommonCelPosToKoma = function (CelPos) {
   let headers = ['日付', '朝HR', '1限', '2限', '3限', '4限', '5限', '6限', '帰HR', '7限'];
@@ -272,8 +274,32 @@ jhkSimpleCommonGetTargetDays = function (n, y, m, d, offset=0) {
   return output;
 }
 
+//クラスのリストを設定する
+jhkSimpleCommonSetClsLst = function(targetId) {
+  // jhkClasses の中身はjhkClasses.json.jsにある
+  let i, cls,
+    classList = document.getElementById(targetId);
+
+  // 先頭に'-'を追加
+  cls = document.createElement('option');
+  cls.value = '-';
+  cls.text = '-';
+  classList.appendChild(cls);
+
+  for (i = 0; i <= jhkClasses.length -1; i++) {
+    cls = document.createElement('option');
+    cls.value = jhkClasses[i];
+    cls.text = jhkClasses[i];
+    classList.appendChild(cls);
+  }
+}
+
+//クラス絞り込み関数
+jhkClsFilterF = function (t) {
+};
+
 // 教員のリストを設定する
-jhkSimpleCommonSetTeachersLst = function(targetId) {
+jhkSimpleCommonSetTeachersLst = function(targetId, teacherForcus=null) {
   // jhkTeachers の中身はjhkteacher.json.jsにある
   let i, teacher,
     teacherList = document.getElementById(targetId);
@@ -288,6 +314,9 @@ jhkSimpleCommonSetTeachersLst = function(targetId) {
     teacher = document.createElement('option');
     teacher.value = jhkTeachers[i];
     teacher.text = jhkTeachers[i];
+    if (teacherForcus != null && teacherForcus == jhkTeachers[i]) {
+      teacher.selected = true;
+    }
     teacherList.appendChild(teacher);
   }
 }
@@ -302,3 +331,25 @@ jhkTeacherFilterF = function (t) {
     }
   }
 };
+
+jhkSimpleCommonSetJyugyouLst = function(targetId, jyugyouForcus=null) {
+  // jhkJyugyous の中身はjhkjyugyous.json.jsにある
+  let i, jyugyou,
+    jyugyouList = document.getElementById(targetId);
+
+  // 先頭に'-'を追加
+  jyugyou = document.createElement('option');
+  jyugyou.value = '-';
+  jyugyou.text = '-';
+  jyugyouList.appendChild(jyugyou);
+
+  for (i = 0; i <= jhkJyugyous.length -1; i++) {
+    jyugyou = document.createElement('option');
+    jyugyou.value = jhkJyugyous[i].jyugyou;
+    jyugyou.text = jhkJyugyous[i].jyugyou;
+    if (jyugyouForcus != null && jyugyouForcus == jhkJyugyous[i].jyugyou) {
+      jyugyou.selected = true;
+    }
+    jyugyouList.appendChild(jyugyou);
+  }
+}

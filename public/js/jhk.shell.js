@@ -58,6 +58,8 @@ jhk.shell = (function () {
       calendarYear  : 0,    // ダイアログ表示のあと同じ範囲の日を表示するために保持
       calendarMonth : 0,
       calendarDay   : 0,
+      teacherName   : "",   // ダイアログ表示のあと、教員の選択を復元する為に保持
+      jyugyouName   : "",   // 自由入力モードのダイアログで初期値としてフォーカスする授業名
       mode          : ""    // 'irekae' or 'freeformat'
     },
     jqueryMap = {},
@@ -158,9 +160,9 @@ jhk.shell = (function () {
 
       } else if ( anchor_map._status.dialogKind == 'freestyleAdd' ) {
         setModal(true);
-        jhk.dialogMulti.configModule({showStr : stateMap.dialogStr,
-                                      okFunc  : jhk.calendar.removeHenkou, // 後で変える
-                                      okStr   : 'ok'});
+        jhk.dialogMulti.configModule({showStr     : stateMap.dialogStr,
+                                      okFunc      : jhk.calendar.removeHenkou, // 後で変える
+                                      jyugyouName : stateMap.jyugyouName});
         jhk.dialogMulti.initModule( jqueryMap.$container );
       }
 
@@ -183,10 +185,12 @@ jhk.shell = (function () {
       jhk.dialogMulti.removeDialog();
 
       // 設定の準備をすること
+      jhk.calendar.removeCalendar();
       jhk.calendar.configModule({tableContentsHeight : 14,
                                  year                : stateMap.calendarYear,
                                  month               : stateMap.calendarMonth,
-                                 day                 : stateMap.calendarDay});
+                                 day                 : stateMap.calendarDay,
+                                 teacher             : stateMap.teacherName});
       jhk.calendar.initModule( jqueryMap.$main );
     }
   }
@@ -375,6 +379,7 @@ jhk.shell = (function () {
       stateMap.calendarYear  = obj.year;
       stateMap.calendarMonth = obj.month;
       stateMap.calendarDay   = obj.day;
+      stateMap.teacherName   = obj.teacher;
       stateMap.dialogStr = msg_map.dialogStr;
       changeAnchorPart({
         status : 'dialog',
@@ -390,6 +395,7 @@ jhk.shell = (function () {
       stateMap.calendarYear  = obj.year;
       stateMap.calendarMonth = obj.month;
       stateMap.calendarDay   = obj.day;
+      stateMap.teacherName   = obj.teacher;
       stateMap.dialogStr = msg_map.dialogStr;
       changeAnchorPart({
         status : 'dialog',
@@ -405,7 +411,9 @@ jhk.shell = (function () {
       stateMap.calendarYear  = obj.year;
       stateMap.calendarMonth = obj.month;
       stateMap.calendarDay   = obj.day;
+      stateMap.teacherName   = obj.teacher;
       stateMap.dialogStr = msg_map.dialogStr;
+      stateMap.jyugyouName = msg_map.jyugyou;
       changeAnchorPart({
         status : 'dialog',
         _status : {

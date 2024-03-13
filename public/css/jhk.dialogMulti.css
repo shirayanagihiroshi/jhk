@@ -5,7 +5,9 @@
 
  .jhk-dialogMulti, .jhk-dialogMulti-main, .jhk-dialogMulti-main-title,
  .jhk-dialogMulti-main-button-to, .jhk-dialogMulti-main-button-jyokin,
- .jhk-dialogMulti-main-button-tonarijyokin, .jhk-dialogMulti-main-button-cancel
+ .jhk-dialogMulti-main-button-tonarijyokin, .jhk-dialogMulti-main-button-cancel,
+ #jhk-dialogMulti-main-selectJyugyou, #jhk-dialogMulti-main-selectTeacher,
+ .jhk-dialogMulti-main-text1, .jhk-dialogMulti-main-text2
  {
    position: absolute;
  }
@@ -16,7 +18,7 @@
   top : 50%;
   left : 50%;
   width : 450px;
-  height : 380px;
+  height : 300px;
   border-radius : 3px;
   z-index : 2;
   background : #85B0FF;
@@ -38,7 +40,7 @@
 }
 
 .jhk-dialogMulti-main-button-to{
-  top    : 280px;
+  top    : 200px;
   left   : 10px;
   width  : 100px;
   line-height: 40px;
@@ -52,7 +54,7 @@
 }
 
 .jhk-dialogMulti-main-button-jyokin{
-  top    : 280px;
+  top    : 200px;
   left   : 120px;
   width  : 100px;
   line-height: 40px;
@@ -66,7 +68,7 @@
 }
 
 .jhk-dialogMulti-main-button-tonarijyokin{
-  top    : 280px;
+  top    : 200px;
   left   : 230px;
   width  : 100px;
   line-height: 40px;
@@ -80,7 +82,7 @@
 }
 
 .jhk-dialogMulti-main-button-cancel{
-  top    : 280px;
+  top    : 200px;
   left   : 340px;
   width  : 100px;
   line-height: 40px;
@@ -91,4 +93,24 @@
 }
 .jhk-dialogMulti-main-button-cancel:hover{
   background-color: red;
+}
+
+#jhk-dialogMulti-main-selectJyugyou{
+  top    : 100px;
+  left   : 20px;
+}
+
+#jhk-dialogMulti-main-selectTeacher{
+  top    : 100px;
+  left   : 250px;
+}
+
+.jhk-dialogMulti-main-text1{
+  top    : 100px;
+  left   : 150px;
+}
+
+.jhk-dialogMulti-main-text2{
+  top    : 100px;
+  left   : 350px;
 }

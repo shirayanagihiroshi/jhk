@@ -12,11 +12,10 @@ jhk.dialogMulti = (function () {
           + '<div class="jhk-dialogMulti-main">'
             + '<div class="jhk-dialogMulti-main-title">'
             + '</div>'
-            + 'クラス:'
-            + '<select id="jhk-dialogMulti-main-selectCls""></select>'
-            + 'を'
-            + '<select id="jhk-calendar-selectTeacher"></select>'
-            + 'へ'
+            + '<select id="jhk-dialogMulti-main-selectJyugyou"></select>'
+            + '<div class="jhk-dialogMulti-main-text1">を</div>'
+            + '<select id="jhk-dialogMulti-main-selectTeacher"></select>'
+            + '<div class="jhk-dialogMulti-main-text2">へ</div>'
             + '<button class="jhk-dialogMulti-main-button-to">'
               + '<p>入れ替え</p>'
             + '</button>'
@@ -31,12 +30,12 @@ jhk.dialogMulti = (function () {
             + '</button>'
           + '</div>'
         + '<div>',
-        settable_map : {showStr : true,
-                        okFunc  : true,
-                        okStr   : true},
-        showStr : "",
-        okFunc  : function () {},
-        okStr   : ""
+        settable_map : {showStr     : true,
+                        okFunc      : true,
+                        jyugyouName : true},
+        showStr     : "",
+        okFunc      : function () {},
+        jyugyouName : ""
       },
       stateMap = {
         $append_target : null
@@ -118,6 +117,8 @@ jhk.dialogMulti = (function () {
     jqueryMap.$buttonCancel
       .click( onClose );
 
+    jhkSimpleCommonSetJyugyouLst('jhk-dialogMulti-main-selectJyugyou', configMap.jyugyouName);
+    jhkSimpleCommonSetTeachersLst('jhk-dialogMulti-main-selectTeacher');
     return true;
   }
 

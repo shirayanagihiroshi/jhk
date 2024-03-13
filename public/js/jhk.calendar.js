@@ -13,7 +13,7 @@ jhk.calendar = (function () {
           + '<button id="jhk-calendar-toToday">今週へ</button>'
           + '<button id="jhk-calendar-nextDay">↓次の日へ</button>'
           + '<button id="jhk-calendar-nextWeek">↓↓次の週へ</button>'
-          + '<span class="jhk-calendar-text">filter:</span><select id="jhk-calendar-selectCls"">'
+          + '<span class="jhk-calendar-text">filter:</span><select id="jhk-calendar-selectCls">'
           + '</select>'
           + '<span class="jhk-calendar-text">filter:</span><select id="jhk-calendar-selectTeacher">'
           + '</select>'
@@ -27,11 +27,13 @@ jhk.calendar = (function () {
         settable_map        : {tableContentsHeight:true,
                                year               :true,
                                month              :true,
-                               day                :true},
+                               day                :true,
+                               teacher            :true},
         tableContentsHeight : 0,
         year                : 0,
         month               : 0,
-        day                 : 0
+        day                 : 0,
+        teacher             : ""
       },
       stateMap = {
         $container : null,
@@ -142,7 +144,7 @@ jhk.calendar = (function () {
                  teacher : jqueryMap.$selectTeacherS.val(),
                  jyugyou : jyugyou};
 
-        str = String(j.month) + '月' + String(j.day) + '日' + jhkSimpleCommonGetKomaStr(j.koma) + j.jyugyou + j.teacher;
+        str = String(j.month) + '月' + String(j.day) + '日' + jhkSimpleCommonGetKomaStr(j.koma) + ' ' + j.teacher + '先生の';
         //stateMap.addTarget.length = 0;
         stateMap.addTarget.push(j);
         $.gevent.publish('freestyleAdd', [{dialogStr:str,
@@ -306,17 +308,17 @@ jhk.calendar = (function () {
     jqueryMap.$selectTeacherS
       .change( onChangeTeacherS );
 
+    jhkSimpleCommonSetClsLst('jhk-calendar-selectCls');
     jhkSimpleCommonSetTeachersLst('jhk-calendar-selectTeacher');
-
-    jhkSimpleCommonSetTeachersLst('jhk-calendar-selectTeacher-select');
+    jhkSimpleCommonSetTeachersLst('jhk-calendar-selectTeacher-select', configMap.teacher);
 
     jhkSimpleCommonAddTableHeaher('jhk-calendar-table');
     jhkSimpleCommonAddTableContents('jhk-calendar-table',
                                     stateMap.henkous,
                                     stateMap.targetDays,
-                                    null,
-                                    null,
-                                    null,
+                                    configMap.teacher,
+                                    jhkJikanwari,
+                                    configMap.jyugyouClaName,
                                     configMap.ediClaName,
                                     configMap.delClaName,
                                     stateMap.temphenkouTarget);
@@ -379,9 +381,10 @@ jhk.calendar = (function () {
 
   // ダイアログから戻るときに、元の範囲を表示するためにshellが参照する。
   getDispTarget = function () {
-    let obj = {year  : stateMap.targetDays[0].year,
-               month : stateMap.targetDays[0].month,
-               day   : stateMap.targetDays[0].day};
+    let obj = {year    : stateMap.targetDays[0].year,
+               month   : stateMap.targetDays[0].month,
+               day     : stateMap.targetDays[0].day,
+               teacher : jqueryMap.$selectTeacherS.val()};
     return obj;
   }
 
