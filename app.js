@@ -189,7 +189,7 @@ writejson = function (henkoudata) {
     },
     today = new Date(),
     month = today.getMonth() + 1, //月だけ0始まり
-    lastMonth, nextMonth;
+    lastMonth, nextMonth, datestr;
 
   if (month == 1) {
     lastMonth = 12;
@@ -203,10 +203,12 @@ writejson = function (henkoudata) {
     nextMonth == month + 1;
   }
 
+  datestr = String(month) + '/' + String(today.getDate()) + ' ' + String(today.getHours()) + ':' + String(today.getMinutes()) + '更新'
+
   // 今月、先月、来月の分に絞り込み
   writedata = henkoudata.filter(f(lastMonth, month, nextMonth));
 
-  fs.writeFile(writefilename, 'let jhkhenkouData = ' + JSON.stringify(henkoudata), function (err) {
+  fs.writeFile(writefilename, 'let jhkhenkouData = ' + JSON.stringify(henkoudata) + ', jhkUpdate = "' + datestr + '";', function (err) {
     if (err) {
       console.log('jhkSimpleData.json.jsの書き込みに失敗しました');
       throw err;

@@ -5,7 +5,7 @@
 
 // 関数
 let toToday, nextDay, previousDay, nextWeek, previousWeek,
-  changeCls, setSelectCls, changeTeacher;
+  changeCls, setSelectCls, changeTeacher, setUpdateDate;
 // global変数
 let targetDays, targetHenkou;
 // 定数
@@ -16,6 +16,8 @@ addEventListener('load', function(e){
   setSelectCls();
   // 教員リストを準備
   jhkSimpleCommonSetTeachersLst('jhkSelectTeacher');
+  // 更新日時を設定
+  setUpdateDate();
 
   // 初めはすべてのデータを表示する。jhkhenkouDataはjhkSimpleData.json.jsにある。
   targetHenkou = jhkhenkouData;
@@ -117,4 +119,8 @@ changeTeacher = function () {
   jhkSimpleCommonDeleteRowTable('jhkTable', tableContentsHeight);
   jhkSimpleCommonAddTableContents('jhkTable', targetHenkou, targetDays);
 }
-
+setUpdateDate = function () {
+  let updatedate = document.getElementById('jhkUpdateDate');
+  // jhkUpdateはjhkSimpleData.json.jsにある
+  updatedate.innerHTML = jhkUpdate;
+}
