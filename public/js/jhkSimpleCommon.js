@@ -324,7 +324,10 @@ jhkSimpleCommonSetTeachersLst = function(targetId, teacherForcus=null) {
 // 教員絞り込み関数
 jhkTeacherFilterF = function (t) {
   return function (target) {
-    if ( target.teacher == t) {
+    if ( (target.teacher == t) ||
+         (target.hasOwnProperty('to')           == true && target.to           == t) ||
+         (target.hasOwnProperty('jyokin')       == true && target.jyokin       == t) ||
+         (target.hasOwnProperty('tonariJyokin') == true && target.tonariJyokin == t) ) {
       return true;
     } else {
       return false;
