@@ -17,8 +17,8 @@ addEventListener('load', function(e){
   // 教員リストを準備
   jhkSimpleCommonSetTeachersLst('jhkSelectTeacher');
 
-  // 初めはすべてのデータを表示する。henkouDataはjhkSimpleData.json.jsにある。
-  targetHenkou = henkouData;
+  // 初めはすべてのデータを表示する。jhkhenkouDataはjhkSimpleData.json.jsにある。
+  targetHenkou = jhkhenkouData;
 
   // 本日から1週間分の授業変更を表示する
   targetDays = jhkSimpleCommonGetTargetDays(tableContentsHeight);
@@ -110,9 +110,9 @@ changeTeacher = function () {
 
   // 先頭の'-'ならフィルターなし
   if (teacherList.value == '-') {
-    targetHenkou = henkouData;
+    targetHenkou = jhkhenkouData;
   } else {
-    targetHenkou = henkouData.filter(jhkTeacherFilterF(teacherList.value));
+    targetHenkou = jhkhenkouData.filter(jhkTeacherFilterF(teacherList.value));
   }
   jhkSimpleCommonDeleteRowTable('jhkTable', tableContentsHeight);
   jhkSimpleCommonAddTableContents('jhkTable', targetHenkou, targetDays);

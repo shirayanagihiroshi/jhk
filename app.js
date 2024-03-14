@@ -4,6 +4,8 @@
   var
     keys     = require('./lib/keys'),
     fs       = require('fs'),
+    writefilename = './public/js/jhkSimpleData.json.js',
+    writejson     = null,
     express  = require('express'),
     app      = express(),
     router   = express.Router(),
@@ -107,6 +109,11 @@ io.on("connection", function (socket) {
         db.findManyDocuments('jhkdatas', {}, {projection:{_id:0}}, function (res) {
             let obj = {datas:res, clientState:msg.clientState};
             io.to(socket.id).emit('readyHenkouSuccess', obj); // 送信者のみに送信
+            // クライアントには何も言わず、しれっとファイルへ書き込む
+            // 見るだけの人はこのファイルで授業変更を知る
+            if (msg.clientState != 'afterAdd' || msg.clientState != 'afterAdd') {
+              writejson(res);
+            }
         });
       } else {
         io.to(socket.id).emit('getHenkouFailure', {}); // 送信者のみに送信
@@ -169,6 +176,43 @@ io.on("connection", function (socket) {
   });
 });
 
+writejson = function (henkoudata) {
+  let writedata,
+    f = function (lastMonth, month, nextMonth) {
+      return function (target) {
+        if ( target.month == lastMonth || target.month == month || target.month == nextMonth) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    },
+    today = new Date(),
+    month = today.getMonth() + 1, //月だけ0始まり
+    lastMonth, nextMonth;
+
+  if (month == 1) {
+    lastMonth = 12;
+  } else {
+    lastMonth = month - 1;
+  }
+
+  if (month == 12) {
+    nextMonth == 1;
+  } else {
+    nextMonth == month + 1;
+  }
+
+  // 今月、先月、来月の分に絞り込み
+  writedata = henkoudata.filter(f(lastMonth, month, nextMonth));
+
+  fs.writeFile(writefilename, 'let jhkhenkouData = ' + JSON.stringify(henkoudata), function (err) {
+    if (err) {
+      console.log('jhkSimpleData.json.jsの書き込みに失敗しました');
+      throw err;
+    }
+  });
+}
 //------ユーティリティメソッドe--------
 
 //------サーバ構成s--------
