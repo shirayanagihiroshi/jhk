@@ -5,15 +5,15 @@
 
 // 関数
 let toToday, nextDay, previousDay, nextWeek, previousWeek,
-  changeCls, setSelectCls, changeTeacher, setUpdateDate;
+  changeCls, changeTeacher, setUpdateDate;
 // global変数
 let targetDays, targetHenkou;
 // 定数
 const tableContentsHeight = 14; // 7日分表示
 
 addEventListener('load', function(e){
-  // プルダウンリストを準備
-  setSelectCls();
+  // クラスリストを準備
+  jhkSimpleCommonSetClsLst('jhkSelectCls');
   // 教員リストを準備
   jhkSimpleCommonSetTeachersLst('jhkSelectTeacher');
   // 更新日時を設定
@@ -79,33 +79,25 @@ changeCls = function () {
   let clslist, teacherList;
   console.log("changeCls called");
 
-  clslist = document.getElementById('selectCls');
+  clslist = document.getElementById('jhkSelectCls');
   clslist.classList.add('listselected');
   teacherList = document.getElementById('jhkSelectTeacher');
   teacherList.classList.remove('listselected');
 
-}
-
-setSelectCls = function() {
-  let cls,
-    clslist = document.getElementById('selectCls');
-  
-  cls = document.createElement('option');
-  cls.value = '1-1';
-  cls.text = '1-1';
-  clslist.appendChild(cls);
-
-  cls = document.createElement('option');
-  cls.value = '1-2';
-  cls.text = '1-2';
-  clslist.appendChild(cls);
-
+  // 先頭の'-'ならフィルターなし
+  if (clslist.value == '-') {
+    targetHenkou = jhkhenkouData;
+  } else {
+    targetHenkou = jhkhenkouData.filter(jhkClsFilterF(clslist.value));
+  }
+  jhkSimpleCommonDeleteRowTable('jhkTable', tableContentsHeight);
+  jhkSimpleCommonAddTableContents('jhkTable', targetHenkou, targetDays);
 }
 
 changeTeacher = function () {
   let clslist, teacherList;
 
-  clslist = document.getElementById('selectCls');
+  clslist = document.getElementById('jhkSelectCls');
   clslist.classList.remove('listselected');
   teacherList = document.getElementById('jhkSelectTeacher');
   teacherList.classList.add('listselected');
@@ -119,6 +111,7 @@ changeTeacher = function () {
   jhkSimpleCommonDeleteRowTable('jhkTable', tableContentsHeight);
   jhkSimpleCommonAddTableContents('jhkTable', targetHenkou, targetDays);
 }
+
 setUpdateDate = function () {
   let updatedate = document.getElementById('jhkUpdateDate');
   // jhkUpdateはjhkSimpleData.json.jsにある

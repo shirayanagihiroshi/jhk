@@ -294,10 +294,6 @@ jhkSimpleCommonSetClsLst = function(targetId) {
   }
 }
 
-//クラス絞り込み関数
-jhkClsFilterF = function (t) {
-};
-
 // 教員のリストを設定する
 jhkSimpleCommonSetTeachersLst = function(targetId, teacherForcus=null) {
   // jhkTeachers の中身はjhkteacher.json.jsにある
@@ -357,3 +353,15 @@ jhkSimpleCommonSetJyugyouLst = function(targetId, jyugyouForcus=null) {
     jyugyouList.appendChild(jyugyou);
   }
 }
+
+// クラスによる絞り込み関数
+// これは授業を絞りこむのに使う
+jhkClsFilterF = function (cls) {
+  return function (target) {
+    if (target.cls.includes(cls)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+};

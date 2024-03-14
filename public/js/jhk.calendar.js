@@ -112,14 +112,16 @@ jhk.calendar = (function () {
                      koma    : stateMap.temphenkouTarget.koma,
                      teacher : stateMap.temphenkouTarget.teacher,
                      jyugyou : stateMap.temphenkouTarget.jyugyou,
-                     to      : jqueryMap.$selectTeacherS.val()},
+                     to      : jqueryMap.$selectTeacherS.val(),
+                     cls     : getClsOfJyugyou(stateMap.temphenkouTarget.jyugyou)},
                j2 = {year    : d.year,
                      month   : d.month,
                      day     : d.day,
                      koma    : yoko,
                      teacher : jqueryMap.$selectTeacherS.val(),
                      jyugyou : jyugyou,
-                     to      : stateMap.temphenkouTarget.teacher};
+                     to      : stateMap.temphenkouTarget.teacher,
+                     cls     : getClsOfJyugyou(jyugyou)};
              stateMap.addTarget.push(j1);
              stateMap.addTarget.push(j2);
              str = '入れ替えますか<br>'

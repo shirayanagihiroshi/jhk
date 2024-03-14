@@ -111,7 +111,7 @@ io.on("connection", function (socket) {
             io.to(socket.id).emit('readyHenkouSuccess', obj); // 送信者のみに送信
             // クライアントには何も言わず、しれっとファイルへ書き込む
             // 見るだけの人はこのファイルで授業変更を知る
-            if (msg.clientState != 'afterAdd' || msg.clientState != 'afterAdd') {
+            if (msg.clientState == 'afterAdd' || msg.clientState == 'afterDel') {
               writejson(res);
             }
         });
@@ -212,6 +212,8 @@ writejson = function (henkoudata) {
     if (err) {
       console.log('jhkSimpleData.json.jsの書き込みに失敗しました');
       throw err;
+    } else {
+      console.log('jhkSimpleData.json.jsの書き込みに成功しました');
     }
   });
 }
