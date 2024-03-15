@@ -286,6 +286,12 @@ jhkSimpleCommonSetClsLst = function(targetId) {
   cls.text = '-';
   classList.appendChild(cls);
 
+  // 中学校を追加
+  cls = document.createElement('option');
+  cls.value = '中学';
+  cls.text = '中学';
+  classList.appendChild(cls);
+
   for (i = 0; i <= jhkClasses.length -1; i++) {
     cls = document.createElement('option');
     cls.value = jhkClasses[i];
@@ -358,10 +364,20 @@ jhkSimpleCommonSetJyugyouLst = function(targetId, jyugyouForcus=null) {
 // これは授業を絞りこむのに使う
 jhkClsFilterF = function (cls) {
   return function (target) {
-    if (target.cls.includes(cls)) {
-      return true;
+    if (cls == '中学') { //中学のときは特別の判定
+      if ( target.cls.includes('1-A') || target.cls.includes('1-B') || target.cls.includes('1-C') ||
+           target.cls.includes('2-A') || target.cls.includes('2-B') || target.cls.includes('2-C') ||
+           target.cls.includes('3-A') || target.cls.includes('3-B') || target.cls.includes('3-C') ) {
+        return true;
+      } else {
+        return false;
+      }
     } else {
-      return false;
+      if (target.cls.includes(cls)) {
+        return true;
+      } else {
+        return false;
+      }
     }
   }
 };
