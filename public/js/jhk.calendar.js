@@ -179,6 +179,23 @@ jhk.calendar = (function () {
 
   onPreviousWeek = function () {
     console.log('onPreviousWeek');
+    stateMap.targetDays = jhkSimpleCommonGetTargetDays(configMap.tableContentsHeight,
+                                                       stateMap.targetDays[0].year,
+                                                       stateMap.targetDays[0].month,
+                                                       stateMap.targetDays[0].day,
+                                                       -7);
+    jhk.model.addNikka(stateMap.targetDays, jhk.model.getCalendar());
+
+    jhkSimpleCommonDeleteRowTable('jhk-calendar-table', configMap.tableContentsHeight);
+    jhkSimpleCommonAddTableContents('jhk-calendar-table',
+                                    stateMap.henkous,
+                                    stateMap.targetDays,
+                                    jqueryMap.$selectTeacherS.val(),
+                                    jhkJikanwari,
+                                    configMap.jyugyouClaName,
+                                    configMap.ediClaName,
+                                    configMap.delClaName,
+                                    stateMap.temphenkouTarget);
     return false;
   }
 
@@ -206,6 +223,19 @@ jhk.calendar = (function () {
 
   onToToday = function () {
     console.log('onToToday');
+    stateMap.targetDays = jhkSimpleCommonGetTargetDays(configMap.tableContentsHeight);
+    jhk.model.addNikka(stateMap.targetDays, jhk.model.getCalendar());
+
+    jhkSimpleCommonDeleteRowTable('jhk-calendar-table', configMap.tableContentsHeight);
+    jhkSimpleCommonAddTableContents('jhk-calendar-table',
+                                    stateMap.henkous,
+                                    stateMap.targetDays,
+                                    jqueryMap.$selectTeacherS.val(),
+                                    jhkJikanwari,
+                                    configMap.jyugyouClaName,
+                                    configMap.ediClaName,
+                                    configMap.delClaName,
+                                    stateMap.temphenkouTarget);
     return false;
   }
 
@@ -233,6 +263,23 @@ jhk.calendar = (function () {
 
   onNextWeek = function () {
     console.log('onNextWeek');
+    stateMap.targetDays = jhkSimpleCommonGetTargetDays(configMap.tableContentsHeight,
+                                                       stateMap.targetDays[0].year,
+                                                       stateMap.targetDays[0].month,
+                                                       stateMap.targetDays[0].day,
+                                                       7);
+    jhk.model.addNikka(stateMap.targetDays, jhk.model.getCalendar());
+
+    jhkSimpleCommonDeleteRowTable('jhk-calendar-table', configMap.tableContentsHeight);
+    jhkSimpleCommonAddTableContents('jhk-calendar-table',
+                                    stateMap.henkous,
+                                    stateMap.targetDays,
+                                    jqueryMap.$selectTeacherS.val(),
+                                    jhkJikanwari,
+                                    configMap.jyugyouClaName,
+                                    configMap.ediClaName,
+                                    configMap.delClaName,
+                                    stateMap.temphenkouTarget);
     return false;
   }
 
