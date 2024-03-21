@@ -42,13 +42,15 @@ jhk.shell = (function () {
           + '<div class="jhk-toggle-circle"></div>'
           + '<div class="jhk-input-mode-title"></div>'
         + '</label>'
+        + '<a href="https://shirayanagihiroshi.github.io/jhk/" target="_blank" rel="noopener noreferrer" class="jhk-howtoUse">使い方へ</a>'
         + '<button class="jhk-shell-head-acct"></button>'
       + '</div>'
       + '<div class="jhk-shell-main">'
       + '</div>',
     toggleColorOn  : 'blue', // cssを変えることで色を変えているので値を持っておかないとだめ
     toggleColorOff : 'gray',
-    toggleMoveTime : 200     // トグルスイッチの移動に要する時間。ミリ秒
+    toggleMoveTime : 200,    // トグルスイッチの移動に要する時間。ミリ秒
+    appversion : '1.0',      // アプリバージョン
     },
     stateMap = {
       $container : null,
@@ -291,7 +293,7 @@ jhk.shell = (function () {
       schema_map : configMap.anchor_schema_map
     });
 
-    jqueryMap.$title.html( '授業変更を設定する' );
+    jqueryMap.$title.html( '授業変更を設定する ver.' + configMap.appversion );
     stateMap.mode = 'irekae';
     jqueryMap.$toggleTitle.html( '入れ替えモード' );
 

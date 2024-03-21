@@ -3,7 +3,8 @@
  * シェルスタイル
  */
 .jhk-shell-head, .jhk-shell-head-title, .jhk-shell-head-acct,
-.jhk-shell-main, .jhk-shell-main-menu, .jhk-shell-main-content, .jhk-shell-dialog
+.jhk-shell-main, .jhk-shell-main-menu, .jhk-shell-main-content, .jhk-shell-dialog,
+.jhk-howtoUse
 {
   position: absolute;
 }
@@ -81,7 +82,7 @@ input[type='checkbox'] {
 
 .jhk-input-mode-toggle {
   top  : 6px;
-  left : 240px;
+  left : 300px;
 }
 
 .jhk-input-mode-title {
@@ -105,4 +106,9 @@ input[type='checkbox'] {
   height: 20px;
   border-radius: 10px;
   background-color: gray;
+}
+
+.jhk-howtoUse {
+  top: 8px;
+  left: 500px;
 }
