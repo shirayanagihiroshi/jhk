@@ -123,6 +123,7 @@ jhk.calendar = (function () {
                      jyugyou : jyugyou,
                      to      : stateMap.temphenkouTarget.teacher,
                      cls     : getClsOfJyugyou(jyugyou)};
+             stateMap.addTarget.length = 0; // この選択操作の前にキャンセルしていたら、addTargetに不要なものが保存されている。それを消す。
              stateMap.addTarget.push(j1);
              stateMap.addTarget.push(j2);
              str = '入れ替えますか<br>'
