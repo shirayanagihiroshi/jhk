@@ -19,6 +19,8 @@ jhk.calendar = (function () {
           + '</select>'
           + '<span class="jhk-calendar-text">select:</span><select id="jhk-calendar-selectTeacher-select">'
           + '</select>'
+          + '<span class="jhk-calendar-text">kyouka:</span><select id="jhk-calendar-kyouka-select">'
+          + '</select>'
           + '<table id="jhk-calendar-table">'
           + '</table>',
         jyugyouClaName      : 'jhk-calendar-jyugyou',
@@ -28,12 +30,14 @@ jhk.calendar = (function () {
                                year               :true,
                                month              :true,
                                day                :true,
-                               teacher            :true},
+                               teacher            :true,
+                               kyouka             :true},
         tableContentsHeight : 0,
         year                : 0,
         month               : 0,
         day                 : 0,
-        teacher             : ""
+        teacher             : "",
+        kyouka              : ""
       },
       stateMap = {
         $container : null,
@@ -49,7 +53,7 @@ jhk.calendar = (function () {
       getDispTarget, kouhoCancel, tableRedraw,
       onPreviousWeek, onPreviousDay, onToToday, onNextDay, onNextWeek,
       onTalbeClick, onChangeCls, onChangeTeacher, onChangeTeacherS,
-      setDelTarget, getClsOfJyugyou ;
+      onChangeKyouka, setDelTarget, getClsOfJyugyou ;
 
   //---DOMメソッド---
   setJqueryMap = function () {
@@ -64,6 +68,7 @@ jhk.calendar = (function () {
       $selectCls     : $container.find( '#jhk-calendar-selectCls' ),
       $selectTeacher : $container.find( '#jhk-calendar-selectTeacher' ),
       $selectTeacherS: $container.find( '#jhk-calendar-selectTeacher-select' ),
+      $selectKyouka  : $container.find( '#jhk-calendar-kyouka-select' ),
       $text          : $container.find( '.jhk-calendar-text' ),
       $table         : $container.find( '#jhk-calendar-table' )
     };
@@ -350,6 +355,22 @@ jhk.calendar = (function () {
     return false;
   }
 
+  onChangeKyouka = function () {
+    jhkSimpleCommonSetTeachersLst('jhk-calendar-selectTeacher-select', configMap.teacher, jqueryMap.$selectKyouka.val());
+
+    jhkSimpleCommonDeleteRowTable('jhk-calendar-table', configMap.tableContentsHeight);
+    jhkSimpleCommonAddTableContents('jhk-calendar-table',
+                                    stateMap.henkous,
+                                    stateMap.targetDays,
+                                    jqueryMap.$selectTeacherS.val(),
+                                    jhkJikanwari,
+                                    configMap.jyugyouClaName,
+                                    configMap.ediClaName,
+                                    configMap.delClaName,
+                                    stateMap.temphenkouTarget);
+    return false;
+  }
+
   //---ユーティリティメソッド---
   getClsOfJyugyou = function (jyugyou) {
     let idx,
@@ -418,9 +439,14 @@ jhk.calendar = (function () {
     jqueryMap.$selectTeacherS
       .change( onChangeTeacherS );
 
+    jqueryMap.$selectKyouka
+      .change( onChangeKyouka );
+
     jhkSimpleCommonSetClsLst('jhk-calendar-selectCls');
     jhkSimpleCommonSetTeachersLst('jhk-calendar-selectTeacher');
-    jhkSimpleCommonSetTeachersLst('jhk-calendar-selectTeacher-select', configMap.teacher);
+    jhkSimpleCommonSetTeachersLst('jhk-calendar-selectTeacher-select', configMap.teacher, configMap.kyouka);
+
+    jhkSimpleCommonSetKyoukaLst('jhk-calendar-kyouka-select', configMap.kyouka);
 
     jhkSimpleCommonAddTableHeaher('jhk-calendar-table');
     jhkSimpleCommonAddTableContents('jhk-calendar-table',
@@ -482,6 +508,7 @@ jhk.calendar = (function () {
         jqueryMap.$selectCls.remove();
         jqueryMap.$selectTeacher.remove();
         jqueryMap.$selectTeacherS.remove();
+        jqueryMap.$selectKyouka.remove();
         jqueryMap.$text.remove();
         jqueryMap.$table.remove();
       }
@@ -494,7 +521,8 @@ jhk.calendar = (function () {
     let obj = {year    : stateMap.targetDays[0].year,
                month   : stateMap.targetDays[0].month,
                day     : stateMap.targetDays[0].day,
-               teacher : jqueryMap.$selectTeacherS.val()};
+               teacher : jqueryMap.$selectTeacherS.val(),
+               kyouka  : jqueryMap.$selectKyouka.val()};
     return obj;
   }
 

@@ -12,7 +12,21 @@ let jhkSimpleCommonCelPosToKoma,
   jhkSimpleCommonGetKomaStr, jhkSimpleCommonMakeDateStr,
   jhkSimpleCommonSetClsLst, jhkClsFilterF,
   jhkSimpleCommonSetTeachersLst, jhkTeacherFilterF,
+  jhkSimpleCommonSetKyoukaLst,
   jhkSimpleCommonSetJyugyouLst;
+
+// そうそう変更されなさそうだし、jsonファイルを用意するほどのものでもないのでここに。
+// 先生をプルダウンから選ぶのにリストが長すぎなので、これで絞り込む
+const jhkkyouka = [
+  '-',
+  '国語',
+  '社会',
+  '数学',
+  '理科',
+  '英語',
+  '体育',
+  'その他'
+  ]
 
 jhkSimpleCommonCelPosToKoma = function (CelPos) {
   let headers = ['日付', '朝HR', '1限', '2限', '3限', '4限', '5限', '6限', '帰HR', '7限'];
@@ -301,10 +315,28 @@ jhkSimpleCommonSetClsLst = function(targetId) {
 }
 
 // 教員のリストを設定する
-jhkSimpleCommonSetTeachersLst = function(targetId, teacherForcus=null) {
+jhkSimpleCommonSetTeachersLst = function(targetId, teacherForcus=null, kyoukaFilter=null) {
   // jhkTeachers の中身はjhkteacher.json.jsにある
   let i, teacher,
-    teacherList = document.getElementById(targetId);
+    targetlst = [],
+    teacherList = document.getElementById(targetId),
+    f = function (kyouka) {
+      return function (target) {
+        if ( target.kyouka == kyouka) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    };
+
+  teacherList.innerHTML='';
+
+  if (kyoukaFilter == null || kyoukaFilter == '' || kyoukaFilter == '-') { //起動時は''でくる
+    targetlst = jhkTeachers;
+  } else {
+    targetlst = jhkTeachers.filter(f(kyoukaFilter));
+  }
 
   // 先頭に'-'を追加
   teacher = document.createElement('option');
@@ -312,14 +344,31 @@ jhkSimpleCommonSetTeachersLst = function(targetId, teacherForcus=null) {
   teacher.text = '-';
   teacherList.appendChild(teacher);
 
-  for (i = 0; i <= jhkTeachers.length -1; i++) {
+  for (i = 0; i <= targetlst.length -1; i++) {
     teacher = document.createElement('option');
-    teacher.value = jhkTeachers[i];
-    teacher.text = jhkTeachers[i];
-    if (teacherForcus != null && teacherForcus == jhkTeachers[i]) {
+    teacher.value = targetlst[i].teacher;
+    teacher.text = targetlst[i].teacher;
+    if (teacherForcus != null && teacherForcus == targetlst[i].teacher) {
       teacher.selected = true;
     }
     teacherList.appendChild(teacher);
+  }
+};
+
+// 教科のリストを設定する
+jhkSimpleCommonSetKyoukaLst = function(targetId, kyoukaForcus=null) {
+  // jhkkyouka の中身はこのファイルにある
+  let i, kyouka,
+    kyoukaList = document.getElementById(targetId);
+
+  for (i = 0; i <= jhkkyouka.length -1; i++) {
+    kyouka = document.createElement('option');
+    kyouka.value = jhkkyouka[i];
+    kyouka.text = jhkkyouka[i];
+    if (kyoukaForcus != null && kyoukaForcus == jhkkyouka[i]) {
+      kyouka.selected = true;
+    }
+    kyoukaList.appendChild(kyouka);
   }
 };
 

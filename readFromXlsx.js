@@ -27,6 +27,7 @@ let jyugyouListTemp = [];
 let jyugyouListTemp2= [];
 let jyugyouList     = [];
 let teacherListTemp = [];
+let teacherListTemp2= [];
 let teacherList     = [];
 let json, i;
 
@@ -87,7 +88,12 @@ xlsx2array('A', sheetDataA, jikanwariList);
 xlsx2array('B', sheetDataB, jikanwariList);
 
 // 重複の排除
-teacherList = Array.from(new Set(teacherListTemp));
+teacherListTemp2 = Array.from(new Set(teacherListTemp));
+for (i = 0; i <= teacherListTemp2.length -1 ; i++) {
+  teacherList.push({'teacher' : teacherListTemp2[i],
+                    'kyouka' : ""}); // 後で人間が設定する。
+                                     // 国語or社会or数学or理科or英語or体育orその他
+}
 jyugyouListTemp2 = Array.from(new Set(jyugyouListTemp));
 jyugyouListTemp2.sort();
 for (i = 0; i <= jyugyouListTemp2.length -1 ; i++) {
