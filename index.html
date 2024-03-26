@@ -18,6 +18,7 @@
   <li><a href="#freeformat">自由入力モードで入力するには</a></li>
   <li><a href="#delete">入力したものを削除するには</a></li>
   <li><a href="#filter">絞り込みをするには</a></li>
+  <li><a href="#kyoukafilter">教員を教科で絞り込む</a></li>
 </ol>
 
 <h2><a name="gaiyou">概要</a></h2>
@@ -27,58 +28,62 @@
 
 <h2><a name="rireki">更新履歴</a></h2>
 <ul>
-  <li>
-    ver.1.0 : 2024/03/21 授業変更の登録と閲覧ができる
-  </li>
+  <li>ver.1.1 : 2024/03/26 登録時の教員のリストを教科でフィルターできる</li>
+  <li>ver.1.0 : 2024/03/21 授業変更の登録と閲覧ができる</li>
 </ul>
 
 <h2><a name="howtoLogin">ログインするには</a></h2>
 <img src="images/howToUse001.png">
-↓
+<p>↓</p>
 <img src="images/howToUse002.png">
-↓
+<p>↓</p>
 <img src="images/howToUse003.png">
 
 <h2><a name="irekae">入れ替えモードで入力するには</a></h2>
-入力は人(教員)単位である。入れ替えたい教員2名のうち片方を画面右上select:から選択する。選択した人の授業のあるコマはオレンジ色になる。
+<p>入力は人(教員)単位である。入れ替えたい教員2名のうち片方を画面右上select:から選択する。選択した人の授業のあるコマはオレンジ色になる。</p>
 <img src="images/howToUse011.png">
-↓
-選択した人の授業のあるオレンジ色のコマのうち、入れ替えをしたいコマをクリックする。クリックすると選択した人の名前がセル内に表示される。（この緑の名前は、名前をクリックするか、モードを入れ替えると削除される）
+<p>↓</p>
+<p>選択した人の授業のあるオレンジ色のコマのうち、入れ替えをしたいコマをクリックする。クリックすると選択した人の名前がセル内に表示される。（この緑の名前は、名前をクリックするか、モードを入れ替えると削除される）</p>
 <img src="images/howToUse012.png">
-↓
-入れ替えをしたい教員のうち、もう片方を画面右上select:から選択し、入れ替えたいコマをクリックする。
+<p>↓</p>
+<p>入れ替えをしたい教員のうち、もう片方を画面右上select:から選択し、入れ替えたいコマをクリックする。</p>
 <img src="images/howToUse013.png">
-↓
+<p>↓</p>
 <img src="images/howToUse014.png">
-↓
+<p>↓</p>
 <img src="images/howToUse015.png">
 
 <h2><a name="freeformat">自由入力モードで入力するには</a></h2>
-画面上部のスイッチをクリックすると自由入力モードになる。
+<p>画面上部のスイッチをクリックすると自由入力モードになる。</p>
 <img src="images/howToUse021.png">
-↓
-画面右上select:から授業を入れ替えたい教員を選び、入れ替えたいコマをクリックする。
+<p>↓</p>
+<p>画面右上select:から授業を入れ替えたい教員を選び、入れ替えたいコマをクリックする。</p>
 <img src="images/howToUse022.png">
-↓
-例えば助勤を設定するときには、助勤をする教員を選び、助勤ボタンをクリックする。
+<p>↓</p>
+<p>例えば助勤を設定するときには、助勤をする教員を選び、助勤ボタンをクリックする。</p>
 <img src="images/howToUse023.png">
-↓
+<p>↓</p>
 <img src="images/howToUse024.png">
 
 <h2><a name="delete">入力したものを削除するには</a></h2>
-削除するときは、まず画面右上select:から"-"を選択し（入れ替えモード、自由入力モード共通）、削除したい入れ替えの<span class="index-showstrong">元になる先生の名前</span>をクリックする
+<p>削除するときは、まず画面右上select:から"-"を選択し（入れ替えモード、自由入力モード共通）、削除したい入れ替えの<span class="index-showstrong">元になる先生の名前</span>をクリックする</p>
 <img src="images/howToUse031.png">
-↓
+<p>↓</p>
 <img src="images/howToUse032.png">
-↓
+<p>↓</p>
 <img src="images/howToUse033.png">
 
 <h2><a name="filter">絞り込みをするには</a></h2>
-画面上部のfilter:からクラスかまたは教員を選ぶと該当する変更のみに絞り込んで表示する。
+<p>画面上部のfilter:からクラスかまたは教員を選ぶと該当する変更のみに絞り込んで表示する。</p>
 <img src="images/howToUse041.png">
-↓
-なお、クラス/教員による絞りこみは<span class="index-showstrong">後勝ち</span>である。後から選んだものだけのフィルターがかかる。
+<p>↓</p>
+<p>なお、クラス/教員による絞りこみは<span class="index-showstrong">後勝ち</span>である。後から選んだものだけのフィルターがかかる。</p>
 <img src="images/howToUse042.png">
+<h2><a name="kyoukafilter">教員を教科で絞り込む</a></h2>
+<p>画面右上のkyouka:で教科を選ぶと、select:で選ぶことができる教員が絞り込まれれる。kyouka:による絞り込みはselect:だけに効き、テーブルに表示される授業変更には影響しない</p>
+<img src="images/howToUse051.png">
+<p>↓</p>
+<img src="images/howToUse052.png">
 
 
 <h1>本ページを書いた人</h1>
