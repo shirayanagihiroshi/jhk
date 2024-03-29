@@ -240,7 +240,7 @@ writejson = function (henkoudata) {
     console.log('request.url');
     console.log(request.url);
 
-    response.sendFile( __dirname +'/public/jhkSimpleLock.html' );
+    response.sendFile( __dirname +'/public/jhkSimple.html' );
   });
 
   app.get('/kyoumu', function ( request, response ) {
@@ -249,7 +249,7 @@ writejson = function (henkoudata) {
 
     response.sendFile( __dirname +'/public/jhk.html' );
   });
-
+/*
   app.get('/:mypassword', function ( request, response ) {
     let urlStr;
 
@@ -264,7 +264,7 @@ writejson = function (henkoudata) {
     }
     response.sendFile( __dirname + urlStr );
   });
-
+*/
 //------サーバ構成e--------
 //------サーバ起動s--------
   http.listen( port, function () {
