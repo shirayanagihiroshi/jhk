@@ -19,27 +19,33 @@ Michael S. Mikowski、Josh C. Powell　著、佐藤 直生　監訳、木下 哲
 サーバ側はnode.jsとmongodbが必要。クライアントはブラウザで該当URLにアクセスすれば良い。mongodがあらかじめ動いている必要があり、DBにある程度の情報が登録されている必要がある。
 
 ### 依存関係
-- node.js : v--
-- mongodb : v--
+- node.js : v18.20.0
+- Mongodb : 6.0.14
+
+## データの準備1
+- <span style="color:blue;">時間割のExcel表の整理</span> : 授業名から該当クラスを引き当てるロジックがあるので、「道徳」や「LHR」は許さない。
+該当クラスのHRの名前に変更しておく。例："道徳"->"1-A"  とか、"LHR"->"3-1"　等
+
+- <span style="color:blue;">読み取るデータの設定</span> : readFromXlsx.js の targetFileName, sheetNameA, sheetNameB を設定する。
+
+- <span style="color:blue;">データの変換(xlsx -> json)</span> : コマンドプロンプトで node readFromXlsx.js (事前にnpm installは必要)する。
+
+- <span style="color:blue;">生成されたjson を加工</span> : public/js/jhkjyugyous.json.js (授業名から該当クラスを探すための一覧）
+例えばjyugyouが"１－ABC"ならclsは["1-A","1-B","1-C"]とする。
+
+- <span style="color:blue;">生成されたjson を加工</span> : public/js/jhkteacher.json.js (先生の一覧のデータ）
+先生に対応する教科を設定する。"国語"or"社会"or"数学"or"理科"or"英語"or"体育"or"その他" である。
+
+- <span style="color:blue;">json を加工</span> : public/js/jhkClasses.json.js (クラスの一覧のデータ）
+クラスが増減したら変更する。これはgitにありxlsxで生成されない。
+
+- <span style="color:blue;">データをサーバにコピー</span> : 上記 jhk***.json.js と、jhkjikanwari.json.js(各先生の時間割のデータ)をサーバへコピーする。
+
+## データの準備2
+skt(別システム)のuser, calendar collection を参照して、それぞれ、ログインと時間割の引き当て処理のときに使っている。それらのデータがある前提で動く。
 
 ## 実行
-
-- データの準備(時間割のExcel表)：
-授業名から該当クラスを引き当てるロジックがあるので、「道徳」や「LHR」は許さない。
-該当クラスのHRの名前に変更しておく。例：'道徳'->'1-A'  とか、'LHR'->'3-1'　等
-後の手順のnpm installをしたあと、以下のコマンドを実行する
-readFromXlsx.js 時間割のExcel表のファイル名
-
-- データの準備：。
-public/js/jhkClasses.json.js (クラスが増減したら、それを人間の手で修正する必要がある)
-public/js/jhkjyugyous.json.js (授業名から該当クラスを探すための一覧。
-ファイル自体はreadFromXlsx.jsに時間割のExcel表を読ませると自動で生成されるが、
-該当クラスは人間が手で入力する必要がある。例えばjyugyouが'１－ABC'ならclsは['1-A','1-B','1-C']とする。)
-public/js/jhkjikanwari.json.js (先生の時間割のデータ。readFromXlsx.jsに時間割のExcel表を読ませると自動で生成される)
-public/js/jhkteacher.json.js (先生の一覧のデータ。readFromXlsx.jsに時間割のExcel表を読ませると自動で生成される)
-
-- サーバ側 : このリポジトリをcloneし、`npm install`そして、`node app.js`
-する。ただし、`lib/keys.js`にあるhttpsの鍵、mongodbのユーザは相応に変更が必要。
+- node app.js する。(lib/keys.js にあるhttpsの鍵、mongodbのユーザは相応に変更が必要)
 
 ### 設計
 別ファイル参照。
