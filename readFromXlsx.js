@@ -2,7 +2,7 @@
 const XLSX = require('xlsx');
 const fs   = require('fs');
 // 日本語をうまく扱えないときはjavascriptのファイルの文字コードに注意。shiftjisだとダメだった。
-const targetFileName = 'R06時間割_forjhk.xlsx';  // 読み取るファイルに応じて変更が必要
+const targetFileName = 'R06時間割_forjhk_v2.xlsx';  // 読み取るファイルに応じて変更が必要
 const sheetNameA     = 'R06A';                  // 読み取るファイルに応じて変更が必要
 const sheetNameB     = 'R06B';                  // 読み取るファイルに応じて変更が必要
 const jikanwariFile  = 'jhkjikanwari.json.js';
@@ -53,7 +53,7 @@ xlsx2array = function(nikka, sheetValues, jikanwariList) {
       } else {
         koma++;
       }
-      if (sheetValues[i][j] != null) {
+      if (sheetValues[i][j] != null && sheetValues[i][j] != "") {
         jikanwariList.push({'nikka'   : nikka,
                             'teacher' : sheetValues[i][0],
                             'youbi'   : youbi,
@@ -68,7 +68,7 @@ xlsx2array = function(nikka, sheetValues, jikanwariList) {
     }
     // 37-40は土曜
     for (j = 37;j <= 40; j++) {
-      if (sheetValues[i][j] != null) {
+      if (sheetValues[i][j] != null && sheetValues[i][j] != "") {
         jikanwariList.push({'nikka'   : nikka,
                             'teacher' : sheetValues[i][0],
                             'youbi'   : 6,
