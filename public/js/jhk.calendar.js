@@ -324,7 +324,8 @@ jhk.calendar = (function () {
     if (jqueryMap.$selectTeacher.val() == '-') {
       stateMap.henkous = jhk.model.getHenkou();
     } else {
-      stateMap.henkous = stateMap.henkous.filter(jhkTeacherFilterF(jqueryMap.$selectTeacher.val()));
+      let motoData = jhk.model.getHenkou();
+      stateMap.henkous = motoData.filter(jhkTeacherFilterF(jqueryMap.$selectTeacher.val()));
     }
 
     jhkSimpleCommonDeleteRowTable('jhk-calendar-table', configMap.tableContentsHeight);
