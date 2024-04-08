@@ -50,7 +50,7 @@ jhk.shell = (function () {
     toggleColorOn  : 'blue', // cssを変えることで色を変えているので値を持っておかないとだめ
     toggleColorOff : 'gray',
     toggleMoveTime : 200,    // トグルスイッチの移動に要する時間。ミリ秒
-    appversion : '1.1',      // アプリバージョン
+    appversion : '1.2',      // アプリバージョン
     },
     stateMap = {
       $container : null,

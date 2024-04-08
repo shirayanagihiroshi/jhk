@@ -306,6 +306,12 @@ jhkSimpleCommonSetClsLst = function(targetId) {
   cls.text = '中学';
   classList.appendChild(cls);
 
+  // 高校を追加
+  cls = document.createElement('option');
+  cls.value = '高校';
+  cls.text = '高校';
+  classList.appendChild(cls);
+
   for (i = 0; i <= jhkClasses.length -1; i++) {
     cls = document.createElement('option');
     cls.value = jhkClasses[i];
@@ -417,6 +423,17 @@ jhkClsFilterF = function (cls) {
       if ( target.cls.includes('1-A') || target.cls.includes('1-B') || target.cls.includes('1-C') ||
            target.cls.includes('2-A') || target.cls.includes('2-B') || target.cls.includes('2-C') ||
            target.cls.includes('3-A') || target.cls.includes('3-B') || target.cls.includes('3-C') ) {
+        return true;
+      } else {
+        return false;
+      }
+    } else if (cls == '高校') {
+      if ( target.cls.includes('1-1') || target.cls.includes('1-2') || target.cls.includes('1-3') || target.cls.includes('1-4') || target.cls.includes('1-5')  ||
+           target.cls.includes('1-6') || target.cls.includes('1-7') || target.cls.includes('1-8') || target.cls.includes('1-9') || target.cls.includes('1-10') ||
+           target.cls.includes('2-1') || target.cls.includes('2-2') || target.cls.includes('2-3') || target.cls.includes('2-4') || target.cls.includes('2-5')  ||
+           target.cls.includes('2-6') || target.cls.includes('2-7') || target.cls.includes('2-8') || target.cls.includes('2-9') || target.cls.includes('2-10') ||
+           target.cls.includes('3-1') || target.cls.includes('3-2') || target.cls.includes('3-3') || target.cls.includes('3-4') || target.cls.includes('3-5')  ||
+           target.cls.includes('3-6') || target.cls.includes('3-7') || target.cls.includes('3-8') || target.cls.includes('3-9') || target.cls.includes('3-10') ) {
         return true;
       } else {
         return false;
