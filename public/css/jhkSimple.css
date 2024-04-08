@@ -42,3 +42,8 @@ li {
 ul {
   padding-left: 0;
 }
+
+.jhk-table-header{
+  position: sticky;
+  top: 0;
+}

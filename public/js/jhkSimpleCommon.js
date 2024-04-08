@@ -46,6 +46,7 @@ jhkSimpleCommonAddTableHeaher = function (targetId) {
     let th = document.createElement('th');
 
     th.innerHTML = headers[i];
+    th.classList.add('jhk-table-header');
     tr.appendChild(th);
   }
   tbl.appendChild(tr);
