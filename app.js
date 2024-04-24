@@ -129,7 +129,7 @@ io.on("connection", function (socket) {
           io.to(socket.id).emit('addHenkouSuccess', result); // 送信者のみに送信
         });
       } else {
-        io.to(socket.id).emit('addHenkouFailure', res); // 送信者のみに送信
+        io.to(socket.id).emit('addHenkouFailure', {}); // 送信者のみに送信
       }
     });
   });
