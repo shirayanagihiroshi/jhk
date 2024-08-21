@@ -2,7 +2,7 @@
 const XLSX = require('xlsx');
 const fs   = require('fs');
 // 日本語をうまく扱えないときはjavascriptのファイルの文字コードに注意。shiftjisだとダメだった。
-const targetFileName = 'R06時間割_forjhk_v2.xlsx';  // 読み取るファイルに応じて変更が必要
+const targetFileName = 'R06時間割_0820_forjhk.xlsx';  // 読み取るファイルに応じて変更が必要
 const sheetNameA     = 'R06A';                  // 読み取るファイルに応じて変更が必要
 const sheetNameB     = 'R06B';                  // 読み取るファイルに応じて変更が必要
 const jikanwariFile  = 'jhkjikanwari.json.js';
