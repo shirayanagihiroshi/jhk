@@ -18,6 +18,7 @@ jhk.shell = (function () {
                        verifyChange   : true,  // status : dialog のとき使用
                        verifyDelete   : true,  // status : dialog のとき使用
                        freestyleAdd   : true,  // status : dialog のとき使用
+                       inputInfo      : true,  // status : dialog のとき使用
 
                        invalid        : true,  // status : dialog のとき使用
                        verify         : true,  // status : dialog のとき使用
@@ -169,6 +170,13 @@ jhk.shell = (function () {
                                       tonarijyokinFunc : jhk.calendar.addTonarijyokin,
                                       jyugyouName      : stateMap.jyugyouName});
         jhk.dialogMulti.initModule( jqueryMap.$container );
+
+      } else if ( anchor_map._status.dialogKind == 'inputInfo' ) {
+        setModal(true);
+        jhk.dialogInfo.configModule({showStr          : stateMap.dialogStr,
+                                     addInfoFunc      : jhk.calendar.addInfo,
+                                     delInfoFunc      : jhk.calendar.dellInfo});
+        jhk.dialogInfo.initModule( jqueryMap.$container );
       }
 
     // 未ログイン画面の場合
@@ -427,6 +435,21 @@ jhk.shell = (function () {
         status : 'dialog',
         _status : {
           dialogKind  : 'freestyleAdd'
+        }
+      });
+    });
+
+    // いない人入力画面
+    $.gevent.subscribe( $container, 'inputInfo', function (event, msg_map) {
+      let obj = jhk.calendar.getDispTarget();
+      stateMap.calendarYear  = obj.year;
+      stateMap.calendarMonth = obj.month;
+      stateMap.calendarDay   = obj.day;
+      stateMap.dialogStr = msg_map.dialogStr;
+      changeAnchorPart({
+        status : 'dialog',
+        _status : {
+          dialogKind  : 'inputInfo'
         }
       });
     });

@@ -35,17 +35,24 @@ jhkSimpleCommonCelPosToKoma = function (CelPos) {
 }
 
 // テーブルにヘッダーを追加する
-jhkSimpleCommonAddTableHeaher = function (targetId) {
-  let i, tr,
-    headers = ['日付', '朝HR', '1限', '2限', '3限', '4限', '5限', '6限', '帰HR', '7限'],
+jhkSimpleCommonAddTableHeaher = function (targetId, kind=null) {
+  let i, tr, array,
+    headersForHenkouTantou = ['日付','いない人', '朝HR', '1限', '2限', '3限', '4限', '5限', '6限', '帰HR', '7限'],
+    headers =                ['日付'           , '朝HR', '1限', '2限', '3限', '4限', '5限', '6限', '帰HR', '7限'],
     tbl = document.getElementById(targetId);
 
   tr = document.createElement('tr');
 
-  for(i = 0; i <= headers.length - 1 ; i++){
+  if (kind == "ForHenkouTantou") {
+    array = headersForHenkouTantou;
+  } else {
+    array = headers;
+  }
+
+  for(i = 0; i <= array.length - 1 ; i++){
     let th = document.createElement('th');
 
-    th.innerHTML = headers[i];
+    th.innerHTML = array[i];
     th.classList.add('jhk-table-header');
     tr.appendChild(th);
   }
@@ -61,10 +68,12 @@ jhkSimpleCommonAddTableHeaher = function (targetId) {
 // clsname      : グレーアウト用クラスの名前(授業変更の登録のときのみ設定)
 // edicls       : 編集用クラスの名前(授業変更の登録のときのみ設定)
 // delcls       : 削除クラスの名前(授業変更の登録のときのみ設定)
-// tempTarget   :入れ替えのうち、1人目のデータ(授業変更の登録の、入れ替えモードのときのみ設定)
+// tempTarget   : 入れ替えのうち、1人目のデータ(授業変更の登録の、入れ替えモードのときのみ設定)
+// infocls      : いない人情報入力用クラスの名前(授業変更の登録のときのみ設定)
+// kind         : 授業変更の登録のときのみ、"ForHenkouTantou"を指定
 jhkSimpleCommonAddTableContents = function(targetId, targetHenkou, targetDays, targetteacher=null, jikanwari=null, clsname=null, edicls=null, delcls=null,
-                                           tempTarget=null) {
-  let i, j, flg, aDayData,
+                                           tempTarget=null, infocls=null, kind=null) {
+  let i, j, flg, aDayData, tableColumnNum,
     dayFilterF = function (y, m, d) {
       return function (target) {
         if ( target.year == y && target.month == m && target.day == d) {
@@ -79,14 +88,42 @@ jhkSimpleCommonAddTableContents = function(targetId, targetHenkou, targetDays, t
   for(i = 0; i <= targetDays.length - 1; i++){
     let tr = document.createElement('tr');
 
+    if (kind == "ForHenkouTantou") {
+      tableColumnNum = 11;  // ['日付', 'いない人', '朝HR', '1限', '2限', '3限', '4限', '5限', '6限', '帰HR', '7限']の繰返
+    } else {
+      tableColumnNum = 10;  // ['日付'            , '朝HR', '1限', '2限', '3限', '4限', '5限', '6限', '帰HR', '7限']の繰返
+    }
+
     aDayData = targetHenkou.filter(dayFilterF(targetDays[i].year, targetDays[i].month, targetDays[i].day));
-    for(j = 0; j < 10; j++){ // ['日付', '朝HR', '1限', '2限', '3限', '4限', '5限', '6限', '帰HR', '7限']の繰返
+    for(j = 0; j < tableColumnNum; j++){
       let td = document.createElement('td');
+      // 日付
       if (j == 0) {
         td.innerHTML = jhkSimpleCommonMakeDateStr(targetDays[i].year,
                                                   targetDays[i].month,
                                                   targetDays[i].day,
                                                   targetDays[i].youbi);
+
+      // 登録担当者用
+      } else if (kind == "ForHenkouTantou") {
+        // いない人
+        if (j == 1) {
+
+          td.innerHTML = "〇〇 9:00-12:00";
+
+        // 表示のみ用と同じ流れ
+        } else {
+          if (tempTarget          != null             &&
+              targetDays[i].year  == tempTarget.year  && 
+              targetDays[i].month == tempTarget.month &&
+              targetDays[i].day   == tempTarget.day   && 
+              j - 1               == tempTarget.koma) {
+            td.innerHTML = jhkSimpleCommonGetHenkou(aDayData, j - 1, delcls, tempTarget.teacher);
+          } else {
+            td.innerHTML = jhkSimpleCommonGetHenkou(aDayData, j - 1, delcls, null);
+          }
+        }
+      // 表示のみ用
       } else {
         if (tempTarget          != null             &&
             targetDays[i].year  == tempTarget.year  && 
@@ -101,7 +138,11 @@ jhkSimpleCommonAddTableContents = function(targetId, targetHenkou, targetDays, t
 
       // 選んだ先生の授業の箇所を目立つように
       if (targetteacher != null && jikanwari != null && clsname != null) {
-        flg = jhkSimpleCommonGetJyugyou(targetteacher, jikanwari, targetDays[i].nikka, targetDays[i].youbi, j);
+        if (kind == "ForHenkouTantou"  && j >= 2 ) {
+          flg = jhkSimpleCommonGetJyugyou(targetteacher, jikanwari, targetDays[i].nikka, targetDays[i].youbi, j - 1);
+        } else {
+          flg = jhkSimpleCommonGetJyugyou(targetteacher, jikanwari, targetDays[i].nikka, targetDays[i].youbi, j);
+        }
       } else {
         flg = '';
       }
@@ -109,7 +150,9 @@ jhkSimpleCommonAddTableContents = function(targetId, targetHenkou, targetDays, t
         td.classList.add(clsname);
       }
       // クリックできるようにクラスを設定
-      if (edicls != null) {
+      if (infocls != null && j == 1) { //j==1は'いない人'のとき
+        td.classList.add(infocls);
+      } else if (edicls != null) {
         td.classList.add(edicls);
       }
       tr.appendChild(td);

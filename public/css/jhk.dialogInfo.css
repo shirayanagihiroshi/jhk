@@ -1,0 +1,116 @@
+/*
+ * jhk.dialogInfo.css
+ * いない人入力モジュール
+ */
+
+ .jhk-dialogInfo, .jhk-dialogInfo-main, .jhk-dialogInfo-main-title,
+ .jhk-dialogInfo-main-button-to, .jhk-dialogInfo-main-button-jyokin,
+ .jhk-dialogInfo-main-button-tonarijyokin, .jhk-dialogInfo-main-button-cancel,
+ #jhk-dialogInfo-main-selectJyugyou, #jhk-dialogInfo-main-selectTeacher,
+ .jhk-dialogInfo-main-text1, .jhk-dialogInfo-main-text2
+ {
+   position: absolute;
+ }
+
+.jhk-dialogInfo {
+  margin-top : -200px;
+  margin-left : -200px;
+  top : 50%;
+  left : 50%;
+  width : 500px;
+  height : 350px;
+  border-radius : 3px;
+  z-index : 2;
+  background : #85B0FF;
+  position:fixed;
+}
+
+ .jhk-dialogInfo-main {
+   top    : 0;
+   left   : 0;
+   right  : 0;
+   bottom : 0;
+ }
+
+.jhk-dialogInfo-main-title {
+  top    : 40px;
+  left   : 20px;
+  right  : 20px;
+  font-size: 25px;
+}
+
+.jhk-dialogInfo-main-button-to{
+  top    : 200px;
+  left   : 10px;
+  width  : 100px;
+  line-height: 40px;
+  font-size: 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: #E6E6FA;
+}
+.jhk-dialogInfo-main-button-to:hover{
+  background-color: red;
+}
+
+.jhk-dialogInfo-main-button-jyokin{
+  top    : 200px;
+  left   : 120px;
+  width  : 100px;
+  line-height: 40px;
+  font-size: 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: #E6E6FA;
+}
+.jhk-dialogInfo-main-button-jyokin:hover{
+  background-color: red;
+}
+
+.jhk-dialogInfo-main-button-tonarijyokin{
+  top    : 200px;
+  left   : 230px;
+  width  : 100px;
+  line-height: 40px;
+  font-size: 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: #E6E6FA;
+}
+.jhk-dialogInfo-main-button-tonarijyokin:hover{
+  background-color: red;
+}
+
+.jhk-dialogInfo-main-button-cancel{
+  top    : 200px;
+  left   : 340px;
+  width  : 100px;
+  line-height: 40px;
+  font-size: 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: #E6E6FA;
+}
+.jhk-dialogInfo-main-button-cancel:hover{
+  background-color: red;
+}
+
+#jhk-dialogInfo-main-selectJyugyou{
+  top    : 100px;
+  left   : 20px;
+}
+
+#jhk-dialogInfo-main-selectTeacher{
+  top    : 100px;
+  left   : 250px;
+}
+
+.jhk-dialogInfo-main-text1{
+  top    : 100px;
+  left   : 150px;
+}
+
+.jhk-dialogInfo-main-text2{
+  top    : 100px;
+  left   : 350px;
+}

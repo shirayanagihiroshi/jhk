@@ -26,6 +26,7 @@ jhk.calendar = (function () {
         jyugyouClaName      : 'jhk-calendar-jyugyou',
         ediClaName          : 'jhk-calendar-edi',
         delClaName          : 'jhk-calendar-del',
+        infoClaName         : 'jhk-calendar-inf',
         settable_map        : {tableContentsHeight:true,
                                year               :true,
                                month              :true,
@@ -45,15 +46,16 @@ jhk.calendar = (function () {
         henkous    : [],
         addTarget  : [],
         delTarget  : {},
+        infoTarget : {},
         temphenkouTarget  : null    // 入れ替えモードで使用。ここと次に選ぶところを入れ替える。
       },
       jqueryMap = {},
       setJqueryMap, configModule, initModule, removeCalendar,
-      addChange, addTo, addJyokin, addTonarijyokin, removeHenkou,
-      getDispTarget, kouhoCancel, tableRedraw,
+      addChange, addTo, addJyokin, addTonarijyokin, addInfo, dellInfo,
+      removeHenkou, getDispTarget, kouhoCancel, tableRedraw,
       onPreviousWeek, onPreviousDay, onToToday, onNextDay, onNextWeek,
       onTalbeClick, onChangeCls, onChangeTeacher, onChangeTeacherS,
-      onChangeKyouka, setDelTarget, getClsOfJyugyou ;
+      onChangeKyouka, setDelTarget, setInfo, getClsOfJyugyou ;
 
   //---DOMメソッド---
   setJqueryMap = function () {
@@ -106,7 +108,9 @@ jhk.calendar = (function () {
                                             configMap.jyugyouClaName,
                                             configMap.ediClaName,
                                             configMap.delClaName,
-                                            stateMap.temphenkouTarget);
+                                            stateMap.temphenkouTarget,
+                                            configMap.infoClaName,
+                                            "ForHenkouTantou");
 
           // 既に入れ替え候補を1人選んでいて、
           // select:で他の先生を選んでクリックしたら登録確認ダイアログへ
@@ -183,6 +187,19 @@ jhk.calendar = (function () {
 
   }
 
+  setInfo = function (tate, yoko) {
+    const dayOfWeek = ['日','月','火','水','木','金','土'];
+    let d = stateMap.targetDays[tate],
+      str = String(d.month) + '月' + String(d.day) + '日(' + dayOfWeek[d.youbi] + ')';
+
+    stateMap.infoTarget.year    = d.year;
+    stateMap.infoTarget.month   = d.month;
+    stateMap.infoTarget.day     = d.day;
+
+    /* console.log(str);*/
+    $.gevent.publish('inputInfo', [{dialogStr:str + 'にいない人を登録します'}]);
+  }
+
   onPreviousWeek = function () {
     /* console.log('onPreviousWeek'); */
     stateMap.targetDays = jhkSimpleCommonGetTargetDays(configMap.tableContentsHeight,
@@ -201,7 +218,9 @@ jhk.calendar = (function () {
                                     configMap.jyugyouClaName,
                                     configMap.ediClaName,
                                     configMap.delClaName,
-                                    stateMap.temphenkouTarget);
+                                    stateMap.temphenkouTarget,
+                                    configMap.infoClaName,
+                                    "ForHenkouTantou");
     return false;
   }
 
@@ -223,7 +242,10 @@ jhk.calendar = (function () {
                                     configMap.jyugyouClaName,
                                     configMap.ediClaName,
                                     configMap.delClaName,
-                                    stateMap.temphenkouTarget);
+                                    stateMap.temphenkouTarget,
+                                    configMap.infoClaName,
+                                    "ForHenkouTantou");
+
     return false;
   }
 
@@ -241,7 +263,10 @@ jhk.calendar = (function () {
                                     configMap.jyugyouClaName,
                                     configMap.ediClaName,
                                     configMap.delClaName,
-                                    stateMap.temphenkouTarget);
+                                    stateMap.temphenkouTarget,
+                                    configMap.infoClaName,
+                                    "ForHenkouTantou");
+
     return false;
   }
 
@@ -263,7 +288,10 @@ jhk.calendar = (function () {
                                     configMap.jyugyouClaName,
                                     configMap.ediClaName,
                                     configMap.delClaName,
-                                    stateMap.temphenkouTarget);
+                                    stateMap.temphenkouTarget,
+                                    configMap.infoClaName,
+                                    "ForHenkouTantou");
+
     return false;
   }
 
@@ -285,7 +313,10 @@ jhk.calendar = (function () {
                                     configMap.jyugyouClaName,
                                     configMap.ediClaName,
                                     configMap.delClaName,
-                                    stateMap.temphenkouTarget);
+                                    stateMap.temphenkouTarget,
+                                    configMap.infoClaName,
+                                    "ForHenkouTantou");
+
     return false;
   }
 
@@ -311,7 +342,10 @@ jhk.calendar = (function () {
                                     configMap.jyugyouClaName,
                                     configMap.ediClaName,
                                     configMap.delClaName,
-                                    stateMap.temphenkouTarget);
+                                    stateMap.temphenkouTarget,
+                                    configMap.infoClaName,
+                                    "ForHenkouTantou");
+
     return false;
   }
 
@@ -337,7 +371,10 @@ jhk.calendar = (function () {
                                     configMap.jyugyouClaName,
                                     configMap.ediClaName,
                                     configMap.delClaName,
-                                    stateMap.temphenkouTarget);
+                                    stateMap.temphenkouTarget,
+                                    configMap.infoClaName,
+                                    "ForHenkouTantou");
+
     return false;
   }
 
@@ -353,7 +390,10 @@ jhk.calendar = (function () {
                                     configMap.jyugyouClaName,
                                     configMap.ediClaName,
                                     configMap.delClaName,
-                                    stateMap.temphenkouTarget);
+                                    stateMap.temphenkouTarget,
+                                    configMap.infoClaName,
+                                    "ForHenkouTantou");
+
     return false;
   }
 
@@ -376,7 +416,10 @@ jhk.calendar = (function () {
                                     configMap.jyugyouClaName,
                                     configMap.ediClaName,
                                     configMap.delClaName,
-                                    stateMap.temphenkouTarget);
+                                    stateMap.temphenkouTarget,
+                                    configMap.infoClaName,
+                                    "ForHenkouTantou");
+
     return false;
   }
 
@@ -457,7 +500,7 @@ jhk.calendar = (function () {
 
     jhkSimpleCommonSetKyoukaLst('jhk-calendar-kyouka-select', configMap.kyouka);
 
-    jhkSimpleCommonAddTableHeaher('jhk-calendar-table');
+    jhkSimpleCommonAddTableHeaher('jhk-calendar-table', "ForHenkouTantou");
     jhkSimpleCommonAddTableContents('jhk-calendar-table',
                                     stateMap.henkous,
                                     stateMap.targetDays,
@@ -466,7 +509,10 @@ jhk.calendar = (function () {
                                     configMap.jyugyouClaName,
                                     configMap.ediClaName,
                                     configMap.delClaName,
-                                    stateMap.temphenkouTarget);
+                                    stateMap.temphenkouTarget,
+                                    configMap.infoClaName,
+                                    "ForHenkouTantou");
+
 
     // 重複して登録すると、何度もイベントが発行される。それを避けるため、一旦削除
     $(document).off('click');
@@ -493,6 +539,13 @@ jhk.calendar = (function () {
           }
         }
       return false; // ここでreturn falseしないとediClaNameの方も発火する
+    });
+
+    $(document).on('click', '.' + configMap.infoClaName, function (event) { // .はクラスを指定するの意味
+      let yokoIndex = $(this).closest('td').index(),
+        tateIndex = $(this).closest('tr').index();
+        setInfo(tateIndex-1, yokoIndex);
+      return false;
     });
 
     $(document).on('click', '.jhkKouho', function (event) {
@@ -560,6 +613,12 @@ jhk.calendar = (function () {
     jhk.model.addHenkou(stateMap.addTarget);
   }
 
+  addInfo = function () {
+  }
+
+  dellInfo = function () {
+  }
+
   removeHenkou = function () {
     jhk.model.removeHenkou(stateMap.delTarget.year,
                            stateMap.delTarget.month,
@@ -585,7 +644,10 @@ jhk.calendar = (function () {
                                     configMap.jyugyouClaName,
                                     configMap.ediClaName,
                                     configMap.delClaName,
-                                    stateMap.temphenkouTarget);
+                                    stateMap.temphenkouTarget,
+                                    configMap.infoClaName,
+                                    "ForHenkouTantou");
+
   }
 
   return {
