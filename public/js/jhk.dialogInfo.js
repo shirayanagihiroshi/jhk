@@ -13,17 +13,22 @@ jhk.dialogInfo = (function () {
             + '<div class="jhk-dialogInfo-main-title">'
             + '</div>'
             + '<select id="jhk-dialogInfo-main-selectTeacher"></select>'
-            + '<div class="jhk-dialogInfo-main-text1">が</div>'
-            + '<select id="jhk-dialogInfo-main-selectJikoku"></select>'
-            + '<div class="jhk-dialogInfo-main-text2">へ</div>'
-            + '<button class="jhk-dialogInfo-main-button-to">'
-              + '<p>入れ替え</p>'
+            + '<select id="jhk-dialogInfo-main-selectJikoku-KARA-JI"></select>'
+            + '<div class="jhk-dialogInfo-main-text1">:</div>'
+            + '<select id="jhk-dialogInfo-main-selectJikoku-KARA-FUN"></select>'
+            + '<div class="jhk-dialogInfo-main-text2">から</div>'
+            + '<select id="jhk-dialogInfo-main-selectJikoku-MASE-JI"></select>'
+            + '<div class="jhk-dialogInfo-main-text3">:</div>'
+            + '<select id="jhk-dialogInfo-main-selectJikoku-MASE-FUN"></select>'
+            + '<div class="jhk-dialogInfo-main-text4">(</div>'
+            + '<select id="jhk-dialogInfo-main-selectKyouka"></select>'
+            + '<div class="jhk-dialogInfo-main-text5">教科絞り込み)</div>'
+            + '<button class="jhk-dialogInfo-main-button-touroku">'
+              + '<p>登録</p>'
             + '</button>'
-            + '<button class="jhk-dialogInfo-main-button-jyokin">'
-              + '<p>助勤</p>'
-            + '</button>'
-            + '<button class="jhk-dialogInfo-main-button-tonarijyokin">'
-              + '<p>隣助勤</p>'
+            + '<select id="jhk-dialogInfo-main-selectInai"></select>'
+            + '<button class="jhk-dialogInfo-main-button-delete">'
+              + '<p>削除</p>'
             + '</button>'
             + '<button class="jhk-dialogInfo-main-button-cancel">'
               + '<p>cancel</p>'
@@ -42,7 +47,7 @@ jhk.dialogInfo = (function () {
       },
       jqueryMap = {},
       setJqueryMap, configModule, initModule, removeDialog, onClose, onTo,
-      onJyokin, onTonariJyokin;
+      onJyokin, SetJiLst, SetFunLst;
 
   //---DOMメソッド---
   setJqueryMap = function () {
@@ -51,11 +56,11 @@ jhk.dialogInfo = (function () {
     jqueryMap = {
       $dialog          : $dialog,
       $title           : $dialog.find( '.jhk-dialogInfo-main-title' ),
-      $selectJyugyou   : $dialog.find( '#jhk-dialogInfo-main-selectJyugyou' ),
       $selectTeacher   : $dialog.find( '#jhk-dialogInfo-main-selectTeacher' ),
-      $buttonTo        : $dialog.find( '.jhk-dialogInfo-main-button-to' ),
-      $buttonJyokin    : $dialog.find( '.jhk-dialogInfo-main-button-jyokin' ),
-      $buttonTonariJyokin : $dialog.find( '.jhk-dialogInfo-main-button-tonarijyokin' ),
+      $selectKyouka    : $dialog.find( '#jhk-dialogInfo-main-selectKyouka' ),
+      $selectInai      : $dialog.find( '#jhk-dialogInfo-main-selectInai' ),
+      $buttonTouroku   : $dialog.find( '.jhk-dialogInfo-main-button-touroku' ),
+      $buttonDelete    : $dialog.find( '.jhk-dialogInfo-main-button-delete' ),
       $buttonCancel    : $dialog.find( '.jhk-dialogInfo-main-button-cancel' )
     };
   }
@@ -80,11 +85,37 @@ jhk.dialogInfo = (function () {
     return false;
   }
 
-  onTonariJyokin = function () {
-    if (jqueryMap.$selectJyugyou.val() != '-' && jqueryMap.$selectTeacher.val() != '-') {
-      configMap.tonarijyokinFunc(jqueryMap.$selectJyugyou.val(), jqueryMap.$selectTeacher.val());
+
+  SetJiLst = function(targetId, initVal=null) {
+    let i, opt,
+      JiList = ['6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18'],
+      targetList = document.getElementById(targetId);
+
+    for (i = 0; i < JiList.length; i++) {
+      opt = document.createElement('option');
+      opt.value = JiList[i];
+      opt.text = JiList[i];
+      if (initVal != null && initVal == JiList[i]) {
+        opt.selected = true;
+      }
+      targetList.appendChild(opt);
     }
-    return false;
+  }
+
+  SetFunLst = function(targetId, initVal=null) {
+    let i, opt,
+      FunList = ['00', '05', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55'],
+      targetList = document.getElementById(targetId);
+
+    for (i = 0; i < FunList.length; i++) {
+      opt = document.createElement('option');
+      opt.value = FunList[i];
+      opt.text = FunList[i];
+      if (initVal != null && initVal == FunList[i]) {
+        opt.selected = true;
+      }
+      targetList.appendChild(opt);
+    }
   }
 
   //---パブリックメソッド---
@@ -119,17 +150,20 @@ jhk.dialogInfo = (function () {
 
     jqueryMap.$title.html( configMap.showStr );
 
-    jqueryMap.$buttonTo
+    jqueryMap.$buttonTouroku
       .click( onTo );
-    jqueryMap.$buttonJyokin
+    jqueryMap.$buttonDelete
       .click( onJyokin );
-    jqueryMap.$buttonTonariJyokin
-      .click( onTonariJyokin );
     jqueryMap.$buttonCancel
       .click( onClose );
 
-    jhkSimpleCommonSetJyugyouLst('jhk-dialogInfo-main-selectJyugyou', configMap.jyugyouName);
+//    jhkSimpleCommonSetJyugyouLst('jhk-dialogInfo-main-selectJyugyou', configMap.jyugyouName);
     jhkSimpleCommonSetTeachersLst('jhk-dialogInfo-main-selectTeacher');
+    jhkSimpleCommonSetKyoukaLst('jhk-dialogInfo-main-selectKyouka');
+    SetJiLst('jhk-dialogInfo-main-selectJikoku-KARA-JI', '8');
+    SetJiLst('jhk-dialogInfo-main-selectJikoku-MASE-JI', '16');
+    SetFunLst('jhk-dialogInfo-main-selectJikoku-KARA-FUN', '15');
+    SetFunLst('jhk-dialogInfo-main-selectJikoku-MASE-FUN', '30');
     return true;
   }
 

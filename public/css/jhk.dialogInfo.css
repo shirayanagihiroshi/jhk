@@ -4,10 +4,15 @@
  */
 
  .jhk-dialogInfo, .jhk-dialogInfo-main, .jhk-dialogInfo-main-title,
- .jhk-dialogInfo-main-button-to, .jhk-dialogInfo-main-button-jyokin,
- .jhk-dialogInfo-main-button-tonarijyokin, .jhk-dialogInfo-main-button-cancel,
- #jhk-dialogInfo-main-selectJyugyou, #jhk-dialogInfo-main-selectTeacher,
- .jhk-dialogInfo-main-text1, .jhk-dialogInfo-main-text2
+ .jhk-dialogInfo-main-button-touroku, .jhk-dialogInfo-main-button-delete,
+ .jhk-dialogInfo-main-button-cancel,
+ #jhk-dialogInfo-main-selectKyouka, #jhk-dialogInfo-main-selectTeacher,
+ #jhk-dialogInfo-main-selectInai,
+ .jhk-dialogInfo-main-text1, .jhk-dialogInfo-main-text2,
+ .jhk-dialogInfo-main-text3, .jhk-dialogInfo-main-text4,
+ .jhk-dialogInfo-main-text5,
+ #jhk-dialogInfo-main-selectJikoku-KARA-JI, #jhk-dialogInfo-main-selectJikoku-KARA-FUN,
+ #jhk-dialogInfo-main-selectJikoku-MASE-JI, #jhk-dialogInfo-main-selectJikoku-MASE-FUN
  {
    position: absolute;
  }
@@ -17,8 +22,8 @@
   margin-left : -200px;
   top : 50%;
   left : 50%;
-  width : 500px;
-  height : 350px;
+  width : 490px;
+  height : 340px;
   border-radius : 3px;
   z-index : 2;
   background : #85B0FF;
@@ -39,9 +44,9 @@
   font-size: 25px;
 }
 
-.jhk-dialogInfo-main-button-to{
-  top    : 200px;
-  left   : 10px;
+.jhk-dialogInfo-main-button-touroku{
+  top    : 85px;
+  left   : 355px;
   width  : 100px;
   line-height: 40px;
   font-size: 20px;
@@ -49,13 +54,13 @@
   cursor: pointer;
   background-color: #E6E6FA;
 }
-.jhk-dialogInfo-main-button-to:hover{
+.jhk-dialogInfo-main-button-touroku:hover{
   background-color: red;
 }
 
-.jhk-dialogInfo-main-button-jyokin{
-  top    : 200px;
-  left   : 120px;
+.jhk-dialogInfo-main-button-delete{
+  top    : 170px;
+  left   : 355px;
   width  : 100px;
   line-height: 40px;
   font-size: 20px;
@@ -63,27 +68,13 @@
   cursor: pointer;
   background-color: #E6E6FA;
 }
-.jhk-dialogInfo-main-button-jyokin:hover{
-  background-color: red;
-}
-
-.jhk-dialogInfo-main-button-tonarijyokin{
-  top    : 200px;
-  left   : 230px;
-  width  : 100px;
-  line-height: 40px;
-  font-size: 20px;
-  border-radius: 8px;
-  cursor: pointer;
-  background-color: #E6E6FA;
-}
-.jhk-dialogInfo-main-button-tonarijyokin:hover{
+.jhk-dialogInfo-main-button-delete:hover{
   background-color: red;
 }
 
 .jhk-dialogInfo-main-button-cancel{
-  top    : 200px;
-  left   : 340px;
+  top    : 255px;
+  left   : 355px;
   width  : 100px;
   line-height: 40px;
   font-size: 20px;
@@ -95,22 +86,62 @@
   background-color: red;
 }
 
-#jhk-dialogInfo-main-selectJyugyou{
-  top    : 100px;
-  left   : 20px;
+#jhk-dialogInfo-main-selectKyouka{
+  top    : 132px;
+  left   : 30px;
 }
 
 #jhk-dialogInfo-main-selectTeacher{
   top    : 100px;
-  left   : 250px;
+  left   : 20px;
 }
 
 .jhk-dialogInfo-main-text1{
   top    : 100px;
-  left   : 150px;
+  left   : 147px;
 }
 
 .jhk-dialogInfo-main-text2{
   top    : 100px;
-  left   : 350px;
+  left   : 205px;
+}
+
+.jhk-dialogInfo-main-text3{
+  top    : 100px;
+  left   : 287px;
+}
+
+.jhk-dialogInfo-main-text4{
+  top    : 132px;
+  left   : 20px;
+}
+
+.jhk-dialogInfo-main-text5{
+  top    : 132px;
+  left   : 100px;
+}
+
+#jhk-dialogInfo-main-selectJikoku-KARA-JI{
+  top    : 100px;
+  left   : 100px;
+}
+
+#jhk-dialogInfo-main-selectJikoku-KARA-FUN{
+  top    : 100px;
+  left   : 160px;
+}
+
+#jhk-dialogInfo-main-selectJikoku-MASE-JI{
+  top    : 100px;
+  left   : 240px;
+}
+
+#jhk-dialogInfo-main-selectJikoku-MASE-FUN{
+  top    : 100px;
+  left   : 300px;
+}
+
+#jhk-dialogInfo-main-selectInai{
+  top    : 180px;
+  left   : 290px;
 }
