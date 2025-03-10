@@ -46,8 +46,8 @@ jhk.dialogInfo = (function () {
         $append_target : null
       },
       jqueryMap = {},
-      setJqueryMap, configModule, initModule, removeDialog, onClose, onTo,
-      onJyokin, SetJiLst, SetFunLst;
+      setJqueryMap, configModule, initModule, removeDialog, onClose, onTouroku,
+      onDelete, onChangeKyouka, SetJiLst, SetFunLst;
 
   //---DOMメソッド---
   setJqueryMap = function () {
@@ -71,21 +71,25 @@ jhk.dialogInfo = (function () {
     return false;
   }
 
-  onTo = function () {
-    if (jqueryMap.$selectJyugyou.val() != '-' && jqueryMap.$selectTeacher.val() != '-') {
-      configMap.toFunc(jqueryMap.$selectJyugyou.val(), jqueryMap.$selectTeacher.val());
+  onTouroku = function () {
+    if (jqueryMap.$selectTeacher.val() != '-') {
+      configMap.addInfoFunc(jqueryMap.$selectJyugyou.val(), jqueryMap.$selectTeacher.val());
     }
     return false;
   }
 
-  onJyokin = function () {
-    if (jqueryMap.$selectJyugyou.val() != '-' && jqueryMap.$selectTeacher.val() != '-') {
-      configMap.jyokinFunc(jqueryMap.$selectJyugyou.val(), jqueryMap.$selectTeacher.val());
+  onDelete = function () {
+    if (jqueryMap.$selectTeacher.val() != '-') {
+      configMap.delInfoFunc(jqueryMap.$selectJyugyou.val(), jqueryMap.$selectTeacher.val());
     }
     return false;
   }
 
+  onChangeKyouka = function () {
+    jhkSimpleCommonSetTeachersLst('jhk-dialogInfo-main-selectTeacher', "", jqueryMap.$selectKyouka.val());
+  }
 
+  // ライブラリ
   SetJiLst = function(targetId, initVal=null) {
     let i, opt,
       JiList = ['6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18'],
@@ -151,11 +155,14 @@ jhk.dialogInfo = (function () {
     jqueryMap.$title.html( configMap.showStr );
 
     jqueryMap.$buttonTouroku
-      .click( onTo );
+      .click( onTouroku );
     jqueryMap.$buttonDelete
-      .click( onJyokin );
+      .click( onDelete );
     jqueryMap.$buttonCancel
       .click( onClose );
+
+    jqueryMap.$selectKyouka
+      .change( onChangeKyouka );
 
 //    jhkSimpleCommonSetJyugyouLst('jhk-dialogInfo-main-selectJyugyou', configMap.jyugyouName);
     jhkSimpleCommonSetTeachersLst('jhk-dialogInfo-main-selectTeacher');

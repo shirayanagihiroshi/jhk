@@ -186,6 +186,7 @@ jhk.shell = (function () {
       jhk.dialog.removeDialog();
       jhk.dialogOkCancel.removeDialog();
       jhk.dialogMulti.removeDialog();
+      jhk.dialogInfo.removeDialog();
 
       jhk.calendar.removeCalendar();
 
@@ -196,6 +197,7 @@ jhk.shell = (function () {
       jhk.dialog.removeDialog();
       jhk.dialogOkCancel.removeDialog();
       jhk.dialogMulti.removeDialog();
+      jhk.dialogInfo.removeDialog();
 
       // 設定の準備をすること
       jhk.calendar.removeCalendar();
