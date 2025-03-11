@@ -134,6 +134,25 @@ io.on("connection", function (socket) {
     });
   });
 
+  socket.on('addInfo', function (msg) {
+    console.log("addInfo");
+    console.log(msg);
+    db.findManyDocuments('user', {userId:msg.AKey.userId}, {projection:{_id:0}}, function (result) {
+      // ログイン中のユーザにのみ回答
+      if (result.length != 0 && msg.AKey.token == result[0].token ) {
+        db.updateDocument('jhkdatas', {year  : msg.datas.year,
+                                       month : msg.datas.month,
+                                       day   : msg.datas.day,
+                                       koma  : msg.datas.koma},
+                          {$set:{inaiInfo:msg.datas.inaiInfo}}, function (res) {
+          io.to(socket.id).emit('addInfoSuccess', {result: true}); // 送信者のみに送信
+        });
+      } else {
+        io.to(socket.id).emit('addInfoFailure', {}); // 送信者のみに送信
+      }
+    });
+  });
+
   socket.on('deleteHenkou', function (msg) {
     db.findManyDocuments('user', {userId:msg.AKey.userId}, {projection:{_id:0}}, function (result) {
       // ログイン中のユーザにのみ回答

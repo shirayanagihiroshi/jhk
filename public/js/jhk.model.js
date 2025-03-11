@@ -7,7 +7,7 @@ jhk.model = (function () {
   'use strict';
 
   var initModule, login, logout, islogind, getCalendar,
-    addNikka, getHenkou, addHenkou, removeHenkou, //モジュールスコープ変数
+    addNikka, getHenkou, addHenkou, removeHenkou, addInfo, //モジュールスコープ変数
     accessKey, name, henkou, calendar;
 
   initModule = function () {
@@ -70,6 +70,12 @@ jhk.model = (function () {
 
     // 登録完了
     jhk.data.registerReceive('addHenkouSuccess', function (msg) {
+      jhk.data.sendToServer('readyHenkou',{AKey : accessKey,
+                                           clientState : 'afterAdd'});
+    });
+
+    // いない人情報登録完了
+    jhk.data.registerReceive('addInfoSuccess', function (msg) {
       jhk.data.sendToServer('readyHenkou',{AKey : accessKey,
                                            clientState : 'afterAdd'});
     });
@@ -170,6 +176,14 @@ jhk.model = (function () {
                                           teacher : teacher});
   }
 
+  addInfo = function (inaiInfo) {
+    console.log("addInfo in model");
+    console.log(inaiInfo);
+    jhk.data.sendToServer('addInfo',{AKey : accessKey,
+                                     clientState : 'nouse',
+                                     datas : inaiInfo});
+  }
+
   return { initModule      : initModule,
           login            : login,
           logout           : logout,
@@ -178,6 +192,7 @@ jhk.model = (function () {
           addNikka         : addNikka,
           getHenkou        : getHenkou,
           addHenkou        : addHenkou,
-          removeHenkou     : removeHenkou
+          removeHenkou     : removeHenkou,
+          addInfo          : addInfo
          };
 }());

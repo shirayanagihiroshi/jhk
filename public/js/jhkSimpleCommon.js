@@ -7,7 +7,8 @@
 // 関数
 let jhkSimpleCommonCelPosToKoma,
   jhkSimpleCommonAddTableHeaher, jhkSimpleCommonAddTableContents,
-  jhkSimpleCommonGetHenkou, jhkSimpleCommonDeleteRowTable,
+  jhkSimpleCommonGetHenkou, jhkSimpleCommonGetInfo,
+  jhkSimpleCommonDeleteRowTable,
   jhkSimpleCommonGetTargetDays, jhkSimpleCommonGetJyugyou,
   jhkSimpleCommonGetKomaStr, jhkSimpleCommonMakeDateStr,
   jhkSimpleCommonSetClsLst, jhkClsFilterF,
@@ -109,7 +110,7 @@ jhkSimpleCommonAddTableContents = function(targetId, targetHenkou, targetDays, t
         // いない人
         if (j == 1) {
 
-          td.innerHTML = "〇〇 9:00-12:00";
+          td.innerHTML = jhkSimpleCommonGetInfo(aDayData);
 
         // 表示のみ用と同じ流れ
         } else {
@@ -219,6 +220,33 @@ jhkSimpleCommonGetHenkou = function (aDayData, koma, delcls, tempTarget) {
   return retStr;
 }
 
+// いない人データはコマ:99に設定
+// 授業変更担当者にのみ表示するので、共通ロジックである必要はないが
+// とりあえずここに入れておく
+jhkSimpleCommonGetInfo  = function (aDayData) {
+  let i, aKomaData,
+    retStr = "",
+    komaFindF = function (koma) {
+      return function (target) {
+        if ( target.koma == koma) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    };
+
+  aKomaData = aDayData.find(komaFindF(99));
+
+  if (aKomaData != null) {
+    retStr += '<ul>';
+    for (i = 0; i < aKomaData.inaiInfo.length; i++) {
+      retStr += '<li>' + aKomaData.inaiInfo[i] + '</li>'; 
+    }
+    retStr += '</ul>';
+  }
+  return retStr;
+}
 // 日課や曜日などから授業名を返す。
 // 授業がなければ''を返す。
 // nikka: A週or B週

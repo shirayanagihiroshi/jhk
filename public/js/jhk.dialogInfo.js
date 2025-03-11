@@ -59,6 +59,10 @@ jhk.dialogInfo = (function () {
       $selectTeacher   : $dialog.find( '#jhk-dialogInfo-main-selectTeacher' ),
       $selectKyouka    : $dialog.find( '#jhk-dialogInfo-main-selectKyouka' ),
       $selectInai      : $dialog.find( '#jhk-dialogInfo-main-selectInai' ),
+      $selectJikokuKaraJi  : $dialog.find( '#jhk-dialogInfo-main-selectJikoku-KARA-JI' ),
+      $selectJikokuKaraFun : $dialog.find( '#jhk-dialogInfo-main-selectJikoku-KARA-FUN' ),
+      $selectJikokuMadeJi  : $dialog.find( '#jhk-dialogInfo-main-selectJikoku-MASE-JI' ),
+      $selectJikokuMadeFun : $dialog.find( '#jhk-dialogInfo-main-selectJikoku-MASE-FUN' ),
       $buttonTouroku   : $dialog.find( '.jhk-dialogInfo-main-button-touroku' ),
       $buttonDelete    : $dialog.find( '.jhk-dialogInfo-main-button-delete' ),
       $buttonCancel    : $dialog.find( '.jhk-dialogInfo-main-button-cancel' )
@@ -73,7 +77,12 @@ jhk.dialogInfo = (function () {
 
   onTouroku = function () {
     if (jqueryMap.$selectTeacher.val() != '-') {
-      configMap.addInfoFunc(jqueryMap.$selectJyugyou.val(), jqueryMap.$selectTeacher.val());
+      let str = jqueryMap.$selectTeacher.val()       + '('   +
+                jqueryMap.$selectJikokuKaraJi.val()  + ':' +
+                jqueryMap.$selectJikokuKaraFun.val() + '-' +
+                jqueryMap.$selectJikokuMadeJi.val()  + ':' +
+                jqueryMap.$selectJikokuMadeFun.val() + ')';
+      configMap.addInfoFunc(str);
     }
     return false;
   }
@@ -164,7 +173,6 @@ jhk.dialogInfo = (function () {
     jqueryMap.$selectKyouka
       .change( onChangeKyouka );
 
-//    jhkSimpleCommonSetJyugyouLst('jhk-dialogInfo-main-selectJyugyou', configMap.jyugyouName);
     jhkSimpleCommonSetTeachersLst('jhk-dialogInfo-main-selectTeacher');
     jhkSimpleCommonSetKyoukaLst('jhk-dialogInfo-main-selectKyouka');
     SetJiLst('jhk-dialogInfo-main-selectJikoku-KARA-JI', '8');

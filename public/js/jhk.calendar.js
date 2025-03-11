@@ -187,14 +187,31 @@ jhk.calendar = (function () {
 
   }
 
-  setInfo = function (tate, yoko) {
+  setInfo = function (tate) {
     const dayOfWeek = ['日','月','火','水','木','金','土'];
     let d = stateMap.targetDays[tate],
-      str = String(d.month) + '月' + String(d.day) + '日(' + dayOfWeek[d.youbi] + ')';
+      str = String(d.month) + '月' + String(d.day) + '日(' + dayOfWeek[d.youbi] + ')',
+      f= function (y, m, d, koma) {
+        return function (target) {
+          if ( target.year == y && target.month == m && target.day == d && target.koma == koma) {
+            return true;
+          } else {
+            return false;
+          }
+        }
+      },
+      //いない人情報はコマ:99に設定する
+      oldInfo = stateMap.henkous.find(f(d.year, d.month, d.day, 99));
 
     stateMap.infoTarget.year    = d.year;
     stateMap.infoTarget.month   = d.month;
     stateMap.infoTarget.day     = d.day;
+    stateMap.infoTarget.koma    = 99;
+    if (oldInfo != null) {
+      stateMap.infoTarget.inaiInfo = oldInfo.inaiInfo;
+    } else {
+      stateMap.infoTarget.inaiInfo = [];
+    }
 
     /* console.log(str);*/
     $.gevent.publish('inputInfo', [{dialogStr:str + 'にいない人を登録します'}]);
@@ -521,8 +538,9 @@ jhk.calendar = (function () {
       let yokoIndex = this.cellIndex,
         tateIndex = $(this).closest('tr').index();
 
-        if (yokoIndex != 0) { //日付のクリックは不要
-          onTalbeClick(tateIndex-1, yokoIndex); // tateを日付のindexとして使えるように補正
+        // 日付のクリックは不要。また、いない人の登録を後から追加したのでyokoIndexを一つずらす
+        if (!(yokoIndex == 0 || yokoIndex == 1)) {
+          onTalbeClick(tateIndex-1, yokoIndex-1);
         }
       return false;
     });
@@ -531,11 +549,12 @@ jhk.calendar = (function () {
       let yokoIndex = $(this).closest('td').index(),
         tateIndex = $(this).closest('tr').index();
 
-        if (yokoIndex != 0) { //日付のクリックは不要
+        //日付のクリックは不要。また、いない人の登録を後から追加したのでyokoIndexを一つずらす
+        if (!(yokoIndex == 0 || yokoIndex == 1)) {
           // 追加の意味でクリックしたときに削除されるとイラつくので、
           // select:で誰か先生を選んでいるときは無視する
           if (jqueryMap.$selectTeacherS.val() == '-') {
-            setDelTarget(tateIndex-1, yokoIndex, this.innerHTML)
+            setDelTarget(tateIndex-1, yokoIndex-1, this.innerHTML)
           }
         }
       return false; // ここでreturn falseしないとediClaNameの方も発火する
@@ -544,7 +563,7 @@ jhk.calendar = (function () {
     $(document).on('click', '.' + configMap.infoClaName, function (event) { // .はクラスを指定するの意味
       let yokoIndex = $(this).closest('td').index(),
         tateIndex = $(this).closest('tr').index();
-        setInfo(tateIndex-1, yokoIndex);
+        setInfo(tateIndex-1);
       return false;
     });
 
@@ -613,7 +632,9 @@ jhk.calendar = (function () {
     jhk.model.addHenkou(stateMap.addTarget);
   }
 
-  addInfo = function () {
+  addInfo = function (teacherAndTime) {
+    stateMap.infoTarget.inaiInfo.push(teacherAndTime);
+    jhk.model.addInfo(stateMap.infoTarget);
   }
 
   dellInfo = function () {
@@ -661,6 +682,8 @@ jhk.calendar = (function () {
     addTonarijyokin : addTonarijyokin,
     removeHenkou  : removeHenkou,
     kouhoCancel   : kouhoCancel,
-    tableRedraw   : tableRedraw
+    tableRedraw   : tableRedraw,
+    addInfo       : addInfo,
+    dellInfo      : dellInfo
   };
 }());
