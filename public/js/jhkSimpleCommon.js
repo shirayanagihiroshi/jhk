@@ -72,9 +72,10 @@ jhkSimpleCommonAddTableHeaher = function (targetId, kind=null) {
 // tempTarget   : 入れ替えのうち、1人目のデータ(授業変更の登録の、入れ替えモードのときのみ設定)
 // infocls      : いない人情報入力用クラスの名前(授業変更の登録のときのみ設定)
 // kind         : 授業変更の登録のときのみ、"ForHenkouTantou"を指定
+// allHenkou    : 絞り込まれていない授業変更データ
 jhkSimpleCommonAddTableContents = function(targetId, targetHenkou, targetDays, targetteacher=null, jikanwari=null, clsname=null, edicls=null, delcls=null,
-                                           tempTarget=null, infocls=null, kind=null) {
-  let i, j, flg, aDayData, tableColumnNum,
+                                           tempTarget=null, infocls=null, kind=null, allHenkou=null) {
+  let i, j, flg, aDayData, tableColumnNum, allaDayData,
     dayFilterF = function (y, m, d) {
       return function (target) {
         if ( target.year == y && target.month == m && target.day == d) {
@@ -96,6 +97,10 @@ jhkSimpleCommonAddTableContents = function(targetId, targetHenkou, targetDays, t
     }
 
     aDayData = targetHenkou.filter(dayFilterF(targetDays[i].year, targetDays[i].month, targetDays[i].day));
+    if (allHenkou != null) {
+      allaDayData = allHenkou.filter(dayFilterF(targetDays[i].year, targetDays[i].month, targetDays[i].day));
+    }
+
     for(j = 0; j < tableColumnNum; j++){
       let td = document.createElement('td');
       // 日付
@@ -110,7 +115,7 @@ jhkSimpleCommonAddTableContents = function(targetId, targetHenkou, targetDays, t
         // いない人
         if (j == 1) {
 
-          td.innerHTML = jhkSimpleCommonGetInfo(aDayData);
+          td.innerHTML = jhkSimpleCommonGetInfo(allaDayData);
 
         // 表示のみ用と同じ流れ
         } else {

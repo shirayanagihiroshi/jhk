@@ -177,8 +177,6 @@ jhk.model = (function () {
   }
 
   addInfo = function (inaiInfo) {
-    console.log("addInfo in model");
-    console.log(inaiInfo);
     jhk.data.sendToServer('addInfo',{AKey : accessKey,
                                      clientState : 'nouse',
                                      datas : inaiInfo});

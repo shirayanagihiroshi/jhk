@@ -135,15 +135,14 @@ io.on("connection", function (socket) {
   });
 
   socket.on('addInfo', function (msg) {
-    console.log("addInfo");
-    console.log(msg);
     db.findManyDocuments('user', {userId:msg.AKey.userId}, {projection:{_id:0}}, function (result) {
       // ログイン中のユーザにのみ回答
       if (result.length != 0 && msg.AKey.token == result[0].token ) {
         db.updateDocument('jhkdatas', {year  : msg.datas.year,
                                        month : msg.datas.month,
                                        day   : msg.datas.day,
-                                       koma  : msg.datas.koma},
+                                       koma  : msg.datas.koma,
+                                       cls   : msg.datas.cls},
                           {$set:{inaiInfo:msg.datas.inaiInfo}}, function (res) {
           io.to(socket.id).emit('addInfoSuccess', {result: true}); // 送信者のみに送信
         });

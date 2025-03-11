@@ -110,7 +110,8 @@ jhk.calendar = (function () {
                                             configMap.delClaName,
                                             stateMap.temphenkouTarget,
                                             configMap.infoClaName,
-                                            "ForHenkouTantou");
+                                            "ForHenkouTantou",
+                                            jhk.model.getHenkou());
 
           // 既に入れ替え候補を1人選んでいて、
           // select:で他の先生を選んでクリックしたら登録確認ダイアログへ
@@ -207,6 +208,7 @@ jhk.calendar = (function () {
     stateMap.infoTarget.month   = d.month;
     stateMap.infoTarget.day     = d.day;
     stateMap.infoTarget.koma    = 99;
+    stateMap.infoTarget.cls     = []; //未使用だが、これがないとクラスで絞り込もうとするときにエラーが出る
     if (oldInfo != null) {
       stateMap.infoTarget.inaiInfo = oldInfo.inaiInfo;
     } else {
@@ -237,7 +239,8 @@ jhk.calendar = (function () {
                                     configMap.delClaName,
                                     stateMap.temphenkouTarget,
                                     configMap.infoClaName,
-                                    "ForHenkouTantou");
+                                    "ForHenkouTantou",
+                                    jhk.model.getHenkou());
     return false;
   }
 
@@ -261,7 +264,8 @@ jhk.calendar = (function () {
                                     configMap.delClaName,
                                     stateMap.temphenkouTarget,
                                     configMap.infoClaName,
-                                    "ForHenkouTantou");
+                                    "ForHenkouTantou",
+                                    jhk.model.getHenkou());
 
     return false;
   }
@@ -282,7 +286,8 @@ jhk.calendar = (function () {
                                     configMap.delClaName,
                                     stateMap.temphenkouTarget,
                                     configMap.infoClaName,
-                                    "ForHenkouTantou");
+                                    "ForHenkouTantou",
+                                    jhk.model.getHenkou());
 
     return false;
   }
@@ -307,7 +312,8 @@ jhk.calendar = (function () {
                                     configMap.delClaName,
                                     stateMap.temphenkouTarget,
                                     configMap.infoClaName,
-                                    "ForHenkouTantou");
+                                    "ForHenkouTantou",
+                                    jhk.model.getHenkou());
 
     return false;
   }
@@ -332,7 +338,8 @@ jhk.calendar = (function () {
                                     configMap.delClaName,
                                     stateMap.temphenkouTarget,
                                     configMap.infoClaName,
-                                    "ForHenkouTantou");
+                                    "ForHenkouTantou",
+                                    jhk.model.getHenkou());
 
     return false;
   }
@@ -361,7 +368,8 @@ jhk.calendar = (function () {
                                     configMap.delClaName,
                                     stateMap.temphenkouTarget,
                                     configMap.infoClaName,
-                                    "ForHenkouTantou");
+                                    "ForHenkouTantou",
+                                    jhk.model.getHenkou());
 
     return false;
   }
@@ -390,7 +398,8 @@ jhk.calendar = (function () {
                                     configMap.delClaName,
                                     stateMap.temphenkouTarget,
                                     configMap.infoClaName,
-                                    "ForHenkouTantou");
+                                    "ForHenkouTantou",
+                                    jhk.model.getHenkou());
 
     return false;
   }
@@ -409,7 +418,8 @@ jhk.calendar = (function () {
                                     configMap.delClaName,
                                     stateMap.temphenkouTarget,
                                     configMap.infoClaName,
-                                    "ForHenkouTantou");
+                                    "ForHenkouTantou",
+                                    jhk.model.getHenkou());
 
     return false;
   }
@@ -435,7 +445,8 @@ jhk.calendar = (function () {
                                     configMap.delClaName,
                                     stateMap.temphenkouTarget,
                                     configMap.infoClaName,
-                                    "ForHenkouTantou");
+                                    "ForHenkouTantou",
+                                    jhk.model.getHenkou());
 
     return false;
   }
@@ -528,7 +539,8 @@ jhk.calendar = (function () {
                                     configMap.delClaName,
                                     stateMap.temphenkouTarget,
                                     configMap.infoClaName,
-                                    "ForHenkouTantou");
+                                    "ForHenkouTantou",
+                                    jhk.model.getHenkou());
 
 
     // 重複して登録すると、何度もイベントが発行される。それを避けるため、一旦削除
@@ -667,7 +679,8 @@ jhk.calendar = (function () {
                                     configMap.delClaName,
                                     stateMap.temphenkouTarget,
                                     configMap.infoClaName,
-                                    "ForHenkouTantou");
+                                    "ForHenkouTantou",
+                                    jhk.model.getHenkou());
 
   }
 
