@@ -47,7 +47,7 @@ jhk.dialogInfo = (function () {
       },
       jqueryMap = {},
       setJqueryMap, configModule, initModule, removeDialog, onClose, onTouroku,
-      onDelete, onChangeKyouka, SetJiLst, SetFunLst;
+      onDelete, onChangeKyouka, SetJiLst, SetFunLst, SetInaiLst;
 
   //---DOMメソッド---
   setJqueryMap = function () {
@@ -88,8 +88,8 @@ jhk.dialogInfo = (function () {
   }
 
   onDelete = function () {
-    if (jqueryMap.$selectTeacher.val() != '-') {
-      configMap.delInfoFunc(jqueryMap.$selectJyugyou.val(), jqueryMap.$selectTeacher.val());
+    if (jqueryMap.$selectInai.val() != null) {
+      configMap.delInfoFunc(jqueryMap.$selectInai.val());
     }
     return false;
   }
@@ -127,6 +127,19 @@ jhk.dialogInfo = (function () {
       if (initVal != null && initVal == FunList[i]) {
         opt.selected = true;
       }
+      targetList.appendChild(opt);
+    }
+  }
+
+  SetInaiLst = function(targetId) {
+    let i, opt,
+      inaiList = jhk.calendar.getAdayInfo(),
+      targetList = document.getElementById(targetId);
+
+    for (i = 0; i < inaiList.length; i++) {
+      opt = document.createElement('option');
+      opt.value = inaiList[i];
+      opt.text = inaiList[i];
       targetList.appendChild(opt);
     }
   }
@@ -179,6 +192,7 @@ jhk.dialogInfo = (function () {
     SetJiLst('jhk-dialogInfo-main-selectJikoku-MASE-JI', '16');
     SetFunLst('jhk-dialogInfo-main-selectJikoku-KARA-FUN', '15');
     SetFunLst('jhk-dialogInfo-main-selectJikoku-MASE-FUN', '30');
+    SetInaiLst('jhk-dialogInfo-main-selectInai');
     return true;
   }
 

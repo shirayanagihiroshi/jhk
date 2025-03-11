@@ -51,7 +51,7 @@ jhk.calendar = (function () {
       },
       jqueryMap = {},
       setJqueryMap, configModule, initModule, removeCalendar,
-      addChange, addTo, addJyokin, addTonarijyokin, addInfo, dellInfo,
+      addChange, addTo, addJyokin, addTonarijyokin, addInfo, dellInfo, getAdayInfo,
       removeHenkou, getDispTarget, kouhoCancel, tableRedraw,
       onPreviousWeek, onPreviousDay, onToToday, onNextDay, onNextWeek,
       onTalbeClick, onChangeCls, onChangeTeacher, onChangeTeacherS,
@@ -649,7 +649,19 @@ jhk.calendar = (function () {
     jhk.model.addInfo(stateMap.infoTarget);
   }
 
-  dellInfo = function () {
+  dellInfo = function (teacherAndTime) {
+    let f = function (t) {
+      return function (target) {
+        if ( target != t ) { // 一致しないものを残す
+          return true;
+        } else {
+          return false;
+        }
+      }
+    };
+
+    stateMap.infoTarget.inaiInfo = stateMap.infoTarget.inaiInfo.filter(f(teacherAndTime));
+    jhk.model.addInfo(stateMap.infoTarget);
   }
 
   removeHenkou = function () {
@@ -684,6 +696,10 @@ jhk.calendar = (function () {
 
   }
 
+  getAdayInfo = function () {
+    return stateMap.infoTarget.inaiInfo;
+  }
+
   return {
     configModule  : configModule,
     initModule    : initModule,
@@ -697,6 +713,7 @@ jhk.calendar = (function () {
     kouhoCancel   : kouhoCancel,
     tableRedraw   : tableRedraw,
     addInfo       : addInfo,
-    dellInfo      : dellInfo
+    dellInfo      : dellInfo,
+    getAdayInfo   : getAdayInfo
   };
 }());
