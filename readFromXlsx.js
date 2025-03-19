@@ -8,6 +8,7 @@ const sheetNameB     = 'R06B';                  // 読み取るファイルに�
 const jikanwariFile  = 'jhkjikanwari.json.js';
 const jyugyouFile    = 'jhkjyugyous.json.js';
 const teacherFile    = 'jhkteacher.json.js';
+const jikanwariPerTeacher = 'jikanwariPerTeacher.json';
 
 // xlsxの読み取り
 const source   = path.join(__dirname, targetFileName);
@@ -21,14 +22,13 @@ const worksheetB = workbook.Sheets[sheetNameB];
 const sheetDataA = XLSX.utils.sheet_to_json(worksheetA, {header: 1});
 const sheetDataB = XLSX.utils.sheet_to_json(worksheetB, {header: 1});
 
-let xlsx2array;
+let xlsx2array, setForSkt, makeTeacherList;
 let jikanwariList   = [];
 let jyugyouListTemp = [];
 let jyugyouListTemp2= [];
 let jyugyouList     = [];
-let teacherListTemp = [];
-let teacherListTemp2= [];
 let teacherList     = [];
+let jikanwariPerTeacherList = [];
 let json, i;
 
 // ワークシートを読み取って二次元配列にしたものから
@@ -60,8 +60,6 @@ xlsx2array = function(nikka, sheetValues, jikanwariList) {
                             'koma'    : koma,
                             'jyugyou' : sheetValues[i][j]
                            });
-        // 教員一覧を作る処理
-        teacherListTemp.push(sheetValues[i][0]);
         // 授業一覧を作る処理
         jyugyouListTemp.push(sheetValues[i][j]);
       }
@@ -75,25 +73,94 @@ xlsx2array = function(nikka, sheetValues, jikanwariList) {
                             'koma'    : j - 36,
                             'jyugyou' : sheetValues[i][j]
                            });
-        // 教員一覧を作る処理
-        teacherListTemp.push(sheetValues[i][0]);
         // 授業一覧を作る処理
         jyugyouListTemp.push(sheetValues[i][j]);
       }
     }
   }
 }
-  
+
+// jikanwariList や teacherList が読み込まれている前提で動く
+// skt向けの教員ごとの時間割の設定を出力する。jikanwariListとほぼ同じだがデータの形が少し違う。
+setForSkt = function () {
+  let i, j, jikanwariPerTeacher, jyugyouPerTeacher, tempLst,
+    jikanwari, jyugyou,
+    retLst = [],
+    perTeacher = function (str) {
+      return function (target) {
+        if ( target.teacher == str ) {
+          return true;
+        }
+      }
+    },
+    IdFromJyugyouMei = function (Lst, jyugyouMei) {
+      let i;
+      for (i = 0; i < Lst.length; i++) {
+        if (Lst[i].name == jyugyouMei) {
+          return Lst[i].jyugyouId;
+        }
+      }
+    };
+
+  for (i = 0; i < teacherList.length; i++) {
+    // 時間割データを教員単位で絞り込む
+    jikanwariPerTeacher = jikanwariList.filter(perTeacher(teacherList[i].teacher));
+
+    // 重複を含まない授業のリストを得る
+    tempLst = [];
+    for (j = 0; j < jikanwariPerTeacher.length; j++) {
+      tempLst.push(jikanwariPerTeacher[j].jyugyou);
+    }
+    jyugyouPerTeacher = Array.from(new Set(tempLst));
+
+    // ある教員の授業を設定
+    jyugyou = [];
+    for (j = 0; j < jyugyouPerTeacher.length; j++) {
+      jyugyou.push({ jyugyouId : j+1,
+                     name      : jyugyouPerTeacher[j] });
+    }
+
+    // ある教員の時間割を設定
+    jikanwari = [];
+    for (j = 0; j < jikanwariPerTeacher.length; j++) {
+      jikanwari.push({ nikka     : jikanwariPerTeacher[j].nikka,
+                       youbi     : jikanwariPerTeacher[j].youbi,
+                       koma      : jikanwariPerTeacher[j].koma,
+                       jyugyouId : IdFromJyugyouMei(jyugyou, jikanwariPerTeacher[j].jyugyou)});
+    }
+
+    // sktでは教員の識別にはuserIdを使う。teacherNameは現状使っていないが、
+    // データを見たとき分かりやすいかもしれないので設定しておく
+    retLst.push({ teacherName : teacherList[i].teacher,
+                  userId      : teacherList[i].userId,
+                  jyugyou     : jyugyou,
+                  jikanwari   : jikanwari});
+  }
+  return retLst;
+}
+
+makeTeacherList = function (sheetValues) {
+  let i, lst, obj;
+
+  lst = [];
+
+  for (i = 3;i <= sheetValues.length -1 -3 ; i++) {
+    obj = {'teacher' : sheetValues[i][0],
+           'kyouka'  : ""}; // 後で人間が設定する。
+                            // 国語or社会or数学or理科or英語or体育orその他
+    if (sheetValues[i][1] != "") {
+      obj.userId = sheetValues[i][1];
+    }
+    lst.push(obj);
+  }
+  return lst;
+}
+
 xlsx2array('A', sheetDataA, jikanwariList);
 xlsx2array('B', sheetDataB, jikanwariList);
 
-// 重複の排除
-teacherListTemp2 = Array.from(new Set(teacherListTemp));
-for (i = 0; i <= teacherListTemp2.length -1 ; i++) {
-  teacherList.push({'teacher' : teacherListTemp2[i],
-                    'kyouka' : ""}); // 後で人間が設定する。
-                                     // 国語or社会or数学or理科or英語or体育orその他
-}
+teacherList = makeTeacherList(sheetDataA); // Aの名簿とBの名簿は同じはず
+
 jyugyouListTemp2 = Array.from(new Set(jyugyouListTemp));
 jyugyouListTemp2.sort();
 for (i = 0; i <= jyugyouListTemp2.length -1 ; i++) {
@@ -101,12 +168,29 @@ for (i = 0; i <= jyugyouListTemp2.length -1 ; i++) {
                     'cls' : []}); // 後で人間が設定する。
 }
 
+if (process.argv[2] == 'jhk') {
+  let i;
 
-json = JSON.stringify(jikanwariList);
-fs.writeFileSync('public/js/' + jikanwariFile, 'let jhkJikanwari = ' + json);
+  json = JSON.stringify(jikanwariList);
+  fs.writeFileSync('public/js/' + jikanwariFile, 'let jhkJikanwari = ' + json);
 
-json = JSON.stringify(teacherList);
-fs.writeFileSync('public/js/' + teacherFile, 'let jhkTeachers = ' + json);
+  // (setForSktで使うので一旦設定したが)
+  // sktのユーザIDはjhkには要らないので消しておく
+  for (i = 0; i < teacherList.length; i++) {
+    delete teacherList[i].userId;
+  }
+  json = JSON.stringify(teacherList);
+  fs.writeFileSync('public/js/' + teacherFile, 'let jhkTeachers = ' + json);
 
-json = JSON.stringify(jyugyouList);
-fs.writeFileSync('public/js/' + jyugyouFile, 'let jhkJyugyous = ' + json);
+  json = JSON.stringify(jyugyouList);
+  fs.writeFileSync('public/js/' + jyugyouFile, 'let jhkJyugyous = ' + json);
+
+} else if (process.argv[2] == 'skt') {
+
+  jikanwariPerTeacherList = setForSkt();
+  json = JSON.stringify(jikanwariPerTeacherList);
+  fs.writeFileSync('public/js/' + jikanwariPerTeacher, json);
+
+} else {
+  console.log('input parameter jhk or skt like that "node readFromXlsx.js jhk"');
+}
