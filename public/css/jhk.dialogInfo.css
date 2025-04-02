@@ -7,10 +7,10 @@
  .jhk-dialogInfo-main-button-touroku, .jhk-dialogInfo-main-button-delete,
  .jhk-dialogInfo-main-button-cancel,
  #jhk-dialogInfo-main-selectKyouka, #jhk-dialogInfo-main-selectTeacher,
- #jhk-dialogInfo-main-selectInai,
+ #jhk-dialogInfo-main-selectInai, #jhk-dialogInfo-main-selectKind,
  .jhk-dialogInfo-main-text1, .jhk-dialogInfo-main-text2,
  .jhk-dialogInfo-main-text3, .jhk-dialogInfo-main-text4,
- .jhk-dialogInfo-main-text5,
+ .jhk-dialogInfo-main-text5, .jhk-dialogInfo-main-text6,
  #jhk-dialogInfo-main-selectJikoku-KARA-JI, #jhk-dialogInfo-main-selectJikoku-KARA-FUN,
  #jhk-dialogInfo-main-selectJikoku-MASE-JI, #jhk-dialogInfo-main-selectJikoku-MASE-FUN
  {
@@ -141,7 +141,18 @@
   left   : 300px;
 }
 
-#jhk-dialogInfo-main-selectInai{
-  top    : 185px;
+.jhk-dialogInfo-main-text6{
+  top    : 175px;
   left   : 180px;
 }
+
+#jhk-dialogInfo-main-selectKind{
+  top    : 175px;
+  left   : 225px;
+}
+
+#jhk-dialogInfo-main-selectInai{
+  top    : 210px;
+  left   : 180px;
+}
+

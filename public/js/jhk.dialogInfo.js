@@ -26,6 +26,8 @@ jhk.dialogInfo = (function () {
             + '<button class="jhk-dialogInfo-main-button-touroku">'
               + '<p>登録</p>'
             + '</button>'
+            + '<div class="jhk-dialogInfo-main-text6">種別:</div>'
+            + '<select id="jhk-dialogInfo-main-selectKind"></select>'
             + '<select id="jhk-dialogInfo-main-selectInai"></select>'
             + '<button class="jhk-dialogInfo-main-button-delete">'
               + '<p>削除</p>'
@@ -35,6 +37,7 @@ jhk.dialogInfo = (function () {
             + '</button>'
           + '</div>'
         + '<div>',
+        kindList : ['出張', '年休', '義免'],
         settable_map : {showStr          : true,
                         addInfoFunc      : true,
                         delInfoFunc      : true},
@@ -47,7 +50,7 @@ jhk.dialogInfo = (function () {
       },
       jqueryMap = {},
       setJqueryMap, configModule, initModule, removeDialog, onClose, onTouroku,
-      onDelete, onChangeKyouka, SetJiLst, SetFunLst, SetInaiLst;
+      onDelete, onChangeKyouka, SetJiLst, SetFunLst, SetKindLst, SetInaiLst;
 
   //---DOMメソッド---
   setJqueryMap = function () {
@@ -58,6 +61,7 @@ jhk.dialogInfo = (function () {
       $title           : $dialog.find( '.jhk-dialogInfo-main-title' ),
       $selectTeacher   : $dialog.find( '#jhk-dialogInfo-main-selectTeacher' ),
       $selectKyouka    : $dialog.find( '#jhk-dialogInfo-main-selectKyouka' ),
+      $selectKind      : $dialog.find( '#jhk-dialogInfo-main-selectKind' ),
       $selectInai      : $dialog.find( '#jhk-dialogInfo-main-selectInai' ),
       $selectJikokuKaraJi  : $dialog.find( '#jhk-dialogInfo-main-selectJikoku-KARA-JI' ),
       $selectJikokuKaraFun : $dialog.find( '#jhk-dialogInfo-main-selectJikoku-KARA-FUN' ),
@@ -77,7 +81,9 @@ jhk.dialogInfo = (function () {
 
   onTouroku = function () {
     if (jqueryMap.$selectTeacher.val() != '-') {
-      let str = jqueryMap.$selectTeacher.val()       + '('   +
+      let str = jqueryMap.$selectTeacher.val()       + '(' +
+                configMap.kindList[jqueryMap.$selectKind.val()] +
+                ' '                                        +
                 jqueryMap.$selectJikokuKaraJi.val()  + ':' +
                 jqueryMap.$selectJikokuKaraFun.val() + '-' +
                 jqueryMap.$selectJikokuMadeJi.val()  + ':' +
@@ -101,7 +107,7 @@ jhk.dialogInfo = (function () {
   // ライブラリ
   SetJiLst = function(targetId, initVal=null) {
     let i, opt,
-      JiList = ['6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18'],
+      JiList = ['4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21'],
       targetList = document.getElementById(targetId);
 
     for (i = 0; i < JiList.length; i++) {
@@ -127,6 +133,19 @@ jhk.dialogInfo = (function () {
       if (initVal != null && initVal == FunList[i]) {
         opt.selected = true;
       }
+      targetList.appendChild(opt);
+    }
+  }
+
+  SetKindLst = function(targetId) {
+    let i, opt,
+      kindList = configMap.kindList,
+      targetList = document.getElementById(targetId);
+
+    for (i = 0; i < kindList.length; i++) {
+      opt = document.createElement('option');
+      opt.value = i;
+      opt.text = kindList[i];
       targetList.appendChild(opt);
     }
   }
@@ -192,6 +211,7 @@ jhk.dialogInfo = (function () {
     SetJiLst('jhk-dialogInfo-main-selectJikoku-MASE-JI', '16');
     SetFunLst('jhk-dialogInfo-main-selectJikoku-KARA-FUN', '15');
     SetFunLst('jhk-dialogInfo-main-selectJikoku-MASE-FUN', '30');
+    SetKindLst('jhk-dialogInfo-main-selectKind');
     SetInaiLst('jhk-dialogInfo-main-selectInai');
     return true;
   }
