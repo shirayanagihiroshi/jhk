@@ -19,8 +19,8 @@ Michael S. Mikowski、Josh C. Powell　著、佐藤 直生　監訳、木下 哲
 サーバ側はnode.jsとmongodbが必要。クライアントはブラウザで該当URLにアクセスすれば良い。mongodがあらかじめ動いている必要があり、DBにある程度の情報が登録されている必要がある。
 
 ### 依存関係
-- node.js : v18.20.0
-- Mongodb : 6.0.14
+- node.js : ~~v18.20.0~~ v20.19.4
+- Mongodb : ~~v6.0.14~~ v8.0.12
 
 ## データの準備1
 - <span style="color:blue;">時間割のExcel表の整理</span> : 授業名から該当クラスを引き当てるロジックがあるので、「道徳」や「LHR」は許さない。
