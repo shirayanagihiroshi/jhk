@@ -28,8 +28,6 @@
 
 7:X の文字コードがSJISなので、UTF-8にして上書きする。
 
-7':道徳や学活あたりはデータの修正が必要！
-
 8: 上記と同様に　選択授業設定出力　を選んで
   選択授業の授業設定.csv(以降Y)が出力される
 
@@ -195,7 +193,7 @@ function makeItiranList(arr) {
     };
 
     // イデアの選択授業の設定のうち、参照する価値のあるものはそれをつかう。
-    if (jyugyouIDStr == 'LHR' || jyugyouIDStr == '学活' || jyugyouIDStr == '道徳') {
+    if (jyugyouIDStr == 'LHR') {
       let obj = sentakuList.find(f(jyugyouIDStr));
       if (obj === undefined) {
         // ないはず
