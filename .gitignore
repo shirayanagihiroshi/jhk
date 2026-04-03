@@ -7,6 +7,7 @@
 # 授業変更データ及び時間割とそれから生成するデータたちは管理しない
 /*.xlsx
 /*.csv
+/*.json
 /public/js/jhkSimpleData.json.js
 /public/js/jhkjikanwari.json.js
 /public/js/jhkteacher.json.js

@@ -7,11 +7,36 @@ readFromXlsx.js　に代わるものである。
 エクセルでなくCVSを読むので、require('xlsx')を必要としない。
 
 データの流れ
+　イデアから
+　先生名出力.csv
+　先生一覧.csv　※出力の手順
+　選択授業の授業設定.csv
+　先生の授業設定.csv
+　を出力する
+
+CSVは多分文字コードがSJISなので、【UTF-8】にして上書きする。
+
+【手作業】先生名出力.csv　の（エクセルで開いたときのE列）へsktのuserIdを記載する
+
+node makeJikanwariPre.json.js
+
+をする。これは同じフォルダに
+　先生の授業設定_名簿付.csv
+を出力する。これはシステムに読ませる生成物でなく、中間生成物である。
+クラス単位で行う授業は学年や組を設定したが、
+クラスをまたいで行う授業などは合同名簿IDを設定する必要がある。
+ここで【手作業】で合同名簿IDを降っていけば、SKTの個人の設定が完成する
+はずであるが、R8年の準備作業としては手が回らなかった。
+
+（先生の授業設定_名簿付.csv　に合同名簿IDを追記する。
+　エクセルの操作で一番最初の行ColumnN・・・とゴミが入ったときは削除すること）
+
+その後
+node makeJikanwari.json.js　する。
 
 
 
-
-使い方
+※出力の手順
 
 1:完成した時間割をイデアの時間割で開く。
 2:ファイル
@@ -37,34 +62,33 @@ readFromXlsx.js　に代わるものである。
 4:テキスト出力ボタンを押す
 5:全ての先生にチェックが入った状態で出力ボタンを押す
 7:ファイルの種類でCSV形式データ(*.csv)を選び、保存ボタンを押す
-6:先生一覧.csv(以降X)が出力される。
+6:先生一覧.csvが出力される。
 
-7: 上記と同様に　選択授業設定出力　を選んで
-  選択授業の授業設定.csv(以降Y)が出力される
 
-8:X,Y の文字コードがSJISなので、UTF-8にして上書きする。
-
-9:X,Y を本ファイルを同じフォルダに置き、コマンドプロンプトで以下をする。
-  node makeJikanwari.json.js
+構成
+  makeJikanwariPre.json.js
+  makeJikanwari.json.js
+の両方で使う関数は
+  makeJikanwariTool.json.js
+にある。
 
 */
 
-const path = require('path');
-const fs   = require('fs');
+const tools = require('./makeJikanwariTool.json.js');
+const path  = require('path');
+const fs    = require('fs');
 // 日本語をうまく扱えないときはjavascriptのファイルの文字コードに注意。shiftjisだとダメだった。
 const teacherFileName           = '先生名出力.csv';         // 入力 【手動でsktのIDの付与が必要！】
 const itiranFileName            = '先生一覧.csv';           // 入力
 const sentakuFileName           = '選択授業の授業設定.csv'; // 入力
 const jyugyouPerTeacherFileName = '先生の授業設定.csv';     // 入力
+const jyugyouPerTeacherExFName  = '先生の授業設定_名簿付.csv';  // 入力　合同名簿IDの追記ができるとよい
 
 const teacherFile               = 'jhkteacher.json.js';     // 出力
 const jikanwariFile             = 'jhkjikanwari.json.js';   // 出力
 const jyugyouIDsFile            = 'jhkjyugyous.json.js';    // 出力
 
-const jyugyouPerTeacherCSV      = '先生の授業_名簿付.csv';  // これは特殊。SKT用のデータ生成処理の一部
-                                                            // 本プログラムで先生ごとの授業のIDを生成し
-                                                            // 名簿を引き当てるために、クラス単位の授業は学年と組を指定するが
-                                                            // クラス単位でない授業は、【手動で】合同名簿の設定が必要
+const jikanwariPerTeacher       = 'jikanwariPerTeacher.json'; // 出力　for SKT
 
 // csvファイルの読み取り
 let source      = path.join(__dirname, teacherFileName);
@@ -74,9 +98,9 @@ source          = path.join(__dirname, itiranFileName);
 let itiranFile  = fs.readFileSync(source, 'utf8');
 
 source          = path.join(__dirname, sentakuFileName);
-let sentakuFile = fs.readFileSync(source, 'utf8');
+ let sentakuFile = fs.readFileSync(source, 'utf8');
 
-source          = path.join(__dirname, jyugyouPerTeacherFileName);
+source          = path.join(__dirname, jyugyouPerTeacherExFName);
 let jyugyouPteacher = fs.readFileSync(source, 'utf8');
 
 // BOM（\ufeff）があれば除去する
@@ -97,43 +121,17 @@ if (jyugyouPteacher.startsWith('\ufeff')) {
 }
 
 // 全角の数字を半角の数字に変換。全角のハイフンも半角に
-teacherNameFile  = toHalfWidth(teacherNameFile);
-itiranFile   = toHalfWidth(itiranFile);
-sentakuFile  = toHalfWidth(sentakuFile);
-jyugyouPteacher = toHalfWidth(jyugyouPteacher);
+teacherNameFile  = tools.toHalfWidth(teacherNameFile);
+itiranFile       = tools.toHalfWidth(itiranFile);
+sentakuFile      = tools.toHalfWidth(sentakuFile);
+jyugyouPteacher  = tools.toHalfWidth(jyugyouPteacher);
 
-function toHalfWidth(str) {
-  return str.replace(/[！-～]/g, function(s) {
-    // 文字コードを 0xFEE0 分ずらすことで全角から半角に変換
-    return String.fromCharCode(s.charCodeAt(0) - 0xfee0);
-  }).replace(/－/g, "-")  // 全角ハイフン(マイナス)を半角に
-    .replace(/ー/g, "-")  // 全角長音を半角に
-    .replace(/—/g, "-")  // エムダッシュを半角に
-    .trim();              // 前後の余計な空白を消す
-}
+// CSVデータを二次元配列に変換する
+const teacherData  = tools.convertCSVtoArray(teacherNameFile);
+const itiranData   = tools.convertCSVtoArray(itiranFile);
+const sentakuData  = tools.convertCSVtoArray(sentakuFile);
+const jyugyouPteacherData = tools.convertCSVtoArray(jyugyouPteacher);
 
-// データを二次元配列に変換する
-const teacherData  = convertCSVtoArray(teacherNameFile);
-const itiranData   = convertCSVtoArray(itiranFile);
-const sentakuData  = convertCSVtoArray(sentakuFile);
-const jyugyouPteacherData = convertCSVtoArray(jyugyouPteacher);
-
-// 読み込んだCSVデータを二次元配列に変換する
-function convertCSVtoArray(str){ // 読み込んだCSVデータが文字列として渡される
-  let result = [];
-  // \r\n と \n の両方に対応して分割
-  let tmp = str.split(/\r?\n/); 
-
-  for(let i = 0; i < tmp.length; i++){
-    // 各行をカンマで分けた後、各要素の " を消して空白をトリムする
-    let row = tmp[i].split(',').map(item => {
-      return item.replace(/"/g, '').trim(); // 全ての " を削除して前後を掃除
-    });
-
-    result.push(row);
-  }
-  return result;
-}
 
 const teacherList = makeTeacherList(teacherData);
 
@@ -170,67 +168,12 @@ function makeTeacherList(arr) {
   return lst;
 }
 
-const teacherListForSkt = makeTeacherListForSkt(teacherData);
-// イデアのユーザ名とsktのuserIDの対応表を作る
-function makeTeacherListForSkt(arr) {
-  let i, lst, obj;
-  lst = [];
-
-  for (i = 0; i < arr.length; i++) {
-
-    obj = {'teacher'   : arr[i][0],  // 先頭の教員名を使う
-           'sktUserID' : arr[i][4]}; // 5番目にsktのuserIDを手動で入れる
-
-    lst.push(obj);
-  }
-  return lst;
-}
-
 
 // 2次元配列からjavascriptのオフジェクトの配列にする。
 // { jyugyouID;"hoge",
 //   teacher:["A先生", "B先生"],
 //   class : "3-17", "3-17"} みたいなもののリスト
-const sentakuList = makeSentakuList(sentakuData);
-function makeSentakuList (arr) {
-  let i, lst, objMakingFlg, obj;
-
-  lst = [];
-
-  objMakingFlg = false;
-
-  for (i = 0; i < arr.length; i++) {
-    if (arr[i][0] == "選択授業名" ) {
-      obj = {'jyugyouID' : arr[i][1],
-             'teacher'   : [],
-             'class'     : []};
-
-      objMakingFlg = true;
-
-    } else if(objMakingFlg == true && arr[i][0] == "授業ID") { // ここはスルー
-
-    } else if(objMakingFlg == true && obj.jyugyouID == arr[i][0]) {
-
-      // ここでいう選択授業は、生徒が選択するかでなく、
-      // 先生複数人や生徒複数集団にまたがるような授業のこと
-      //
-      // LHRの、担任- クラス　みたいに、使う意味があるもの(R8年のデータを見て書いてる)と
-      // 3-16実英数みたいに、イデア的にクラスは入力されているけど
-      // (クラスをまたいだ別の集団で授業をやるから)
-      // ここでのクラスにあまり意味のないものもあるので注意
-
-      obj.teacher.push(arr[i][2]); //先生名
-      obj.class.push(arr[i][3]);   //クラス名
-
-    } else {
-      if (objMakingFlg == true) {
-        lst.push(obj);
-        objMakingFlg = false;
-      }
-    }
-  }
-  return lst;
-}
+const sentakuList = tools.makeSentakuList(sentakuData);
 
 // この授業のリストはjhk用のデータ。
 // 学校全体でどんな授業があるかの一覧
@@ -270,9 +213,111 @@ function makeJyugyou(jyugyou, cls) {
   }
 }
 
+
+// 先生の授業設定_名簿付.csv の以下をjavascriptの配列にする
+// 先生名,
+// userId(sktの),
+// 授業ID(sktの),
+// name(sktの授業名の意。イデアの授業IDで 現代文 みたいなやつ。後で一覧から読み取るときに使う),
+// クラス名(3-1みたいなやつ。後で一覧から読み取るときに使う),
+// gakunen,
+// cls,
+// goudouMeiboId
+let jyugyouPerTeacherList = makejyugyouPerTeacherList(jyugyouPteacherData);
+
+function makejyugyouPerTeacherList(arr) {
+  let i, teacher ;
+  let lst = [];
+
+  function getJyugyouObj(arr) {
+    // クラス名があれば
+    if (arr[4].length > 0) {
+      return { jyugyouId : arr[2],
+               gakunen   : arr[5],
+               cls       : arr[6],
+               name      : arr[3],
+               clsName   : arr[4]
+             };
+    } else {
+      return { jyugyouId : arr[2],
+               name      : arr[3],
+               clsName   : arr[4]
+             };
+    }
+  }
+
+  for (i = 0; i < arr.length; i++) {
+    if (i == 0) {
+      teacher = { teacherName : arr[i][0],
+                  userId    : arr[i][1],
+                  jyugyou   : [],
+                  jikanwari : [] };
+      teacher.jyugyou.push(getJyugyouObj(arr[i]));
+
+    // ユーザが切り替わったら
+    } else if (i != 0 && arr[i][1] != arr[i - 1][1]) {
+
+      lst.push(teacher);
+
+      teacher = { teacherName : arr[i][0],
+                  userId    : arr[i][1],
+                  jyugyou   : [],
+                  jikanwari : [] };
+      teacher.jyugyou.push(getJyugyouObj(arr[i]));
+
+    } else {
+      teacher.jyugyou.push(getJyugyouObj(arr[i]));
+    }
+  }
+
+  return lst;
+}
+
+
 const itiranList = makeItiranList(itiranData);
 function makeItiranList(arr) {
-  const startRow = 3; // 5行目から先生ごとの時間割が始まる
+  const startRow = 3; // ここから先生ごとの時間割が始まる
+
+  let searchTeacher = function (str) {
+    return function (target) {
+      if ( target.teacherName == str ) {
+        return true;
+      }
+    }
+  };
+  function addjyugyou(teacher, jyugyouname, clsname, nikka, youbi, koma) {
+    let i;
+
+    if (teacher != null) {
+      let jId = 0;
+
+      // 不毛な処理をしている気がするが
+      // 授業名とクラス名から授業IDを引き当てる
+      // まず、授業名とクラス名が両方一致するものを探す
+      // クラス単位の授業はここで見つかるはず
+      for (i = 0; i < teacher.jyugyou.length; i++) {
+        if ( teacher.jyugyou[i].name == jyugyouname &&
+             teacher.jyugyou[i].clsName == clsname) {
+          jId = teacher.jyugyou[i].jyugyouId;
+        }
+      }
+      // 次に、授業名だけでさがず
+      // 選択授業はここでみつかるはず
+      if (jId == 0) {
+        for (i = 0; i < teacher.jyugyou.length; i++) {
+          if ( teacher.jyugyou[i].name == jyugyouname ) {
+            jId = teacher.jyugyou[i].jyugyouId;
+          }
+        }
+      }
+
+      teacher.jikanwari.push({ nikka     : nikka,
+                               youbi     : youbi,
+                               koma      : koma,
+                               jyugyouId : jId
+                             });
+    }
+  }
 
   // 特定の授業IDが選択授業のリストにあるかどうかチェックし、
   // クラスの設定を返す
@@ -337,6 +382,8 @@ function makeItiranList(arr) {
   // 1行目は授業ID、2行目はクラス。クラスのほうはあてにならない時があるので注意
   for (i = startRow; i < arr.length; i = i + 2) {
 
+    let obj = jyugyouPerTeacherList.find(searchTeacher(arr[i][0]));
+
     // A週月曜から土曜、B週月曜から金曜の11日×7
     for (j = 1; j < 77; j++) {
 
@@ -345,6 +392,7 @@ function makeItiranList(arr) {
         // 授業IDが選択授業リストにあるものなら、それをつかう
         if (str != "") {
           jyugyou = str;
+
         // そうでなければ、次の行のクラス名を使う
         } else {
           jyugyou = arr[i + 1][j];
@@ -401,8 +449,22 @@ function makeItiranList(arr) {
                   'koma'    : koma,
                   'jyugyou' : jyugyou
         });
+
+        addjyugyou(obj, arr[i][j], arr[i + 1][j], nikka, youbi, koma);
       }
     }
+    // 一部はクラス名を授業名に差し替える
+    // これをしないと、sktの授業名は　数学　みたいな感じ
+    let idx;
+    if (obj != null && obj.jyugyou != null) {
+      for (idx = 0; idx < obj.jyugyou.length; idx++) {
+        if (obj.jyugyou[idx].name != 'LHR' && obj.jyugyou[idx].clsName != "") {
+          obj.jyugyou[idx].name = obj.jyugyou[idx].clsName;
+        }
+      }
+    }
+        console.log(obj);
+
   }
 
   return lst;
@@ -416,4 +478,7 @@ fs.writeFileSync('public/js/' + jikanwariFile, 'let jhkJikanwari = ' + json);
 
 json = JSON.stringify(jyugyouList);
 fs.writeFileSync('public/js/' + jyugyouIDsFile, 'let jhkJyugyous = ' + json);
+
+json = JSON.stringify(jyugyouPerTeacherList);
+fs.writeFileSync(jikanwariPerTeacher, json);
 
