@@ -385,7 +385,7 @@ function makeItiranList(arr) {
     let obj = jyugyouPerTeacherList.find(searchTeacher(arr[i][0]));
 
     // A週月曜から土曜、B週月曜から金曜の11日×7
-    for (j = 1; j < 77; j++) {
+    for (j = 1; j <= 77; j++) {
 
       if (arr[i][j].length > 0) {
         str = inSentaku(arr[i][0], arr[i][j], arr[i + 1][j]);
