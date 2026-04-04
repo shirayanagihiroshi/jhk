@@ -232,14 +232,14 @@ function makejyugyouPerTeacherList(arr) {
   function getJyugyouObj(arr) {
     // クラス名があれば
     if (arr[4].length > 0) {
-      return { jyugyouId : arr[2],
-               gakunen   : arr[5],
-               cls       : arr[6],
+      return { jyugyouId : Number(arr[2]),
+               gakunen   : Number(arr[5]),
+               cls       : Number(arr[6]),
                name      : arr[3],
                clsName   : arr[4]
              };
     } else {
-      return { jyugyouId : arr[2],
+      return { jyugyouId : Number(arr[2]),
                name      : arr[3],
                clsName   : arr[4]
              };
@@ -455,6 +455,7 @@ function makeItiranList(arr) {
     }
     // 一部はクラス名を授業名に差し替える
     // これをしないと、sktの授業名は　数学　みたいな感じ
+    // clsNameは現行システムでは未使用
     let idx;
     if (obj != null && obj.jyugyou != null) {
       for (idx = 0; idx < obj.jyugyou.length; idx++) {
